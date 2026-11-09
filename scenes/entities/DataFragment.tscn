@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/entities/Collectible.tscn" id="1_base"]
+
+[node name="DataFragment" instance=ExtResource("1_base")]
+item_id = "data_fragment"
+amount = 1
+sfx = "power_up"

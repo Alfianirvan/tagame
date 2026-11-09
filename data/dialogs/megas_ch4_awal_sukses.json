@@ -1,0 +1,20 @@
+{
+  "lines": [
+    {
+      "speaker": "megas",
+      "text": "Bagus! Kamu paham Linked List: tiap node menyimpan data dan penunjuk ke node berikutnya."
+    },
+    {
+      "speaker": "megas",
+      "text": "Terimalah Tongkat Sihir ini. Pakai lewat tas (tombol I)."
+    },
+    {
+      "speaker": "megas",
+      "text": "Di dalam gua, sambung batu portal, sisipkan node yang hilang, dan buang node jebakan. Setelah itu hadapi Ksatria Rantai."
+    },
+    {
+      "speaker": "megas",
+      "text": "Sebelum masuk gua, kunjungi Pedagang di dekat api unggun. Beli Potion dan perlengkapan, sebab Ksatria Rantai menunggumu di dalam."
+    }
+  ]
+}

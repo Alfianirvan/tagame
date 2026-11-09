@@ -1,0 +1,49 @@
+[gd_scene format=3 uid="uid://dg2ctiutns1c0"]
+
+[ext_resource type="Script" uid="uid://b8a60hjkc5voe" path="res://scripts/entities/Player.gd" id="1_player"]
+[ext_resource type="SpriteFrames" path="res://scenes/entities/player_frames.tres" id="2_frames"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_body"]
+radius = 5.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hitbox"]
+size = Vector2(24, 26)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hurtbox"]
+size = Vector2(14, 26)
+
+[node name="Player" type="CharacterBody2D" unique_id=1390144812]
+collision_layer = 2
+collision_mask = 5
+script = ExtResource("1_player")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=498253812]
+sprite_frames = ExtResource("2_frames")
+animation = &"pierce_side"
+offset = Vector2(0, -16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=720776490]
+position = Vector2(0, -5)
+shape = SubResource("CircleShape2D_body")
+
+[node name="Hitbox" type="Area2D" parent="." unique_id=1731709193]
+collision_layer = 8
+collision_mask = 4
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=2007221464]
+position = Vector2(0, -17)
+shape = SubResource("RectangleShape2D_hitbox")
+
+[node name="Hurtbox" type="Area2D" parent="." unique_id=1157409173]
+collision_layer = 0
+collision_mask = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=247433798]
+position = Vector2(0, -17)
+shape = SubResource("RectangleShape2D_hurtbox")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1201090625]
+position = Vector2(0, -17)
+position_smoothing_enabled = true
+position_smoothing_speed = 8.0

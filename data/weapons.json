@@ -1,0 +1,116 @@
+{
+  "pedang_kayu": {
+    "name": "Pedang Kayu",
+    "type": "weapon",
+    "weapon_type": "pedang",
+    "attack_style": "slice",
+    "damage": 8,
+    "cooldown": 0.4,
+    "range": 24,
+    "stamina_cost": 0,
+    "price": 0,
+    "description": "Pedang latihan dari kayu.",
+    "alt": {
+      "gaya": "pierce",
+      "cooldown": 0.7,
+      "stamina_cost": 8,
+      "damage_x": 1.3,
+      "range": 40,
+      "sudut": 35
+    }
+  },
+  "pedang_besi": {
+    "name": "Pedang Besi",
+    "type": "weapon",
+    "weapon_type": "pedang",
+    "attack_style": "slice",
+    "damage": 16,
+    "cooldown": 0.38,
+    "range": 26,
+    "stamina_cost": 0,
+    "price": 220,
+    "description": "Pedang tempaan Lilbah. Tajam dan seimbang.",
+    "alt": {
+      "gaya": "pierce",
+      "cooldown": 0.7,
+      "stamina_cost": 8,
+      "damage_x": 1.3,
+      "range": 40,
+      "sudut": 35
+    }
+  },
+  "tombak_kayu": {
+    "name": "Tombak Kayu",
+    "type": "weapon",
+    "weapon_type": "tombak",
+    "attack_style": "pierce",
+    "damage": 10,
+    "cooldown": 0.5,
+    "range": 40,
+    "stamina_cost": 0,
+    "price": 120,
+    "description": "Jangkauan panjang, tusukan lurus."
+  },
+  "palu_kayu": {
+    "name": "Palu Kayu",
+    "type": "weapon",
+    "weapon_type": "palu",
+    "attack_style": "crush",
+    "damage": 20,
+    "cooldown": 0.9,
+    "range": 24,
+    "stamina_cost": 15,
+    "price": 160,
+    "description": "Lambat tetapi menghantam keras."
+  },
+  "busur_kayu": {
+    "name": "Busur Kayu",
+    "type": "weapon",
+    "weapon_type": "busur",
+    "attack_style": "ranged",
+    "damage": 9,
+    "cooldown": 0.6,
+    "range": 160,
+    "stamina_cost": 5,
+    "price": 150,
+    "description": "Serangan jarak jauh."
+  },
+  "tongkat_sihir": {
+    "name": "Tongkat Sihir",
+    "type": "weapon",
+    "weapon_type": "tongkat",
+    "attack_style": "ranged",
+    "damage": 14,
+    "cooldown": 0.55,
+    "range": 140,
+    "stamina_cost": 5,
+    "price": 0,
+    "description": "Hadiah Megas. Melontarkan bola sihir.",
+    "alt": {
+      "gaya": "slam",
+      "cooldown": 1.0,
+      "stamina_cost": 15,
+      "damage_x": 1.6,
+      "radius": 24
+    }
+  },
+  "tongkat_sihir_plus": {
+    "name": "Tongkat Sihir+",
+    "type": "weapon",
+    "weapon_type": "tongkat",
+    "attack_style": "ranged",
+    "damage": 24,
+    "cooldown": 0.5,
+    "range": 160,
+    "stamina_cost": 5,
+    "price": 0,
+    "description": "Tongkat sihir yang diperkuat.",
+    "alt": {
+      "gaya": "slam",
+      "cooldown": 1.0,
+      "stamina_cost": 15,
+      "damage_x": 1.6,
+      "radius": 24
+    }
+  }
+}

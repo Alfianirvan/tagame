@@ -1,0 +1,162 @@
+{
+  "helm_kulit": {
+    "name": "Helm Kulit",
+    "type": "armor",
+    "slot": "helm",
+    "defense": 2,
+    "max_hp": 10,
+    "max_stamina": 0,
+    "price": 60,
+    "description": "Helm kulit sederhana."
+  },
+  "helm_besi": {
+    "name": "Helm Besi",
+    "type": "armor",
+    "slot": "helm",
+    "defense": 4,
+    "max_hp": 15,
+    "max_stamina": 0,
+    "price": 180,
+    "description": "Helm besi tebal."
+  },
+  "perisai_kayu": {
+    "name": "Perisai Kayu",
+    "type": "armor",
+    "slot": "shield",
+    "defense": 3,
+    "max_hp": 0,
+    "max_stamina": 0,
+    "price": 80,
+    "description": "Perisai kayu pemberian Lilbah."
+  },
+  "perisai_legendaris": {
+    "name": "Perisai Legendaris",
+    "type": "armor",
+    "slot": "shield",
+    "defense": 9,
+    "max_hp": 20,
+    "max_stamina": 10,
+    "price": 0,
+    "description": "Perisai penjaga keteraturan Algoria."
+  },
+  "zirah_kulit": {
+    "name": "Zirah Kulit",
+    "type": "armor",
+    "slot": "armor",
+    "defense": 4,
+    "max_hp": 15,
+    "max_stamina": 0,
+    "price": 140,
+    "description": "Zirah kulit ringan."
+  },
+  "zirah_rantai": {
+    "name": "Zirah Rantai",
+    "type": "armor",
+    "slot": "armor",
+    "defense": 7,
+    "max_hp": 25,
+    "max_stamina": 0,
+    "price": 300,
+    "description": "Zirah dari anyaman rantai."
+  },
+  "armor_besi": {
+    "name": "Armor Besi",
+    "type": "armor",
+    "slot": "armor",
+    "defense": 10,
+    "max_hp": 35,
+    "max_stamina": 0,
+    "price": 500,
+    "description": "Armor besi penuh."
+  },
+  "armor_legendaris": {
+    "name": "Armor Legendaris",
+    "type": "armor",
+    "slot": "armor",
+    "defense": 15,
+    "max_hp": 50,
+    "max_stamina": 10,
+    "price": 0,
+    "description": "Armor para penjaga Kristal Struktur."
+  },
+  "cincin_semangat": {
+    "name": "Cincin Semangat",
+    "type": "armor",
+    "slot": "accessory",
+    "defense": 0,
+    "max_hp": 0,
+    "max_stamina": 20,
+    "price": 200,
+    "description": "Menambah Stamina maksimum."
+  },
+  "helm_rantai": {
+    "name": "Helm Rantai",
+    "type": "armor",
+    "slot": "helm",
+    "defense": 5,
+    "max_hp": 20,
+    "max_stamina": 0,
+    "price": 260,
+    "description": "Helm dari anyaman rantai. Cocok untuk menjelajah Gua Rantai."
+  },
+  "perisai_besi": {
+    "name": "Perisai Besi",
+    "type": "armor",
+    "slot": "shield",
+    "defense": 6,
+    "max_hp": 10,
+    "max_stamina": 0,
+    "price": 320,
+    "description": "Perisai besi bundar yang kokoh."
+  },
+  "zirah_salju": {
+    "name": "Zirah Salju",
+    "type": "armor",
+    "slot": "armor",
+    "defense": 8,
+    "max_hp": 30,
+    "max_stamina": 0,
+    "price": 400,
+    "description": "Zirah tebal berlapis kulit beku, tahan dingin dan serangan."
+  },
+  "helm_baja": {
+    "name": "Helm Baja",
+    "type": "armor",
+    "slot": "helm",
+    "defense": 7,
+    "max_hp": 25,
+    "max_stamina": 0,
+    "price": 450,
+    "description": "Helm baja tempaan terbaik."
+  },
+  "perisai_baja": {
+    "name": "Perisai Baja",
+    "type": "armor",
+    "slot": "shield",
+    "defense": 8,
+    "max_hp": 15,
+    "max_stamina": 5,
+    "price": 550,
+    "description": "Perisai baja ringan namun sangat kuat."
+  },
+  "zirah_baja": {
+    "name": "Zirah Baja",
+    "type": "armor",
+    "slot": "armor",
+    "defense": 12,
+    "max_hp": 40,
+    "max_stamina": 0,
+    "price": 800,
+    "description": "Zirah baja penuh untuk menghadapi King Subiyan."
+  },
+  "cincin_penjaga": {
+    "name": "Cincin Penjaga",
+    "type": "armor",
+    "slot": "accessory",
+    "defense": 2,
+    "max_hp": 20,
+    "max_stamina": 30,
+    "price": 600,
+    "description": "Cincin penjaga yang menambah HP dan Stamina maksimum."
+  }
+}

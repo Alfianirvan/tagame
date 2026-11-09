@@ -1,0 +1,24 @@
+{
+  "_catatan": "Resep racik (tab Racik).",
+  "resep": [
+    {
+      "id": "potion",
+      "hasil": "potion",
+      "jumlah": 1,
+      "bahan": {
+        "herb": 3
+      },
+      "nama": "Potion"
+    },
+    {
+      "id": "potion_besar",
+      "hasil": "potion_besar",
+      "jumlah": 1,
+      "bahan": {
+        "potion": 2,
+        "herb": 2
+      },
+      "nama": "Potion Besar"
+    }
+  ]
+}

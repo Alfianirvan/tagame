@@ -1,0 +1,73 @@
+{
+  "_catatan": "Isi Toko (kantong pedagang kiriman Dadang/Joko). 'chapter' = chapter yang sudah terbuka agar barang tersedia. Harga diambil dari items/weapons/armors.json. Barang hadiah quest (helm_kulit, perisai_kayu, zirah_kulit, armor_besi) TIDAK dijual di sini; hanya didapat dari NPC setelah menjawab soal.",
+  "stok": [
+    {
+      "item": "potion",
+      "chapter": 1
+    },
+    {
+      "item": "potion_besar",
+      "chapter": 2
+    },
+    {
+      "item": "ore",
+      "chapter": 1
+    },
+    {
+      "item": "tombak_kayu",
+      "chapter": 1
+    },
+    {
+      "item": "palu_kayu",
+      "chapter": 2
+    },
+    {
+      "item": "busur_kayu",
+      "chapter": 2
+    },
+    {
+      "item": "cincin_semangat",
+      "chapter": 2
+    },
+    {
+      "item": "pedang_besi",
+      "chapter": 3
+    },
+    {
+      "item": "helm_besi",
+      "chapter": 3
+    },
+    {
+      "item": "zirah_rantai",
+      "chapter": 3
+    },
+    {
+      "item": "helm_rantai",
+      "chapter": 4
+    },
+    {
+      "item": "perisai_besi",
+      "chapter": 4
+    },
+    {
+      "item": "zirah_salju",
+      "chapter": 4
+    },
+    {
+      "item": "helm_baja",
+      "chapter": 5
+    },
+    {
+      "item": "perisai_baja",
+      "chapter": 5
+    },
+    {
+      "item": "zirah_baja",
+      "chapter": 5
+    },
+    {
+      "item": "cincin_penjaga",
+      "chapter": 5
+    }
+  ]
+}

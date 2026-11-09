@@ -1,0 +1,45 @@
+[gd_scene format=3 uid="uid://b2y8m1yltqj1v"]
+
+[ext_resource type="Script" uid="uid://dxgpcv04hc3co" path="res://scripts/entities/NPC.gd" id="1_npc"]
+[ext_resource type="FontFile" uid="uid://hvgtku3iygjw" path="res://assets/fonts/Square-Black.ttf" id="3_font"]
+[ext_resource type="SpriteFrames" uid="uid://l0dse0m2wan6" path="res://scenes/entities/npc_frames/joko.tres" id="4_preview"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_body"]
+radius = 6.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_interact"]
+radius = 15.033297
+
+[node name="NPC" type="StaticBody2D" unique_id=403361681]
+collision_mask = 0
+script = ExtResource("1_npc")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=373042452]
+sprite_frames = ExtResource("4_preview")
+animation = &"idle_down"
+offset = Vector2(0, -16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1242369566]
+position = Vector2(0, -5)
+shape = SubResource("CircleShape2D_body")
+
+[node name="InteractArea" type="Area2D" parent="." unique_id=1856262908]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractArea" unique_id=1231795779]
+position = Vector2(0, -13)
+shape = SubResource("CircleShape2D_interact")
+
+[node name="Hint" type="Label" parent="." unique_id=34065256]
+offset_left = -24.0
+offset_top = -62.0
+offset_right = 24.0
+offset_bottom = -46.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 10
+text = "[E]"
+horizontal_alignment = 1

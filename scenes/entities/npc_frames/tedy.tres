@@ -1,0 +1,39 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/characters/npc/Tedy_Idle-Sheet.png" id="1_5nj3k"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_huncb"]
+atlas = ExtResource("1_5nj3k")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_23gdw"]
+atlas = ExtResource("1_5nj3k")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lhwmp"]
+atlas = ExtResource("1_5nj3k")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yatr6"]
+atlas = ExtResource("1_5nj3k")
+region = Rect2(96, 0, 32, 32)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_huncb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_23gdw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lhwmp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yatr6")
+}],
+"loop": 1,
+"name": &"idle_side",
+"speed": 6.0
+}]

@@ -1,0 +1,47 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/entities/Chest.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/props/Chest_Closed.png" id="2_closed"]
+[ext_resource type="Texture2D" path="res://assets/props/Chest_Open.png" id="3_open"]
+[ext_resource type="FontFile" path="res://assets/fonts/Square-Black.ttf" id="4_font"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
+size = Vector2(14, 8)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_range"]
+radius = 26.0
+
+[node name="Chest" type="StaticBody2D"]
+collision_layer = 1
+collision_mask = 0
+script = ExtResource("1_script")
+
+[node name="Closed" type="Sprite2D" parent="."]
+position = Vector2(0, -7)
+texture = ExtResource("2_closed")
+
+[node name="Open" type="Sprite2D" parent="."]
+position = Vector2(0, -7)
+texture = ExtResource("3_open")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -4)
+shape = SubResource("RectangleShape2D_body")
+
+[node name="InteractArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractArea"]
+position = Vector2(0, -6)
+shape = SubResource("CircleShape2D_range")
+
+[node name="Hint" type="Label" parent="."]
+offset_left = -12.0
+offset_top = -28.0
+offset_right = 12.0
+offset_bottom = -16.0
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 9
+text = "[E]"
+horizontal_alignment = 1

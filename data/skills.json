@@ -1,0 +1,27 @@
+{
+  "_catatan": "Skill spesial dibuka dengan Data Fragment.",
+  "skill": {
+    "putar": {
+      "nama": "Serangan Putar",
+      "aksi": "skill_spin",
+      "tombol": "U",
+      "biaya_fragment": 1,
+      "stamina": 30,
+      "cooldown": 4.0,
+      "radius": 56,
+      "damage_x": 1.5,
+      "deskripsi": "Berputar dan menebas semua musuh di sekitar Raka (damage 1,5x senjata)."
+    },
+    "dash": {
+      "nama": "Dash Tebas",
+      "aksi": "skill_dash",
+      "tombol": "L",
+      "biaya_fragment": 2,
+      "stamina": 25,
+      "cooldown": 3.0,
+      "jarak": 120,
+      "damage_x": 1.2,
+      "deskripsi": "Menerjang cepat ke depan, kebal selama menerjang, melukai musuh yang dilewati."
+    }
+  }
+}

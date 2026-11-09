@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/entities/Enemy.gd" id="1_enemy"]
+[ext_resource type="Script" path="res://scripts/entities/EnemyHealthBar.gd" id="2_bar"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_body"]
+radius = 6.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_attack"]
+radius = 13.0
+
+[node name="Enemy" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 3
+script = ExtResource("1_enemy")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -6)
+shape = SubResource("CircleShape2D_body")
+
+[node name="AttackArea" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 0
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea"]
+position = Vector2(12, -14)
+shape = SubResource("CircleShape2D_attack")
+
+[node name="HealthBar" type="Node2D" parent="."]
+position = Vector2(0, -36)
+script = ExtResource("2_bar")

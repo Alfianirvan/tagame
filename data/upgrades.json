@@ -1,0 +1,8 @@
+{
+  "levels": {
+    "1": { "gold": 50,  "ore": 3,  "data_fragment": 0, "bonus_percent": 20 },
+    "2": { "gold": 120, "ore": 6,  "data_fragment": 0, "bonus_percent": 40 },
+    "3": { "gold": 250, "ore": 10, "data_fragment": 1, "bonus_percent": 70, "special": "efek_khusus" }
+  },
+  "chapter_cap": { "0": 0, "1": 1, "2": 2, "3": 3, "4": 3, "5": 3 }
+}
