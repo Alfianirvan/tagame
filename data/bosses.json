@@ -1,0 +1,212 @@
+{
+  "golem_batu": {
+    "name": "Golem Batu",
+    "chapter": 1,
+    "hp": 100,
+    "speed": 26,
+    "detect_range": 150,
+    "xp": 120,
+    "body_radius": 14,
+    "sprites": {
+      "idle":   { "file": "B_Golem_OrcWarrior_x2_Idle-Sheet.png", "frames": 4,  "foot": [29, 64],  "fps": 5.0, "loop": true },
+      "attack": { "file": "B_Golem_Batu_Attack-Sheet.png",        "frames": 9,  "foot": [45, 76],  "fps": 9.0, "loop": false },
+      "death":  { "file": "B_Golem_Batu_Death-Sheet.png",         "frames": 11, "foot": [91, 160], "fps": 8.0, "loop": false }
+    },
+    "slam": {
+      "damage": 8,
+      "trigger_range": 60,
+      "impact_frame": 5,
+      "max_radius": 75,
+      "wave_speed": 100,
+      "wave_width": 10,
+      "recover": 3.2
+    },
+    "weak_points": [
+      { "index": 0, "pos": [-26, -22] },
+      { "index": 1, "pos": [0, -50] },
+      { "index": 2, "pos": [26, -22] }
+    ],
+    "drops": [
+      { "item": "gold", "min": 60, "max": 80, "chance": 1.0 },
+      { "item": "ore", "min": 3, "max": 4, "chance": 1.0 },
+      { "item": "potion", "min": 1, "max": 1, "chance": 1.0 }
+    ]
+  },
+  "penyihir_menara": {
+    "name": "Penyihir Menara",
+    "chapter": 2,
+    "hp": 90,
+    "speed": 34,
+    "body_anim": [
+      { "frame": 1, "scale": [0.96, 1.08], "pos": [0, -5], "rot": 0, "t": 0.15 },
+      { "frame": 3, "scale": [0.94, 1.12], "pos": [0, -8], "rot": 0, "t": 0.2 },
+      { "frame": 5, "scale": [1.12, 0.9], "pos": [3, 0], "rot": 6, "t": 0.07 },
+      { "frame": 7, "scale": [1.0, 1.0], "pos": [0, 0], "rot": 0, "t": 0.2 }
+    ],
+    "detect_range": 180,
+    "xp": 160,
+    "body_radius": 9,
+    "sprites": {
+      "idle":   { "file": "B_PenyihirMenara_OrcShaman_x2_Idle-Sheet.png", "frames": 4,  "foot": [37, 64],  "fps": 5.0,  "loop": true },
+      "attack": { "file": "B_PenyihirMenara_Cast-Sheet.png",              "frames": 9,  "foot": [49, 92],  "fps": 12.0, "loop": false },
+      "death":  { "file": "B_PenyihirMenara_Death-Sheet.png",             "frames": 12, "foot": [69, 128], "fps": 8.0,  "loop": false }
+    },
+    "orb_sprite": { "orb": { "file": "B_PenyihirMenara_Projectile-Sheet.png", "frames": 4, "foot": [10, 10], "fps": 10.0, "loop": true } },
+    "stack": {
+      "orbs": 3,
+      "cast_frame": 5,
+      "cast_range": 150,
+      "retreat_range": 60,
+      "aim_time": 0.4,
+      "pop_interval": 0.55,
+      "orb_damage": 10,
+      "orb_speed": 120,
+      "recover": 1.8
+    },
+    "drops": [
+      { "item": "gold", "min": 90, "max": 120, "chance": 1.0 },
+      { "item": "ore", "min": 4, "max": 5, "chance": 1.0 },
+      { "item": "potion", "min": 1, "max": 1, "chance": 1.0 }
+    ]
+  },
+  "kapten_bajak_laut": {
+    "name": "Kapten Bajak Laut",
+    "chapter": 3,
+    "hp": 120,
+    "speed": 40,
+    "body_anim": [
+      { "frame": 1, "scale": [1.1, 0.9], "pos": [-3, 0], "rot": -4, "t": 0.1 },
+      { "frame": 2, "scale": [1.18, 0.88], "pos": [6, 0], "rot": 8, "t": 0.06 },
+      { "frame": 3, "scale": [1.15, 0.9], "pos": [5, 0], "rot": 10, "t": 0.06, "shake": 1.5 },
+      { "frame": 4, "scale": [0.95, 1.04], "pos": [2, 0], "rot": 0, "t": 0.12 },
+      { "frame": 5, "scale": [1.0, 1.0], "pos": [0, 0], "rot": 0, "t": 0.15 }
+    ],
+    "detect_range": 180,
+    "xp": 200,
+    "body_radius": 10,
+    "sprites": {
+      "idle":   { "file": "B_KaptenBajakLaut_OrcRogue_x2_Idle-Sheet.png", "frames": 4,  "foot": [30, 64],  "fps": 5.0,  "loop": true },
+      "attack": { "file": "B_KaptenBajakLaut_Attack-Sheet.png",           "frames": 6,  "foot": [34, 76],  "fps": 18.0, "loop": false },
+      "death":  { "file": "B_KaptenBajakLaut_Death-Sheet.png",            "frames": 11, "foot": [62, 128], "fps": 8.0,  "loop": false }
+    },
+    "lunge": {
+      "trigger_range": 150,
+      "windup": 0.7,
+      "distance": 130,
+      "time": 0.3,
+      "damage": 14,
+      "recover": 1.0
+    },
+    "summon": {
+      "count": 3,
+      "minion_ids": ["orc_rogue", "orc", "orc_rogue"],
+      "frame": 2,
+      "first_delay": 3.0,
+      "cooldown": 8.0,
+      "release_delay": 0.6,
+      "recover": 0.8
+    },
+    "drops": [
+      { "item": "gold", "min": 120, "max": 160, "chance": 1.0 },
+      { "item": "ore", "min": 5, "max": 6, "chance": 1.0 },
+      { "item": "potion", "min": 1, "max": 2, "chance": 1.0 }
+    ]
+  },
+  "ksatria_rantai": {
+    "name": "Ksatria Rantai",
+    "chapter": 4,
+    "hp": 140,
+    "speed": 36,
+    "body_anim": [
+      { "frame": 1, "scale": [0.96, 1.06], "pos": [-3, 0], "rot": -8, "t": 0.2 },
+      { "frame": 2, "scale": [0.95, 1.07], "pos": [-4, 0], "rot": -12, "t": 0.12 },
+      { "frame": 3, "scale": [1.1, 0.94], "pos": [5, 0], "rot": 10, "t": 0.07, "shake": 1.5 },
+      { "frame": 5, "scale": [1.0, 1.0], "pos": [0, 0], "rot": 0, "t": 0.25 }
+    ],
+    "detect_range": 190,
+    "xp": 240,
+    "body_radius": 10,
+    "sprites": {
+      "idle":   { "file": "B_KsatriaRantai_SkeletonWarrior_x2_Idle-Sheet.png", "frames": 4,  "foot": [28, 64], "fps": 5.0,  "loop": true },
+      "attack": { "file": "B_KsatriaRantai_Attack-Sheet.png",                  "frames": 7,  "foot": [36, 84], "fps": 14.0, "loop": false },
+      "death":  { "file": "B_KsatriaRantai_Death-Sheet.png",                   "frames": 11, "foot": [60, 96], "fps": 8.0,  "loop": false }
+    },
+    "ball": {
+      "trigger_range": 150,
+      "windup": 0.6,
+      "release_frame": 3,
+      "range": 150,
+      "speed": 220,
+      "damage": 12,
+      "recover": 1.2,
+      "keep_distance": 100
+    },
+    "chain": {
+      "nodes": [
+        { "pos": [44, -22] },
+        { "pos": [80, -46] },
+        { "pos": [116, -22] }
+      ],
+      "vulnerable_time": 6.0
+    },
+    "drops": [
+      { "item": "gold", "min": 150, "max": 200, "chance": 1.0 },
+      { "item": "ore", "min": 6, "max": 7, "chance": 1.0 },
+      { "item": "potion", "min": 2, "max": 2, "chance": 1.0 }
+    ]
+  },
+  "king_subiyan": {
+    "name": "King Subiyan",
+    "chapter": 5,
+    "hp": 200,
+    "speed": 32,
+    "body_anim": [
+      { "frame": 1, "scale": [0.95, 1.1], "pos": [0, -7], "rot": 0, "t": 0.2 },
+      { "frame": 3, "scale": [0.94, 1.14], "pos": [0, -10], "rot": 0, "t": 0.15 },
+      { "frame": 4, "scale": [1.1, 0.92], "pos": [3, -3], "rot": 5, "t": 0.06, "shake": 1.5 },
+      { "frame": 6, "scale": [1.0, 1.0], "pos": [0, 0], "rot": 0, "t": 0.25 }
+    ],
+    "detect_range": 200,
+    "xp": 400,
+    "body_radius": 10,
+    "sprites": {
+      "idle":   { "file": "B_KingSubiyan_SkeletonMage_x2_Idle-Sheet.png", "frames": 4,  "foot": [32, 76],  "fps": 5.0,  "loop": true },
+      "attack": { "file": "B_KingSubiyan_Cast-Sheet.png",                 "frames": 8,  "foot": [40, 84],  "fps": 12.0, "loop": false },
+      "death":  { "file": "B_KingSubiyan_Death-Sheet.png",                "frames": 11, "foot": [64, 128], "fps": 8.0,  "loop": false }
+    },
+    "orb_sprite": { "orb": { "file": "B_KingSubiyan_Projectile-Sheet.png", "frames": 4, "foot": [12, 12], "fps": 10.0, "loop": true } },
+    "magic": {
+      "trigger_range": 170,
+      "retreat_range": 70,
+      "windup": 0.5,
+      "cast_frame": 4,
+      "fan": 3,
+      "spread_deg": 18,
+      "orb_speed": 110,
+      "orb_damage": 10,
+      "recover": 1.3
+    },
+    "tree": {
+      "thresholds": [0.7, 0.35],
+      "summon_frame": 4,
+      "summon_recover": 1.0,
+      "max_depth": 2,
+      "shadow": {
+        "hp": 25,
+        "speed": 28,
+        "summon_delay": 1.4,
+        "shoot_interval": 2.4,
+        "shot_damage": 7,
+        "shot_speed": 95,
+        "scale": 0.75,
+        "gold_min": 6,
+        "gold_max": 12
+      }
+    },
+    "drops": [
+      { "item": "gold", "min": 250, "max": 300, "chance": 1.0 },
+      { "item": "ore", "min": 8, "max": 10, "chance": 1.0 },
+      { "item": "potion_besar", "min": 2, "max": 2, "chance": 1.0 }
+    ]
+  }
+}

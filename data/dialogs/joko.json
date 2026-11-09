@@ -1,0 +1,18 @@
+{
+  "lines": [
+    { "speaker": "joko", "text": "Raka! Syukurlah kamu datang. Ada kabar buruk dari istana." },
+    { "speaker": "joko", "text": "King Subiyan menghancurkan lima Kristal Struktur, penjaga keteraturan Kerajaan Algoria." },
+    { "speaker": "joko", "text": "Tanpa kristal itu, data di seluruh negeri jadi kacau. Barang hilang dari tempatnya, antrean berantakan, jalan bercabang tak karuan." },
+    { "speaker": "joko", "text": "Kamu murid Lilbah dan tanganmu cekatan. Hanya kamu yang bisa memulihkan kristal-kristal itu." },
+    { "speaker": "joko", "text": "Sebelum berangkat, mau kujelaskan cara bergerak dan bertarung?",
+      "choices": [
+        { "text": "Ya, jelaskan", "next": 5 },
+        { "text": "Aku sudah paham", "next": 8 }
+      ] },
+    { "speaker": "joko", "text": "Bergerak: tombol W A S D atau panah. Tahan Shift untuk berlari." },
+    { "speaker": "joko", "text": "Menyerang: tekan J atau klik kiri. Menghindar: tekan Spasi, tetapi itu memakai Stamina." },
+    { "speaker": "joko", "text": "Berbicara dan berinteraksi: tekan E. Buka tas dengan I, catatan misi dengan Q, dan peta dunia dengan M." },
+    { "speaker": "joko", "text": "Wilayah pertama adalah Hutan Indeks di sebelah timur desa. Temui Arman si petani, dia tahu banyak soal hutan itu." },
+    { "speaker": "joko", "text": "Satu hal sebelum berangkat. Jawab satu pertanyaan dariku, anggap saja ujian kecil." }
+  ]
+}

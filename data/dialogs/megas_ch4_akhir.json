@@ -1,0 +1,16 @@
+{
+  "lines": [
+    {
+      "speaker": "megas",
+      "text": "Kristal Linked List! Ksatria Rantai sudah kamu kalahkan. Luar biasa."
+    },
+    {
+      "speaker": "megas",
+      "text": "Ringkasannya: node menyimpan data dan penunjuk ke node berikutnya. Menyisip di tengah cukup mengubah penunjuk, tanpa menggeser elemen lain."
+    },
+    {
+      "speaker": "megas",
+      "text": "Dua pertanyaan terakhir untuk memastikan kamu paham."
+    }
+  ]
+}

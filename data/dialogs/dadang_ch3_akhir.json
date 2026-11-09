@@ -1,0 +1,16 @@
+{
+  "lines": [
+    {
+      "speaker": "dadang",
+      "text": "Itu Kristal Queue! Kapten Bajak Laut sudah kamu kalahkan. Kedaiku selamat."
+    },
+    {
+      "speaker": "dadang",
+      "text": "Ringkasannya: Queue bekerja dengan aturan FIFO. Enqueue menambah di belakang, dequeue mengambil dari depan."
+    },
+    {
+      "speaker": "dadang",
+      "text": "Dua pertanyaan terakhir sebelum kapalku berangkat."
+    }
+  ]
+}

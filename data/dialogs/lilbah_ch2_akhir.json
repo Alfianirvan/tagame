@@ -1,0 +1,16 @@
+{
+  "lines": [
+    {
+      "speaker": "lilbah",
+      "text": "Itu Kristal Stack! Kamu mengalahkan Penyihir Menara. Guru bangga padamu, Raka."
+    },
+    {
+      "speaker": "lilbah",
+      "text": "Ringkasannya: Stack bekerja dengan aturan LIFO. Push menaruh di atas, pop mengambil dari atas."
+    },
+    {
+      "speaker": "lilbah",
+      "text": "Dua pertanyaan terakhir untuk memastikan kamu benar-benar paham."
+    }
+  ]
+}

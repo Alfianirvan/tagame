@@ -1,0 +1,38 @@
+{
+  "0": {
+    "name": "Desa Algoria",
+    "topic": "Prolog",
+    "scene": "res://scenes/world/Village.tscn",
+    "summary": "Struktur data adalah cara mengatur data agar mudah disimpan dan dicari. Pilihan yang tepat membuat program lebih rapi dan cepat."
+  },
+  "1": {
+    "name": "Hutan Indeks",
+    "topic": "Array",
+    "scene": "res://scenes/world/Ch1_HutanIndeks.tscn",
+    "summary": "Array menyimpan elemen berurutan dalam satu barisan. Setiap elemen punya indeks yang dimulai dari 0, jadi array 5 elemen berindeks 0 sampai 4. Akses lewat indeks sangat cepat."
+  },
+  "2": {
+    "name": "Tambang Tumpuk",
+    "topic": "Stack",
+    "scene": "res://scenes/world/Ch2_TambangTumpuk.tscn",
+    "summary": "Stack bekerja dengan prinsip LIFO (Last In, First Out): yang terakhir masuk keluar pertama. Operasinya push (masuk) dan pop (keluar). Contoh: tombol Undo."
+  },
+  "3": {
+    "name": "Pelabuhan Antre",
+    "topic": "Queue",
+    "scene": "res://scenes/world/Ch3_PelabuhanAntre.tscn",
+    "summary": "Queue bekerja dengan prinsip FIFO (First In, First Out): yang pertama masuk dilayani pertama. Operasinya enqueue dan dequeue. Contoh: antrean printer."
+  },
+  "4": {
+    "name": "Gua Rantai",
+    "topic": "Linked List",
+    "scene": "res://scenes/world/Ch4_GuaRantai.tscn",
+    "summary": "Linked List terdiri dari node yang masing-masing menyimpan data dan penunjuk (pointer) ke node berikutnya. Menyisip di tengah tidak perlu menggeser elemen lain."
+  },
+  "5": {
+    "name": "Pohon Dunia",
+    "topic": "Tree",
+    "scene": "res://scenes/world/Ch5_PohonDunia.tscn",
+    "summary": "Tree menyusun data bercabang dari satu root. Node tanpa anak disebut leaf. Pada BST, nilai lebih kecil ke kiri dan lebih besar ke kanan sehingga pencarian cepat."
+  }
+}

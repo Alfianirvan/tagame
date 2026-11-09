@@ -1,0 +1,94 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/DialogBox.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/ui/dialog/DialogBox.png" id="2_box"]
+[ext_resource type="Texture2D" path="res://assets/ui/dialog/FacesetBox.png" id="3_frame"]
+[ext_resource type="FontFile" path="res://assets/fonts/Square-Black.ttf" id="4_font"]
+
+[node name="DialogBox" type="CanvasLayer"]
+layer = 50
+script = ExtResource("1_script")
+
+[node name="Root" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Box" type="TextureRect" parent="Root"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 236.0
+offset_right = 620.0
+offset_bottom = 352.0
+mouse_filter = 2
+texture = ExtResource("2_box")
+expand_mode = 1
+
+[node name="NameLabel" type="Label" parent="Root"]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 239.0
+offset_right = 160.0
+offset_bottom = 261.0
+theme_override_colors/font_color = Color(1, 0.96, 0.88, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 14
+text = "Nama"
+
+[node name="Text" type="RichTextLabel" parent="Root"]
+layout_mode = 0
+offset_left = 38.0
+offset_top = 266.0
+offset_right = 508.0
+offset_bottom = 342.0
+mouse_filter = 2
+theme_override_colors/default_color = Color(0.2, 0.12, 0.1, 1)
+theme_override_fonts/normal_font = ExtResource("4_font")
+theme_override_font_sizes/normal_font_size = 14
+text = "Teks dialog"
+
+[node name="PortraitFrame" type="TextureRect" parent="Root"]
+layout_mode = 0
+offset_left = 516.0
+offset_top = 244.0
+offset_right = 612.0
+offset_bottom = 340.0
+mouse_filter = 2
+texture = ExtResource("3_frame")
+expand_mode = 1
+
+[node name="Portrait" type="TextureRect" parent="Root"]
+layout_mode = 0
+offset_left = 524.0
+offset_top = 252.0
+offset_right = 604.0
+offset_bottom = 332.0
+mouse_filter = 2
+expand_mode = 1
+
+[node name="Hint" type="Label" parent="Root"]
+visible = false
+layout_mode = 0
+offset_left = 440.0
+offset_top = 324.0
+offset_right = 508.0
+offset_bottom = 346.0
+theme_override_colors/font_color = Color(0.55, 0.33, 0.2, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 12
+text = "E >>"
+horizontal_alignment = 2
+
+[node name="Choices" type="VBoxContainer" parent="Root"]
+layout_mode = 0
+offset_left = 380.0
+offset_top = 100.0
+offset_right = 620.0
+offset_bottom = 228.0
+mouse_filter = 2
+theme_override_constants/separation = 4
+alignment = 2

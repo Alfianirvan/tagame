@@ -1,0 +1,79 @@
+{
+  "potion": {
+    "name": "Potion",
+    "type": "consumable",
+    "heal": 40,
+    "price": 25,
+    "sell": 10,
+    "description": "Memulihkan 40 HP."
+  },
+  "potion_besar": {
+    "name": "Potion Besar",
+    "type": "consumable",
+    "heal": 100,
+    "price": 60,
+    "sell": 25,
+    "description": "Memulihkan 100 HP."
+  },
+  "ore": {
+    "name": "Ore",
+    "type": "material",
+    "price": 30,
+    "sell": 8,
+    "description": "Bijih logam. Dipakai bersama Gold untuk menempa di tab Tempa. Bisa dibeli di Pedagang."
+  },
+  "herb": {
+    "name": "Herb",
+    "type": "material",
+    "price": 0,
+    "sell": 3,
+    "description": "Daun obat. 3 Herb dijadikan 1 Potion di meja ramuan."
+  },
+  "data_fragment": {
+    "name": "Data Fragment",
+    "type": "material",
+    "price": 0,
+    "sell": 0,
+    "description": "Serpihan data. Untuk membuka skill spesial dan tempa +3."
+  },
+  "catatan_1": {
+    "name": "Catatan Materi: Array",
+    "type": "note",
+    "chapter": 1,
+    "price": 0,
+    "sell": 0,
+    "description": "Kertas berisi materi Array. Pilih Baca untuk membukanya; berguna menjawab soal NPC."
+  },
+  "catatan_2": {
+    "name": "Catatan Materi: Stack",
+    "type": "note",
+    "chapter": 2,
+    "price": 0,
+    "sell": 0,
+    "description": "Kertas berisi materi Stack. Pilih Baca untuk membukanya; berguna menjawab soal NPC."
+  },
+  "catatan_3": {
+    "name": "Catatan Materi: Queue",
+    "type": "note",
+    "chapter": 3,
+    "price": 0,
+    "sell": 0,
+    "description": "Kertas berisi materi Queue. Pilih Baca untuk membukanya; berguna menjawab soal NPC."
+  },
+  "catatan_4": {
+    "name": "Catatan Materi: Linked List",
+    "type": "note",
+    "chapter": 4,
+    "price": 0,
+    "sell": 0,
+    "description": "Kertas berisi materi Linked List. Pilih Baca untuk membukanya; berguna menjawab soal NPC."
+  },
+  "catatan_5": {
+    "name": "Catatan Materi: Tree",
+    "type": "note",
+    "chapter": 5,
+    "price": 0,
+    "sell": 0,
+    "description": "Kertas berisi materi Tree. Pilih Baca untuk membukanya; berguna menjawab soal NPC."
+  }
+}

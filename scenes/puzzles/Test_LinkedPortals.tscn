@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/puzzles/PuzzleTest.gd" id="1_test"]
+[ext_resource type="PackedScene" path="res://scenes/puzzles/LinkedPortals.tscn" id="2_puzzle"]
+
+[node name="Test_LinkedPortals" type="Node"]
+script = ExtResource("1_test")
+puzzle_scene = ExtResource("2_puzzle")

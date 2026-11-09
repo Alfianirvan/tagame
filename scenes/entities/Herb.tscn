@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/entities/Collectible.tscn" id="1_base"]
+[ext_resource type="Texture2D" path="res://assets/items/Apple.png" id="2_apple"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1"]
+atlas = ExtResource("2_apple")
+region = Rect2(0, 0, 32, 32)
+
+[node name="Herb" instance=ExtResource("1_base")]
+item_id = "herb"
+amount = 1
+sfx = "collect_apple"
+custom_texture = SubResource("AtlasTexture_1")

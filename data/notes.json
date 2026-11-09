@@ -1,0 +1,47 @@
+{
+  "1": {
+    "title": "Catatan Hutan Indeks: Array",
+    "pages": [
+      "[b]Apa itu Array?[/b]\nArray menyimpan sekumpulan data berurutan dalam satu barisan, seperti rak dengan banyak laci bernomor.",
+      "[b]Indeks mulai dari 0[/b]\nLaci pertama bernomor 0, kedua bernomor 1, dan seterusnya. Array berisi 5 elemen punya indeks 0, 1, 2, 3, 4. Jadi indeks terakhir = jumlah elemen - 1.",
+      "[b]Mengambil elemen[/b]\nSebut saja nomor indeksnya, elemen langsung didapat tanpa mencari satu per satu. Elemen ke-3 berada di indeks 2.",
+      "[b]Ingat[/b]\n- Elemen pertama: indeks 0\n- Elemen terakhir: ukuran - 1\n- Akses lewat indeks sangat cepat"
+    ]
+  },
+  "2": {
+    "title": "Catatan Tambang Tumpuk: Stack",
+    "pages": [
+      "[b]Apa itu Stack?[/b]\nStack adalah tumpukan data, seperti tumpukan peti atau piring. Prinsipnya [b]LIFO[/b]: Last In, First Out. Yang terakhir masuk, keluar pertama.",
+      "[b]Operasi dasar[/b]\n- [b]push[/b]: menaruh elemen di puncak tumpukan\n- [b]pop[/b]: mengambil elemen dari puncak\n- [b]peek[/b]: mengintip elemen puncak tanpa mengambilnya",
+      "[b]Contoh urutan[/b]\nPush A, push B, push C. Puncak tumpukan adalah C, jadi pop pertama mengeluarkan C, lalu B, lalu A.",
+      "[b]Contoh di dunia nyata[/b]\nTombol Undo pada aplikasi: aksi terakhir yang kamu lakukan adalah yang pertama dibatalkan."
+    ]
+  },
+  "3": {
+    "title": "Catatan Pelabuhan Antre: Queue",
+    "pages": [
+      "[b]Apa itu Queue?[/b]\nQueue adalah antrean. Prinsipnya [b]FIFO[/b]: First In, First Out. Yang pertama datang, dilayani pertama.",
+      "[b]Operasi dasar[/b]\n- [b]enqueue[/b]: masuk ke belakang antrean\n- [b]dequeue[/b]: keluar dari depan antrean\n- [b]peek[/b]: melihat siapa yang di depan",
+      "[b]Contoh urutan[/b]\nA, B, C mengantre berurutan. Yang dilayani pertama adalah A, lalu B, lalu C.",
+      "[b]Contoh di dunia nyata[/b]\nAntrean dokumen pada printer: dokumen yang dikirim lebih dulu dicetak lebih dulu."
+    ]
+  },
+  "4": {
+    "title": "Catatan Gua Rantai: Linked List",
+    "pages": [
+      "[b]Apa itu Linked List?[/b]\nRangkaian [b]node[/b] yang saling tersambung seperti rantai. Setiap node menyimpan dua hal: data dan penunjuk (pointer) [b]next[/b] ke node berikutnya.",
+      "[b]Head dan akhir rantai[/b]\nNode paling depan disebut [b]head[/b]. Pada node terakhir, next berisi [b]null[/b] (kosong) karena tidak ada node setelahnya.",
+      "[b]Menyisipkan di tengah[/b]\nCukup ubah penunjuk next. Elemen lain tidak perlu digeser, berbeda dengan Array.",
+      "[b]Mengakses node[/b]\nTidak ada indeks langsung. Untuk sampai ke node ke-5, telusuri dari head satu per satu."
+    ]
+  },
+  "5": {
+    "title": "Catatan Pohon Dunia: Tree",
+    "pages": [
+      "[b]Apa itu Tree?[/b]\nData tersusun bercabang seperti pohon. Node paling atas disebut [b]root[/b]. Node di bawahnya disebut anak (child).",
+      "[b]Leaf[/b]\nNode yang tidak punya anak disebut [b]leaf[/b] (daun). Pada Binary Tree, setiap node punya paling banyak 2 anak.",
+      "[b]Binary Search Tree (BST)[/b]\nNilai yang [b]lebih kecil[/b] dari induk diletakkan di [b]kiri[/b]. Nilai yang [b]lebih besar[/b] diletakkan di [b]kanan[/b]. Karena itu pencarian jadi cepat.",
+      "[b]Contoh[/b]\nBST berisi 8, 3, dan 10. Angka 1 lebih kecil dari 8 (ke kiri), lalu lebih kecil dari 3 (ke kiri lagi), sehingga menjadi anak kiri dari 3."
+    ]
+  }
+}

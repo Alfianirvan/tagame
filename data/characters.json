@@ -1,0 +1,42 @@
+{
+  "raka": {
+    "name": "Raka",
+    "portrait": "portrait_raka_80"
+  },
+  "joko": {
+    "name": "Joko",
+    "portrait": "portrait_joko_80"
+  },
+  "arman": {
+    "name": "Arman",
+    "portrait": "portrait_arman_80"
+  },
+  "lilbah": {
+    "name": "Lilbah",
+    "portrait": "portrait_lilbah_80"
+  },
+  "dadang": {
+    "name": "Dadang",
+    "portrait": "portrait_dadang_80"
+  },
+  "megas": {
+    "name": "Megas",
+    "portrait": "portrait_megas_80"
+  },
+  "tedy": {
+    "name": "Tedy",
+    "portrait": "portrait_tedy_80"
+  },
+  "king_subiyan": {
+    "name": "King Subiyan",
+    "portrait": "portrait_king_subiyan_80"
+  },
+  "narator": {
+    "name": "",
+    "portrait": ""
+  },
+  "pedagang": {
+    "name": "Pedagang Ramuan",
+    "portrait": ""
+  }
+}

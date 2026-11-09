@@ -1,0 +1,131 @@
+{
+  "ch0_awal": {
+    "chapter": 0, "stage": 1, "type": "quiz", "npc": "joko",
+    "title": "Panggilan dari Istana",
+    "objective": "Dengarkan Joko di desa, lalu jawab pertanyaannya.",
+    "dialog": "joko", "dialog_success": "joko_selesai", "dialog_done": "joko_selesai",
+    "reward": { "xp": 10, "items": { "pedang_kayu": 1, "potion": 2 } },
+    "bonus": { "gold": 10, "xp": 5 }
+  },
+
+  "ch1_awal": {
+    "chapter": 1, "stage": 1, "type": "quiz", "npc": "arman",
+    "title": "Rak Benih yang Kacau",
+    "objective": "Temui Arman dan jawab 3 soal tentang Array.",
+    "dialog": "arman", "dialog_success": "arman_sukses", "dialog_done": "arman_selesai",
+    "dialog_locked": "arman_belum",
+    "reward": { "gold": 20, "xp": 20, "items": { "helm_kulit": 1, "potion": 2 } },
+    "bonus": { "gold": 30, "xp": 20 }
+  },
+  "ch1_tengah": {
+    "chapter": 1, "stage": 2, "type": "puzzle", "npc": "",
+    "title": "Susun Rak Benih",
+    "objective": "Di Hutan Indeks: taruh benih di rak sesuai indeks (mulai 0) dan nyalakan obor berurutan.",
+    "reward": { "gold": 50, "xp": 30 }
+  },
+  "ch1_akhir": {
+    "chapter": 1, "stage": 3, "type": "quiz", "npc": "arman", "requires_crystal": true,
+    "title": "Kristal Array",
+    "objective": "Kalahkan Golem Batu, lalu serahkan Kristal Array kepada Arman.",
+    "dialog": "arman_akhir", "dialog_success": "arman_akhir_sukses", "dialog_waiting": "arman_menunggu",
+    "dialog_done": "arman_akhir_sukses",
+    "reward": { "gold": 100, "xp": 60, "items": { "data_fragment": 1 }, "unlock_chapter": 2 },
+    "bonus": { "gold": 30, "xp": 20 }
+  },
+
+  "ch2_awal": {
+    "chapter": 2, "stage": 1, "type": "quiz", "npc": "lilbah",
+    "title": "Tumpukan di Tambang",
+    "objective": "Temui Lilbah dan jawab 3 soal tentang Stack.",
+    "dialog": "lilbah_ch2_awal", "dialog_success": "lilbah_ch2_awal_sukses", "dialog_done": "lilbah_ch2_awal_sukses",
+    "reward": { "gold": 30, "xp": 30, "items": { "perisai_kayu": 1 } },
+    "bonus": { "gold": 40, "xp": 25 }
+  },
+  "ch2_tengah": {
+    "chapter": 2, "stage": 2, "type": "puzzle", "npc": "",
+    "title": "Pedang di Dasar Tumpukan",
+    "objective": "Di Tambang Tumpuk: ambil pedang di dasar tumpukan peti (pop dulu peti yang di atas).",
+    "reward": { "gold": 70, "xp": 40 }
+  },
+  "ch2_akhir": {
+    "chapter": 2, "stage": 3, "type": "quiz", "npc": "lilbah", "requires_crystal": true,
+    "title": "Kristal Stack",
+    "objective": "Kalahkan Penyihir Menara, lalu serahkan Kristal Stack kepada Lilbah.",
+    "dialog": "lilbah_ch2_akhir", "dialog_success": "lilbah_ch2_akhir_sukses", "dialog_waiting": "lilbah_ch2_menunggu",
+    "dialog_done": "lilbah_ch2_akhir_sukses",
+    "reward": { "gold": 130, "xp": 80, "items": { "data_fragment": 1 }, "unlock_chapter": 3 },
+    "bonus": { "gold": 40, "xp": 25 }
+  },
+
+  "ch3_awal": {
+    "chapter": 3, "stage": 1, "type": "quiz", "npc": "dadang",
+    "title": "Antrean Kedai",
+    "objective": "Temui Dadang dan jawab 3 soal tentang Queue.",
+    "dialog": "dadang_ch3_awal", "dialog_success": "dadang_ch3_awal_sukses", "dialog_done": "dadang_ch3_awal_sukses",
+    "reward": { "gold": 40, "xp": 40, "items": { "zirah_kulit": 1, "potion": 3 } },
+    "bonus": { "gold": 50, "xp": 30 }
+  },
+  "ch3_tengah": {
+    "chapter": 3, "stage": 2, "type": "puzzle", "npc": "",
+    "title": "Layani Pelanggan",
+    "objective": "Di Pelabuhan Antre: layani pelanggan sesuai urutan datang.",
+    "reward": { "gold": 90, "xp": 50 }
+  },
+  "ch3_akhir": {
+    "chapter": 3, "stage": 3, "type": "quiz", "npc": "dadang", "requires_crystal": true,
+    "title": "Kristal Queue",
+    "objective": "Kalahkan Kapten Bajak Laut, lalu serahkan Kristal Queue kepada Dadang.",
+    "dialog": "dadang_ch3_akhir", "dialog_success": "dadang_ch3_akhir_sukses", "dialog_waiting": "dadang_ch3_menunggu",
+    "dialog_done": "dadang_ch3_akhir_sukses",
+    "reward": { "gold": 160, "xp": 100, "items": { "data_fragment": 1 }, "unlock_chapter": 4 },
+    "bonus": { "gold": 50, "xp": 30 }
+  },
+
+  "ch4_awal": {
+    "chapter": 4, "stage": 1, "type": "quiz", "npc": "megas",
+    "title": "Rantai yang Terputus",
+    "objective": "Temui Megas dan jawab 3 soal tentang Linked List.",
+    "dialog": "megas_ch4_awal", "dialog_success": "megas_ch4_awal_sukses", "dialog_done": "megas_ch4_awal_sukses",
+    "reward": { "gold": 50, "xp": 50, "items": { "tongkat_sihir": 1 } },
+    "bonus": { "gold": 60, "xp": 35 }
+  },
+  "ch4_tengah": {
+    "chapter": 4, "stage": 2, "type": "puzzle", "npc": "",
+    "title": "Sambung Batu Portal",
+    "objective": "Di Gua Rantai: sambung batu portal (next), sisipkan node yang hilang, buang node jebakan.",
+    "reward": { "gold": 110, "xp": 60 }
+  },
+  "ch4_akhir": {
+    "chapter": 4, "stage": 3, "type": "quiz", "npc": "megas", "requires_crystal": true,
+    "title": "Kristal Linked List",
+    "objective": "Kalahkan Ksatria Rantai, lalu serahkan Kristal Linked List kepada Megas.",
+    "dialog": "megas_ch4_akhir", "dialog_success": "megas_ch4_akhir_sukses", "dialog_waiting": "megas_ch4_menunggu",
+    "dialog_done": "megas_ch4_akhir_sukses",
+    "reward": { "gold": 190, "xp": 120, "items": { "data_fragment": 1 }, "unlock_chapter": 5 },
+    "bonus": { "gold": 60, "xp": 35 }
+  },
+
+  "ch5_awal": {
+    "chapter": 5, "stage": 1, "type": "quiz", "npc": "tedy",
+    "title": "Akar Pohon Dunia",
+    "objective": "Temui Tedy dan jawab 3 soal tentang Tree.",
+    "dialog": "tedy_ch5_awal", "dialog_success": "tedy_ch5_awal_sukses", "dialog_done": "tedy_ch5_awal_sukses",
+    "reward": { "gold": 60, "xp": 60, "items": { "armor_besi": 1, "potion_besar": 1 } },
+    "bonus": { "gold": 70, "xp": 40 }
+  },
+  "ch5_tengah": {
+    "chapter": 5, "stage": 2, "type": "puzzle", "npc": "",
+    "title": "Labirin Bercabang",
+    "objective": "Di Pohon Dunia: lewati labirin bercabang ala BST (kecil ke kiri, besar ke kanan).",
+    "reward": { "gold": 130, "xp": 80 }
+  },
+  "ch5_akhir": {
+    "chapter": 5, "stage": 3, "type": "quiz", "npc": "tedy", "requires_crystal": true, "ends_game": true,
+    "title": "Kristal Tree",
+    "objective": "Kalahkan King Subiyan, lalu serahkan Kristal Tree kepada Tedy.",
+    "dialog": "tedy_ch5_akhir", "dialog_success": "tedy_ch5_akhir_sukses", "dialog_waiting": "tedy_ch5_menunggu",
+    "dialog_done": "tedy_ch5_akhir_sukses",
+    "reward": { "gold": 300, "xp": 150, "items": { "data_fragment": 1 } },
+    "bonus": { "gold": 80, "xp": 50 }
+  }
+}

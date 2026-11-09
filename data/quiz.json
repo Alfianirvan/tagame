@@ -1,0 +1,242 @@
+{
+  "ch0_awal": {
+    "questions": [
+      {
+        "q": "Apa fungsi struktur data?",
+        "choices": [
+          "Mengatur dan menyimpan data agar mudah dipakai",
+          "Menggambar grafik di layar",
+          "Mempercepat koneksi internet",
+          "Menghapus semua data lama"
+        ],
+        "answer": 0,
+        "hint": "Struktur data adalah cara menyusun data supaya rapi dan mudah diakses."
+      }
+    ]
+  },
+  "ch1_awal": {
+    "questions": [
+      {
+        "q": "Sebuah Array punya 5 elemen. Berapa indeks elemen terakhirnya?",
+        "choices": ["3", "4", "5", "6"],
+        "answer": 1,
+        "hint": "Indeks mulai dari 0, jadi untuk 5 elemen indeksnya 0, 1, 2, 3, 4."
+      },
+      {
+        "q": "Berapa indeks elemen PERTAMA pada Array?",
+        "choices": ["0", "1", "-1", "Tergantung isinya"],
+        "answer": 0,
+        "hint": "Ingat pesan Arman: di hutan itu urutan dimulai dari nol."
+      },
+      {
+        "q": "Bagaimana cara mengambil sebuah elemen dari Array?",
+        "choices": [
+          "Menyebut indeksnya",
+          "Mencari dari elemen paling akhir saja",
+          "Menunggu elemen lain dihapus dulu",
+          "Menebak isinya"
+        ],
+        "answer": 0,
+        "hint": "Setiap elemen punya nomor indeks. Dengan nomor itu elemen bisa langsung diambil."
+      }
+    ]
+  },
+  "ch1_akhir": {
+    "questions": [
+      {
+        "q": "Kamu ingin mengambil elemen ke-3 dari sebuah Array. Berapa indeksnya?",
+        "choices": ["1", "2", "3", "4"],
+        "answer": 1,
+        "hint": "Elemen ke-1 berindeks 0, ke-2 berindeks 1, jadi ke-3 berindeks 2."
+      },
+      {
+        "q": "Array berukuran 10. Berapa indeks valid terbesarnya?",
+        "choices": ["8", "9", "10", "11"],
+        "answer": 1,
+        "hint": "Indeks terbesar selalu ukuran dikurangi satu."
+      }
+    ]
+  },
+  "ch2_awal": {
+    "questions": [
+      {
+        "q": "Push A, push B, push C, lalu pop satu kali. Elemen apa yang keluar?",
+        "choices": ["A", "B", "C", "Tidak ada"],
+        "answer": 2,
+        "hint": "Stack mengeluarkan elemen yang terakhir masuk."
+      },
+      {
+        "q": "LIFO adalah singkatan dari?",
+        "choices": [
+          "Last In First Out",
+          "First In First Out",
+          "Last In Final Order",
+          "Linked In Full Order"
+        ],
+        "answer": 0,
+        "hint": "Yang terakhir masuk, yang pertama keluar. Seperti tumpukan piring."
+      },
+      {
+        "q": "Operasi untuk menambahkan elemen ke Stack disebut?",
+        "choices": ["Pop", "Push", "Peek", "Shift"],
+        "answer": 1,
+        "hint": "Menaruh sesuatu di atas tumpukan disebut push."
+      }
+    ]
+  },
+  "ch2_akhir": {
+    "questions": [
+      {
+        "q": "Contoh penggunaan Stack pada aplikasi sehari-hari adalah?",
+        "choices": ["Undo (urungkan)", "Antrean printer", "Daftar kontak", "Galeri foto"],
+        "answer": 0,
+        "hint": "Aksi terakhir yang kamu lakukan adalah yang pertama dibatalkan."
+      },
+      {
+        "q": "Operasi untuk melihat elemen teratas Stack tanpa menghapusnya?",
+        "choices": ["Push", "Pop", "Peek", "Clear"],
+        "answer": 2,
+        "hint": "Peek artinya mengintip elemen paling atas."
+      }
+    ]
+  },
+  "ch3_awal": {
+    "questions": [
+      {
+        "q": "A, B, C mengantre berurutan. Siapa yang dilayani pertama?",
+        "choices": ["A", "B", "C", "Acak"],
+        "answer": 0,
+        "hint": "Antrean melayani yang datang paling awal."
+      },
+      {
+        "q": "FIFO adalah singkatan dari?",
+        "choices": [
+          "First In First Out",
+          "Last In First Out",
+          "First In Final Output",
+          "Fast In Fast Out"
+        ],
+        "answer": 0,
+        "hint": "Yang pertama masuk, yang pertama keluar."
+      },
+      {
+        "q": "Operasi menambah elemen ke belakang Queue disebut?",
+        "choices": ["Push", "Pop", "Enqueue", "Dequeue"],
+        "answer": 2,
+        "hint": "Enqueue artinya masuk ke antrean."
+      }
+    ]
+  },
+  "ch3_akhir": {
+    "questions": [
+      {
+        "q": "Struktur data yang cocok untuk antrean dokumen pada printer adalah?",
+        "choices": ["Stack", "Queue", "Tree", "Array saja"],
+        "answer": 1,
+        "hint": "Dokumen yang dikirim lebih dulu dicetak lebih dulu."
+      },
+      {
+        "q": "Operasi mengeluarkan elemen dari depan Queue disebut?",
+        "choices": ["Enqueue", "Push", "Dequeue", "Peek"],
+        "answer": 2,
+        "hint": "Kebalikan dari enqueue."
+      }
+    ]
+  },
+  "ch4_awal": {
+    "questions": [
+      {
+        "q": "Selain data, apa lagi yang disimpan sebuah node pada Linked List?",
+        "choices": [
+          "Penunjuk (pointer) ke node berikutnya",
+          "Warna node",
+          "Ukuran total list",
+          "Nama pemrogram"
+        ],
+        "answer": 0,
+        "hint": "Node saling tersambung lewat penunjuk next."
+      },
+      {
+        "q": "Node paling depan pada Linked List disebut?",
+        "choices": ["Tail", "Head", "Root", "Leaf"],
+        "answer": 1,
+        "hint": "Head artinya kepala, tempat list dimulai."
+      },
+      {
+        "q": "Pada node terakhir, penunjuk next berisi apa?",
+        "choices": ["Node pertama", "Null (kosong)", "Angka 0 pasti", "Node sebelumnya"],
+        "answer": 1,
+        "hint": "Tidak ada node setelahnya, jadi next kosong."
+      }
+    ]
+  },
+  "ch4_akhir": {
+    "questions": [
+      {
+        "q": "Apa kelebihan Linked List saat menyisipkan elemen di tengah?",
+        "choices": [
+          "Tidak perlu menggeser elemen lain",
+          "Selalu lebih cepat mengakses indeks tertentu",
+          "Tidak butuh memori tambahan",
+          "Data otomatis terurut"
+        ],
+        "answer": 0,
+        "hint": "Cukup ubah penunjuk next, elemen lain tidak bergeser."
+      },
+      {
+        "q": "Untuk mencapai node ke-5 pada Linked List, apa yang harus dilakukan?",
+        "choices": [
+          "Menelusuri dari head satu per satu",
+          "Langsung lompat lewat indeks",
+          "Mulai dari tail tanpa penunjuk",
+          "Menyalin seluruh list"
+        ],
+        "answer": 0,
+        "hint": "Linked List tidak punya indeks langsung seperti Array."
+      }
+    ]
+  },
+  "ch5_awal": {
+    "questions": [
+      {
+        "q": "Node paling atas pada sebuah Tree disebut?",
+        "choices": ["Leaf", "Root", "Branch", "Head"],
+        "answer": 1,
+        "hint": "Namanya sama dengan akar pohon."
+      },
+      {
+        "q": "Pada Binary Search Tree, nilai yang LEBIH KECIL dari induk diletakkan di sisi?",
+        "choices": ["Kiri", "Kanan", "Atas", "Mana saja"],
+        "answer": 0,
+        "hint": "Kecil ke kiri, besar ke kanan."
+      },
+      {
+        "q": "Berapa anak maksimal tiap node pada Binary Tree?",
+        "choices": ["1", "2", "3", "Tak terbatas"],
+        "answer": 1,
+        "hint": "Kata binary berarti dua."
+      }
+    ]
+  },
+  "ch5_akhir": {
+    "questions": [
+      {
+        "q": "Node yang tidak punya anak disebut?",
+        "choices": ["Root", "Parent", "Leaf", "Edge"],
+        "answer": 2,
+        "hint": "Seperti daun di ujung ranting."
+      },
+      {
+        "q": "BST berisi 8, 3, dan 10. Angka 1 akan diletakkan di mana?",
+        "choices": [
+          "Kiri dari 3",
+          "Kanan dari 3",
+          "Kiri dari 10",
+          "Kanan dari 8"
+        ],
+        "answer": 0,
+        "hint": "1 lebih kecil dari 8 (ke kiri), lalu lebih kecil dari 3 (ke kiri lagi)."
+      }
+    ]
+  }
+}
