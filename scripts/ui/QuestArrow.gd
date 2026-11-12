@@ -45,6 +45,16 @@ func _find_target() -> Node2D:
 			if s is PuzzleStation and (s as PuzzleStation).chapter == chapter:
 				return s as Node2D
 		return _exit_toward(chapter)
+	# Quest kuis dengan syarat warga: tuntun ke warga terdekat yang belum diajak bicara
+	if int(q.get("requires_villagers", 0)) > 0 and QuestManager.is_available(id) and not QuestManager.is_ready(id):
+		var player: Node2D = tree.get_first_node_in_group("player") as Node2D
+		var best: Node2D = null
+		for n: Node in tree.get_nodes_in_group("npc"):
+			if int(n.get("villager_chapter")) == chapter and not QuestManager.has_talked_to_villager(chapter, String(n.get("npc_id"))):
+				if best == null or (player != null and (n as Node2D).global_position.distance_to(player.global_position) < best.global_position.distance_to(player.global_position)):
+					best = n as Node2D
+		if best != null:
+			return best
 	# Quest kuis: bila belum siap (Kristal belum diambil) arahkan ke boss / Kristal / gerbang
 	if not QuestManager.is_ready(id):
 		var boss: Node2D = tree.get_first_node_in_group("boss") as Node2D

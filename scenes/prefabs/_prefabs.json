@@ -1,0 +1,386 @@
+[
+ {
+  "name": "Sawmill_Kecil",
+  "w": 78,
+  "h": 59,
+  "cw": 72,
+  "ch": 59,
+  "cdx": 0
+ },
+ {
+  "name": "Sawmill_Besar",
+  "w": 112,
+  "h": 75,
+  "cw": 103,
+  "ch": 75,
+  "cdx": 0
+ },
+ {
+  "name": "Tunggul_Kapak",
+  "w": 31,
+  "h": 26,
+  "cw": 24,
+  "ch": 8,
+  "cdx": 0
+ },
+ {
+  "name": "Landasan_1",
+  "w": 62,
+  "h": 39,
+  "cw": 57,
+  "ch": 39,
+  "cdx": 0
+ },
+ {
+  "name": "Landasan_2",
+  "w": 79,
+  "h": 56,
+  "cw": 73,
+  "ch": 56,
+  "cdx": 0
+ },
+ {
+  "name": "Landasan_3",
+  "w": 96,
+  "h": 83,
+  "cw": 88,
+  "ch": 83,
+  "cdx": 0
+ },
+ {
+  "name": "Tungku_Batu_1",
+  "w": 32,
+  "h": 38,
+  "cw": 29,
+  "ch": 38,
+  "cdx": 0
+ },
+ {
+  "name": "Tungku_Batu_2",
+  "w": 37,
+  "h": 49,
+  "cw": 34,
+  "ch": 49,
+  "cdx": 0
+ },
+ {
+  "name": "Tungku_Bata_1",
+  "w": 30,
+  "h": 41,
+  "cw": 28,
+  "ch": 41,
+  "cdx": 0
+ },
+ {
+  "name": "Tungku_Bata_2",
+  "w": 36,
+  "h": 57,
+  "cw": 33,
+  "ch": 57,
+  "cdx": 0
+ },
+ {
+  "name": "Tungku_Besi_1",
+  "w": 32,
+  "h": 45,
+  "cw": 29,
+  "ch": 45,
+  "cdx": 0
+ },
+ {
+  "name": "Tungku_Besi_2",
+  "w": 38,
+  "h": 59,
+  "cw": 35,
+  "ch": 59,
+  "cdx": 0
+ },
+ {
+  "name": "MejaKerja_Kayu_1",
+  "w": 32,
+  "h": 28,
+  "cw": 29,
+  "ch": 28,
+  "cdx": 0
+ },
+ {
+  "name": "MejaKerja_Kayu_2",
+  "w": 48,
+  "h": 40,
+  "cw": 44,
+  "ch": 40,
+  "cdx": 0
+ },
+ {
+  "name": "MejaKerja_Kayu_3",
+  "w": 64,
+  "h": 48,
+  "cw": 59,
+  "ch": 48,
+  "cdx": 0
+ },
+ {
+  "name": "MejaKerja_Besi_2",
+  "w": 48,
+  "h": 45,
+  "cw": 44,
+  "ch": 45,
+  "cdx": 0
+ },
+ {
+  "name": "Dapur_PanggangApi",
+  "w": 61,
+  "h": 41,
+  "cw": 56,
+  "ch": 41,
+  "cdx": 0
+ },
+ {
+  "name": "Dapur_PanciGantung",
+  "w": 47,
+  "h": 43,
+  "cw": 43,
+  "ch": 43,
+  "cdx": 0
+ },
+ {
+  "name": "Dapur_Panggangan_Kecil",
+  "w": 57,
+  "h": 44,
+  "cw": 52,
+  "ch": 44,
+  "cdx": 0
+ },
+ {
+  "name": "Dapur_Panggangan_Besar",
+  "w": 71,
+  "h": 47,
+  "cw": 65,
+  "ch": 47,
+  "cdx": 0
+ },
+ {
+  "name": "Dapur_Tripod",
+  "w": 42,
+  "h": 54,
+  "cw": 39,
+  "ch": 54,
+  "cdx": 0
+ },
+ {
+  "name": "Dapur_Ketel",
+  "w": 36,
+  "h": 45,
+  "cw": 33,
+  "ch": 45,
+  "cdx": 0
+ },
+ {
+  "name": "Dapur_Kompor",
+  "w": 48,
+  "h": 27,
+  "cw": 44,
+  "ch": 27,
+  "cdx": 0
+ },
+ {
+  "name": "Dapur_Besar",
+  "w": 80,
+  "h": 74,
+  "cw": 74,
+  "ch": 74,
+  "cdx": 0
+ },
+ {
+  "name": "Barel_Air",
+  "w": 14,
+  "h": 19,
+  "cw": 13,
+  "ch": 19,
+  "cdx": 0
+ },
+ {
+  "name": "Barel_Kosong",
+  "w": 14,
+  "h": 19,
+  "cw": 13,
+  "ch": 19,
+  "cdx": 0
+ },
+ {
+  "name": "Peti_Kayu_A",
+  "w": 16,
+  "h": 23,
+  "cw": 15,
+  "ch": 23,
+  "cdx": 0
+ },
+ {
+  "name": "Peti_Kayu_B",
+  "w": 16,
+  "h": 23,
+  "cw": 15,
+  "ch": 23,
+  "cdx": 0
+ },
+ {
+  "name": "Barel_Besar",
+  "w": 16,
+  "h": 22,
+  "cw": 15,
+  "ch": 22,
+  "cdx": 0
+ },
+ {
+  "name": "Guci",
+  "w": 14,
+  "h": 16,
+  "cw": 11,
+  "ch": 6,
+  "cdx": 0
+ },
+ {
+  "name": "Lampu_Tiang",
+  "w": 27,
+  "h": 46,
+  "cw": 8,
+  "ch": 6,
+  "cdx": 0
+ },
+ {
+  "name": "Pagar_Kayu",
+  "w": 58,
+  "h": 23,
+  "cw": 58,
+  "ch": 8,
+  "cdx": 0
+ },
+ {
+  "name": "Tiang_Pagar",
+  "w": 12,
+  "h": 23,
+  "cw": 8,
+  "ch": 6,
+  "cdx": 0
+ },
+ {
+  "name": "OrangOrangSawah",
+  "w": 22,
+  "h": 46,
+  "cw": 10,
+  "ch": 6,
+  "cdx": 0
+ },
+ {
+  "name": "Rumah_Krem",
+  "w": 128,
+  "h": 138,
+  "cw": 116,
+  "ch": 46,
+  "cdx": 0
+ },
+ {
+  "name": "Rumah_Hijau",
+  "w": 128,
+  "h": 138,
+  "cw": 116,
+  "ch": 46,
+  "cdx": 0
+ },
+ {
+  "name": "Rumah_Kayu",
+  "w": 128,
+  "h": 138,
+  "cw": 116,
+  "ch": 46,
+  "cdx": 0
+ },
+ {
+  "name": "Rumah_Papan",
+  "w": 128,
+  "h": 138,
+  "cw": 116,
+  "ch": 46,
+  "cdx": 0
+ },
+ {
+  "name": "Lumbung",
+  "w": 128,
+  "h": 138,
+  "cw": 116,
+  "ch": 46,
+  "cdx": 0
+ },
+ {
+  "name": "Sumur",
+  "w": 40,
+  "h": 44,
+  "cw": 26,
+  "ch": 12,
+  "cdx": 0
+ },
+ {
+  "name": "Lapak_Sayur",
+  "w": 48,
+  "h": 38,
+  "cw": 44,
+  "ch": 38,
+  "cdx": 0
+ },
+ {
+  "name": "Lapak_Kain",
+  "w": 48,
+  "h": 38,
+  "cw": 44,
+  "ch": 38,
+  "cdx": 0
+ },
+ {
+  "name": "Spanduk_1",
+  "w": 16,
+  "h": 32,
+  "cw": 6,
+  "ch": 4,
+  "cdx": 0
+ },
+ {
+  "name": "Spanduk_2",
+  "w": 16,
+  "h": 32,
+  "cw": 6,
+  "ch": 4,
+  "cdx": 0
+ },
+ {
+  "name": "Spanduk_3",
+  "w": 16,
+  "h": 32,
+  "cw": 6,
+  "ch": 4,
+  "cdx": 0
+ },
+ {
+  "name": "Papan_Kiri",
+  "w": 20,
+  "h": 36,
+  "cw": 8,
+  "ch": 6,
+  "cdx": 0
+ },
+ {
+  "name": "Papan_Kanan",
+  "w": 24,
+  "h": 36,
+  "cw": 8,
+  "ch": 6,
+  "cdx": 0
+ },
+ {
+  "name": "Papan_Tiang",
+  "w": 16,
+  "h": 36,
+  "cw": 8,
+  "ch": 6,
+  "cdx": 0
+ }
+]

@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/props/prefab_sprites/MejaKerja_Kayu_3.png" id="1"]
+
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(59, 48)
+
+[node name="MejaKerja_Kayu_3" type="StaticBody2D"]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sombra" type="Polygon2D" parent="."]
+color = Color(0, 0, 0, 0.26)
+polygon = PackedVector2Array(30.4, -4.8, 29.2, -3.4, 25.6, -2.2, 19.9, -1.2, 12.6, -0.4, 4.3, -0.0, -4.3, -0.0, -12.6, -0.4, -19.9, -1.2, -25.6, -2.2, -29.2, -3.4, -30.4, -4.8, -29.2, -6.2, -25.6, -7.4, -19.9, -8.4, -12.6, -9.2, -4.3, -9.6, 4.3, -9.6, 12.6, -9.2, 19.9, -8.4, 25.6, -7.4, 29.2, -6.2)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1")
+offset = Vector2(0, -24.0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -24.0)
+shape = SubResource("1")

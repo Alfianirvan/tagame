@@ -140,7 +140,7 @@ func _refresh_tracker() -> void:
 		box.visible = false
 		return
 	var q: Dictionary = QuestManager.get_quest(id)
-	_tracker_label.text = "Tujuan: %s" % String(q.get("objective", q.get("title", "")))
+	_tracker_label.text = "Tujuan: %s" % QuestManager.get_objective_text(id)
 	box.visible = true
 	box.reset_size()
 

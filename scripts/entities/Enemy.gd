@@ -10,7 +10,7 @@ extends CharacterBody2D
 signal died(enemy: Enemy)
 signal damaged(hp: int, max_hp: int)
 
-enum State { IDLE, CHASE, WINDUP, ATTACK, RECOVER, HIT, DEAD }
+enum State { IDLE, CHASE, WINDUP, ATTACK, RECOVER, HIT, DEAD, RETURN }
 
 const DB_PATH := "res://data/enemies.json"
 const COLLECTIBLE_SCENE := preload("res://scenes/entities/Collectible.tscn")
@@ -40,10 +40,12 @@ var _attack_dir: Vector2 = Vector2.RIGHT
 var _knock_vec: Vector2 = Vector2.ZERO
 var _flash_tween: Tween
 var _persist_key: String = ""   # kunci untuk mencatat musuh ini sudah mati
+var _home: Vector2 = Vector2.ZERO   # titik awal musuh: batas kejaran dihitung dari sini (leash)
 
 
 func _ready() -> void:
 	motion_mode = CharacterBody2D.MOTION_MODE_FLOATING  # top-down
+	_home = global_position
 	# Musuh yang sudah dibunuh sebelumnya (tersimpan di save) tidak muncul lagi.
 	_persist_key = GameManager.enemy_key(self)
 	if GameManager.is_enemy_killed(_persist_key):
@@ -90,7 +92,7 @@ func _physics_process(delta: float) -> void:
 	match state:
 		State.IDLE:
 			velocity = Vector2.ZERO
-			if _player_in_range(float(cfg["detect_range"])):
+			if _player_in_range(float(cfg["detect_range"])) and _player.global_position.distance_to(_home) <= _leash():
 				_set_state(State.CHASE)
 		State.CHASE:
 			_process_chase()
@@ -114,6 +116,8 @@ func _physics_process(delta: float) -> void:
 			velocity = _knock_vec * 120.0 * float(cfg.get("knockback", 1.0)) if _state_left > 0.0 else Vector2.ZERO
 			if _state_left <= 0.0:
 				_set_state(State.CHASE)
+		State.RETURN:
+			_process_return()
 		State.DEAD:
 			velocity = Vector2.ZERO
 	move_and_slide()
@@ -125,8 +129,9 @@ func _process_chase() -> void:
 		return
 	var to_player: Vector2 = _player.global_position - global_position
 	var dist: float = to_player.length()
-	if dist > float(cfg["detect_range"]) * 1.8:
-		_set_state(State.IDLE)
+	# Batas kejaran: terlalu jauh dari titik awal, atau Raka sudah jauh -> menyerah dan pulang
+	if global_position.distance_to(_home) > _leash() or dist > float(cfg["detect_range"]) * 1.8:
+		_set_state(State.RETURN)
 		return
 	_face(to_player)
 	var reach: float = float(cfg["attack_range"])
@@ -317,6 +322,27 @@ func _on_animation_finished() -> void:
 	var tw: Tween = create_tween()
 	tw.tween_property(sprite, "modulate:a", 0.0, 0.5).set_delay(0.4)
 	tw.tween_callback(queue_free)
+
+
+## Jarak maksimum musuh boleh menjauh dari titik awalnya saat mengejar (px). data/enemies.json "leash_range" menimpa.
+func _leash() -> float:
+	return float(cfg.get("leash_range", maxf(170.0, float(cfg["detect_range"]) * 1.5)))
+
+
+## Menyerah mengejar: berjalan pulang ke titik awal (mengabaikan Raka), lalu pulih dan siaga lagi.
+func _process_return() -> void:
+	var to_home: Vector2 = _home - global_position
+	if to_home.length() <= 6.0:
+		velocity = Vector2.ZERO
+		hp = max_hp
+		health_bar.set_ratio(1.0)
+		sprite.speed_scale = 1.0
+		sprite.play("idle")
+		_set_state(State.IDLE)
+		return
+	_face(to_home)
+	velocity = to_home.normalized() * float(cfg["speed"]) * 1.25
+	_play_move()
 
 
 # ---------------------------------------------------------------- Bantuan

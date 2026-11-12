@@ -11,6 +11,8 @@ extends Node2D
 @export var map_size: Vector2i = Vector2i(4000, 1024)
 @export var boss_scene: PackedScene
 ## Kristal chapter sudah diambil = boss dianggap sudah kalah, tidak muncul lagi.
+## Tampilkan opening credit (teks bergulir) saat pertama kali masuk wilayah ini.
+@export var opening_story: bool = false
 @export var respawn_boss_until_crystal: bool = true
 
 @onready var player: CharacterBody2D = $Objects/Player
@@ -20,19 +22,48 @@ var boss: Boss
 
 
 func _ready() -> void:
+	var back_from: int = GameManager.return_from_chapter
+	GameManager.return_from_chapter = -1
 	GameManager.set_current_chapter(chapter)
 	AudioManager.play_music(music_name)
 	player.set_camera_limits(Rect2i(Vector2i.ZERO, map_size))
 	player.death_finished.connect(_on_player_death_finished)
-	var spawn: Vector2 = GameManager.get_checkpoint_spawn(self)
+	var spawn: Vector2 = Vector2.ZERO
+	if back_from > chapter:
+		spawn = _spawn_near_exit(back_from)   # datang dari chapter berikutnya: muncul di ujung wilayah, dekat papan jalan tadi
+	if spawn == Vector2.ZERO:
+		spawn = GameManager.get_checkpoint_spawn(self)
 	if spawn != Vector2.ZERO:
 		player.global_position = spawn
 	else:
 		player.global_position = player_start.global_position
 	_spawn_boss()
+	_maybe_show_opening()
 	# Kristal sudah diambil (mis. muat save): NPC langsung berdiri di posisi akhir.
 	if GameManager.has_crystal(chapter):
 		_move_npcs_to_final()
+
+
+## Opening credit scene (sekali per permainan) untuk wilayah yang mengaktifkan `opening_story` (Chapter 1).
+func _maybe_show_opening() -> void:
+	if not opening_story or GameManager.has_met("opening_ch%d" % chapter):
+		return
+	GameManager.mark_met("opening_ch%d" % chapter)
+	player.set_controls_enabled(false)
+	var credits: CanvasLayer = load("res://scripts/ui/OpeningCredits.gd").new()
+	add_child(credits)
+	credits.finished.connect(func() -> void: player.set_controls_enabled(true))
+
+
+## Titik muncul saat mundur dari chapter `from_chapter`: marker FromNext bila ada, selain itu sedikit di bawah papan jalan ke chapter itu.
+func _spawn_near_exit(from_chapter: int) -> Vector2:
+	var m: Marker2D = get_node_or_null("FromNext") as Marker2D
+	if m != null:
+		return m.global_position
+	for e: Node in get_tree().get_nodes_in_group("region_exit"):
+		if e is RegionExit and (e as RegionExit).to_chapter == from_chapter:
+			return (e as Node2D).global_position + Vector2(0, 44)
+	return Vector2.ZERO
 
 
 ## Pindahkan NPC ke marker FinalNPCs/<Nama> (metadata npc_id) agar Raka tidak perlu kembali ke awal wilayah.

@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/props/prefab_sprites/Landasan_1.png" id="1"]
+
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(57, 39)
+
+[node name="Landasan_1" type="StaticBody2D"]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sombra" type="Polygon2D" parent="."]
+color = Color(0, 0, 0, 0.26)
+polygon = PackedVector2Array(29.4, -4.0, 28.3, -2.9, 24.8, -1.8, 19.3, -1.0, 12.2, -0.4, 4.2, -0.0, -4.2, -0.0, -12.2, -0.4, -19.3, -1.0, -24.8, -1.8, -28.3, -2.9, -29.4, -4.0, -28.3, -5.1, -24.8, -6.2, -19.3, -7.0, -12.2, -7.6, -4.2, -8.0, 4.2, -8.0, 12.2, -7.6, 19.3, -7.0, 24.8, -6.2, 28.3, -5.1)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1")
+offset = Vector2(0, -19.5)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -19.5)
+shape = SubResource("1")

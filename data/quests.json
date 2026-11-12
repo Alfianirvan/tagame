@@ -12,6 +12,8 @@
     "chapter": 1, "stage": 1, "type": "quiz", "npc": "arman",
     "title": "Rak Benih yang Kacau",
     "objective": "Temui Arman dan jawab 3 soal tentang Array.",
+    "requires_villagers": 2,
+    "dialog_waiting": "arman_tanya_warga",
     "dialog": "arman", "dialog_success": "arman_sukses", "dialog_done": "arman_selesai",
     "dialog_locked": "arman_belum",
     "reward": { "gold": 20, "xp": 20, "items": { "helm_kulit": 1, "potion": 2 } },

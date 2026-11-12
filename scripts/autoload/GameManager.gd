@@ -52,6 +52,12 @@ var crystals: Array[int] = []               # chapter yang kristalnya sudah diam
 var checkpoint_scene: String = START_SCENE
 var checkpoint_position: Vector2 = Vector2.ZERO
 var checkpoint_node: String = ""             # path node checkpoint/bonfire; posisi dicari dari node ini (tahan digeser di editor)
+var return_from_chapter: int = -1            # >=0: Raka mundur dari chapter ini lewat papan jalan; wilayah tujuan memunculkannya di dekat papan (tidak disimpan)
+var interior_return_scene: String = ""       # scene wilayah yang ditinggalkan saat masuk interior (tidak disimpan)
+var interior_return_pos: Vector2 = Vector2.ZERO
+var pending_spawn_scene: String = ""         # bila diisi, scene ini memunculkan Raka di pending_spawn_pos (sekali pakai)
+var pending_spawn_pos: Vector2 = Vector2.ZERO
+var active_flags: Array[String] = []         # bendera checkpoint yang sudah pernah diaktifkan ("scene:path")
 var met_npcs: Array[String] = []             # NPC pedagang yang dialog perkenalannya sudah selesai (langsung buka toko)
 var killed_enemies: Array[String] = []      # kunci musuh yang sudah dibunuh ("scene:path-node"), tidak muncul lagi
 
@@ -147,6 +153,7 @@ func reset_state() -> void:
 	checkpoint_position = Vector2.ZERO
 	checkpoint_node = ""
 	met_npcs = []
+	active_flags = []
 	killed_enemies = []
 	_recalc_stats(true)
 	stamina = max_stamina
@@ -175,6 +182,7 @@ func get_save_data() -> Dictionary:
 		"checkpoint_node": checkpoint_node,
 		"killed_enemies": killed_enemies,
 		"met_npcs": met_npcs,
+		"active_flags": active_flags,
 	}
 
 
@@ -209,6 +217,9 @@ func apply_save_data(d: Dictionary) -> void:
 	met_npcs = []
 	for m in d.get("met_npcs", []):
 		met_npcs.append(String(m))
+	active_flags = []
+	for f in d.get("active_flags", []):
+		active_flags.append(String(f))
 	killed_enemies = []
 	for k in d.get("killed_enemies", []):
 		killed_enemies.append(String(k))
@@ -486,6 +497,29 @@ func enemy_key(enemy: Node) -> String:
 	return "%s:%s" % [enemy.owner.scene_file_path, enemy.owner.get_path_to(enemy)]
 
 
+## Musuh yang mati hidup lagi saat Raka istirahat di Bonfire. Tidak ikut: boss, mini-boss (GiantSlime),
+## Goblin event serangan Desa 1, serta catatan item/peti yang sudah diambil. Mengembalikan jumlah musuh yang di-reset.
+func reset_enemy_kills() -> int:
+	var keep: Array[String] = []
+	var removed: int = 0
+	for k: String in killed_enemies:
+		if k.begins_with("ambil:") or k.begins_with("peti:") or "Boss" in k or "GiantSlime" in k or "GoblinEvent" in k:
+			keep.append(k)
+		else:
+			removed += 1
+	killed_enemies = keep
+	return removed
+
+
+func is_flag_active(key: String) -> bool:
+	return key in active_flags
+
+
+func mark_flag_active(key: String) -> void:
+	if not (key in active_flags):
+		active_flags.append(key)
+
+
 func has_met(npc_id: String) -> bool:
 	return npc_id in met_npcs
 
@@ -513,6 +547,10 @@ func set_checkpoint(scene_path: String, pos: Vector2, node_path: String = "") ->
 ## Posisi hidup ulang di scene aktif. Bila checkpoint tercatat lewat node, posisi diambil dari node itu
 ## (mengikuti kalau checkpoint digeser di editor); selain itu memakai posisi tersimpan. ZERO = tidak ada.
 func get_checkpoint_spawn(scene_root: Node) -> Vector2:
+	if pending_spawn_scene != "" and pending_spawn_scene == scene_root.scene_file_path:
+		var back: Vector2 = pending_spawn_pos   # keluar dari interior: muncul di depan pintu
+		pending_spawn_scene = ""
+		return back
 	if checkpoint_scene != scene_root.scene_file_path:
 		return Vector2.ZERO
 	if checkpoint_node != "":
