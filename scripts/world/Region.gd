@@ -11,6 +11,8 @@ extends Node2D
 @export var map_size: Vector2i = Vector2i(4000, 1024)
 @export var boss_scene: PackedScene
 ## Kristal chapter sudah diambil = boss dianggap sudah kalah, tidak muncul lagi.
+## Titik-titik jalur utama (dari titik awal ke arena/keluar). Dipakai panah penunjuk agar menuntun lewat jalan, bukan garis lurus.
+@export var guide_route: PackedVector2Array = PackedVector2Array()
 ## Tampilkan opening credit (teks bergulir) saat pertama kali masuk wilayah ini.
 @export var opening_story: bool = false
 @export var respawn_boss_until_crystal: bool = true
@@ -22,6 +24,7 @@ var boss: Boss
 
 
 func _ready() -> void:
+	add_to_group("region")
 	var back_from: int = GameManager.return_from_chapter
 	GameManager.return_from_chapter = -1
 	GameManager.set_current_chapter(chapter)
