@@ -6,11 +6,9 @@ extends Area2D
 
 signal activated
 
-const FLAG_DIR := "res://assets/ninja/animated/Flag/"
-const COLORS := {"hijau": "FlagGreen16x16.png", "biru": "FlagBlue16x16.png", "merah": "FlagRed16x16.png", "kuning": "FlagYellow16x16.png"}
-
-## Warna bendera saat aktif (kunci COLORS).
-@export var active_color: String = "hijau"
+const FLAG_DIR := "res://assets/craftpix/fields/animated/1 Flag/"
+const FRAME_W := 32
+const FRAME_H := 64
 
 var is_active: bool = false
 var _sprite: AnimatedSprite2D
@@ -27,9 +25,8 @@ func _ready() -> void:
 	add_child(shape)
 	body_entered.connect(_on_body_entered)
 	_sprite = AnimatedSprite2D.new()
-	_sprite.scale = Vector2(2, 2)
-	_sprite.position = Vector2(0, -2)
-	_sprite.offset = Vector2(8, -16)
+	_sprite.position = Vector2(0, 0)
+	_sprite.offset = Vector2(0, -FRAME_H / 2.0)      # tiang menapak di titik kaki
 	_sprite.sprite_frames = _make_frames()
 	add_child(_sprite)
 	# Sudah aktif dari sesi sebelumnya (status bendera ikut tersimpan) atau titik hidup ulang saat ini?
@@ -38,28 +35,27 @@ func _ready() -> void:
 	_refresh()
 
 
-## Frame 16x16 dari strip 64x16: bendera abu-abu (diam) dan bendera warna (berkibar).
+## Bendera biru berkibar (1.png, 6 frame 32x64) saat aktif; belum aktif = bendera terlipat (5.png, frame pertama, diam, kelabu).
 func _make_frames() -> SpriteFrames:
 	var sf: SpriteFrames = SpriteFrames.new()
 	sf.remove_animation("default")
 	for anim: String in ["mati", "aktif"]:
 		sf.add_animation(anim)
-		var file: String = "FlagGray16x16.png" if anim == "mati" else String(COLORS.get(active_color, COLORS["hijau"]))
-		var tex: Texture2D = load(FLAG_DIR + file)
-		var count: int = 1 if anim == "mati" else 4
+		var tex: Texture2D = load(FLAG_DIR + ("5.png" if anim == "mati" else "1.png"))
+		var count: int = 1 if anim == "mati" else 6
 		for i in count:
 			var at: AtlasTexture = AtlasTexture.new()
 			at.atlas = tex
-			at.region = Rect2(i * 16, 0, 16, 16)
+			at.region = Rect2(i * FRAME_W, 0, FRAME_W, FRAME_H)
 			sf.add_frame(anim, at)
 		sf.set_animation_loop(anim, true)
-		sf.set_animation_speed(anim, 6.0)
+		sf.set_animation_speed(anim, 7.0)
 	return sf
 
 
 func _refresh() -> void:
+	_sprite.modulate = Color.WHITE if is_active else Color(0.72, 0.72, 0.72)
 	_sprite.play("aktif" if is_active else "mati")
-	queue_redraw()
 
 
 func _scene_path() -> String:
@@ -99,9 +95,3 @@ func _on_body_entered(body: Node2D) -> void:
 	FloatingText.spawn(get_parent(), global_position + Vector2(0, -44), "Progres tersimpan", Color(0.6, 1.0, 0.6))
 	activated.emit()
 	_refresh()
-
-
-func _draw() -> void:
-	# tiang bendera
-	draw_rect(Rect2(-1, -30, 2, 30), Color(0.4, 0.27, 0.15))
-	draw_rect(Rect2(-4, -2, 8, 3), Color(0.35, 0.3, 0.3))
