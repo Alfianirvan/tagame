@@ -161,9 +161,17 @@ def build():
     land = mask_d.copy()
     gray = ~sea_img & ~mask
     south = np.arange(H)[None, :] >= 95
+    # jalan darat ke selatan (menuju Desa Algoria / wilayah sebelumnya) dari tepi selatan jembatan sampai tepi peta
+    ey0, ex0 = int(P["entry"][1] // TILE), int(P["entry"][0] // TILE)
+    rb = route[int(np.argmin(np.abs(route[:, 1] - (ey0 - 4) * TILE)))]
+    cx0 = (ex0 + int(rb[0] // TILE)) // 2
+    causeway = np.zeros_like(mask)
+    causeway[cx0 - 3:cx0 + 4, ey0 - 2:H - 2] = True
+    exit_south = (cx0 * TILE + 8, (H - 5) * TILE)
     land |= dilate(mask, 9) & gray & south                       # sungai selatan 9 tile (lebar, pembatas alami)
+    land |= causeway
     ring = land & ~mask & gray                                   # 2 tile di luar mask yang berbatasan dengan wilayah lain
-    ring_s = land & ~mask & gray & south & (dist_to(gx, gy, route) > 64)                                        # tepi selatan = SUNGAI (air + tepi pantai), bukan awan
+    ring_s = land & ~mask & gray & south & (dist_to(gx, gy, route) > 64) & ~causeway                                        # tepi selatan = SUNGAI (air + tepi pantai), bukan awan
     ring &= ~south
     exit_t = (int(P["exit"][0] // TILE), int(P["exit"][1] // TILE))
     plug = np.hypot(gx / TILE - exit_t[0], gy / TILE - exit_t[1]) <= 6.5
@@ -220,7 +228,7 @@ def build():
     in_village_stone[C[0] - 1:C[0] + 2, C[1] - 17:C[1] + 17] = True               # jalan utara-selatan, 3 tile
     in_village_stone[C[0] - 18:C[0] + 28, C[1] - 1:C[1] + 2] = True               # jalan barat-timur, 3 tile
     in_village_stone &= mask_d
-    is_dirt = d_route <= 30 + 5 * organic.smooth_noise(gx, gy, 5)
+    is_dirt = (d_route <= 30 + 5 * organic.smooth_noise(gx, gy, 5)) | causeway
     for pt, rr in ((P["puzzle"], 52), (P["bonfire_preboss"], 40), (P["boss_arena"], 150), (P["exit"], 40), (P["entry"], 40)):
         is_dirt |= np.hypot(gx - pt[0], gy - pt[1]) <= rr
     ground, pathc, watc, rivc, brc, forest = [], [], [], [], [], []
@@ -376,7 +384,7 @@ def build():
     n_cb = cloud_barrier("AwanPerbatasan", cloud_b, "chapter", 46)
     n_cd = cloud_barrier("AwanGerbangDesa", bands["desa"], "stage", 40, "Kabut tebal menghalangi.\nBantu Arman dulu.", required_stage="1")
     n_ca = cloud_barrier("AwanGerbangArena", bands["arena"], "stage", 40, "Kabut tebal menghalangi.\nSelesaikan Quest Tengah.", required_stage="2")
-    inst("PulangBarat", exit_scene, tuple(int(v) for v in P["entry"]), to_chapter="0", sign_text='"Kembali ke Desa Algoria"')
+    inst("PulangBarat", exit_scene, exit_south, to_chapter="0", sign_text='"Kembali ke Desa Algoria"')
     inst("PulangTimur", exit_scene, tuple(int(v) for v in P["exit"]), to_chapter="2", sign_text='"Ke Tambang Tumpuk"')
     # perkemahan kecil di Bonfire pra-boss & pasca-boss (prefab)
     for (bx, by), kit in ((bf_pre, (("Dapur_PanciGantung", (-58, 14)), ("Peti_Kayu_A", (52, 10)), ("Barel_Air", (64, 24)))),
