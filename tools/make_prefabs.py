@@ -167,6 +167,18 @@ def composite_sprites():
         out[f"Spanduk_{k}"] = (house.crop((bx, 320, bx + 16, 352)), (6, 4))
     for name, f in (("Papan_Kiri", "1.png"), ("Papan_Kanan", "4.png"), ("Papan_Tiang", "3.png")):
         out[name] = (Image.open(os.path.join(FIELDS, "3 Pointer", f)).convert("RGBA"), (8, 6))
+    ab = Image.open(os.path.join(NINJA, "tilesets", "TilesetVillageAbandoned.png")).convert("RGBA")
+    for name, box in (("Ruina_1", (0, 0, 64, 48)), ("Ruina_2", (176, 0, 224, 48)), ("Ruina_3", (176, 48, 224, 96)),
+                      ("Ruina_4", (192, 96, 256, 176)), ("Ruina_5", (256, 80, 320, 169))):
+        im = ab.crop(box)
+        bb = im.getbbox()
+        out[name] = (im, (max(16, (bb[2] - bb[0]) - 10), 24))
+    for name, box in (("Puing_Batu", (0, 48, 32, 80)), ("Puing_Pilar", (96, 48, 128, 80)), ("Puing_Kayu", (112, 112, 144, 144))):
+        out[name] = (ab.crop(box), (14, 8))
+    for k in range(1, 5):
+        out[f"Tenda_{k}"] = (Image.open(os.path.join(FIELDS, "8 Camp", f"{k}.png")).convert("RGBA"), None)
+    out["Tronk_Kayu"] = (Image.open(os.path.join(FIELDS, "7 Decor", "Log1.png")).convert("RGBA"), (24, 8))
+    out["Kotak_Rusak"] = (Image.open(os.path.join(FIELDS, "7 Decor", "Box1.png")).convert("RGBA"), (12, 8))
     return out
 
 

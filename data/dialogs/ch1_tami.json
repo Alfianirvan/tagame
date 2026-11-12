@@ -1,0 +1,16 @@
+{
+  "lines": [
+    {
+      "speaker": "tami",
+      "text": "Aku hitung obor di menara itu berkali-kali. Ada lima, tapi nomor terakhirnya bukan lima."
+    },
+    {
+      "speaker": "tami",
+      "text": "Karena mulai dari nol, kalau ada lima obor maka nomor terakhirnya adalah empat."
+    },
+    {
+      "speaker": "tami",
+      "text": "PETUNJUK 3: array dengan 5 elemen punya indeks 0 sampai 4. Indeks terakhir = jumlah elemen dikurangi satu."
+    }
+  ]
+}

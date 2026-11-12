@@ -8,6 +8,10 @@
 | Sprite Raka, Joko, Arman, Lilbah, Dadang, Tedy | Dibuat kelompok dari basis Pixel Crawler (Body_A, Peasant_A, Knight) | Turunan Pixel Crawler |
 | Sprite 5 boss | Dibuat kelompok dari basis Pixel Crawler (diperbesar 2×) | Turunan Pixel Crawler |
 | Potret dialog | Dibuat dengan AI, dirapikan kelompok | — |
+| Monster (Slime, Jamur), hewan ternak, bendera/awan/kabut/daun/berkas cahaya, kincir air, tileset desa terbengkalai & lapak, spanduk | **Ninja Adventure – Asset Pack** oleh pixel-boy & AAA (`assets/ninja/`) | CC0 |
+| Papan penunjuk, bendera checkpoint biru, tenda kamp, kayu/kotak, tanah terkutuk (Cursed Land), Fields | **CraftPix.net** – Free Fields Tileset & Free Cursed Land Top-Down Pixel Art (`assets/craftpix/`) | Free: boleh di gim, tidak boleh disebarkan ulang |
+| Orc kecil (cadangan) & prajurit kecil | **Zerie** – Tiny RPG Character Asset Pack (`assets/enemies/tiny_orc/`) | Free, tidak boleh disebarkan ulang |
+| Dungeon CraftPix (peti, tuas, obor) | **CraftPix.net** – Free 2D Top-Down Pixel Dungeon Asset Pack | Free: boleh di gim, tidak boleh disebarkan ulang |
 
 Lisensi Ninja Adventure: `assets/ui/LICENSE_NinjaAdventure_CC0.txt`.
 

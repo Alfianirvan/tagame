@@ -155,6 +155,7 @@ func reset_state() -> void:
 	met_npcs = []
 	active_flags = []
 	killed_enemies = []
+	_poison_left = 0.0
 	_recalc_stats(true)
 	stamina = max_stamina
 	_emit_all()
@@ -256,6 +257,48 @@ func _recalc_stats(refill: bool = false) -> void:
 	stamina_changed.emit(stamina, max_stamina)
 
 
+# ---------------------------------------------------------------- Racun (Slime2 dkk): HP berkurang pelan beberapa detik
+var _poison_left: float = 0.0
+var _poison_tick: float = 0.0
+var _poison_dmg: int = 2
+
+
+func apply_poison(seconds: float = 3.0, dmg_per_sec: int = 2) -> void:
+	if hp <= 0:
+		return
+	_poison_left = maxf(_poison_left, seconds)
+	_poison_dmg = maxi(1, dmg_per_sec)
+	_poison_tick = 1.0
+	_set_player_tint(true)
+
+
+func is_poisoned() -> bool:
+	return _poison_left > 0.0
+
+
+func clear_poison() -> void:
+	_poison_left = 0.0
+	_set_player_tint(false)
+
+
+func _set_player_tint(on: bool) -> void:
+	var pl: Node = get_tree().get_first_node_in_group("player") if is_inside_tree() else null
+	if pl is CanvasItem:
+		(pl as CanvasItem).modulate = Color(0.65, 1.0, 0.65) if on else Color.WHITE
+
+
+func _process(delta: float) -> void:
+	if _poison_left <= 0.0:
+		return
+	_poison_left -= delta
+	_poison_tick -= delta
+	if _poison_tick <= 0.0:
+		_poison_tick += 1.0
+		take_damage(_poison_dmg, true)
+	if _poison_left <= 0.0 or hp <= 0:
+		clear_poison()
+
+
 func take_damage(amount: int, ignore_defense: bool = false) -> int:
 	if hp <= 0:
 		return 0
@@ -275,6 +318,7 @@ func heal(amount: int) -> void:
 
 
 func restore_full() -> void:
+	clear_poison()
 	hp = max_hp
 	stamina = max_stamina
 	hp_changed.emit(hp, max_hp)

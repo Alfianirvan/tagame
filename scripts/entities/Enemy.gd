@@ -221,6 +221,10 @@ func _check_melee_hit() -> void:
 	if attack_shape.global_position.distance_to(target) <= reach and _player.has_method("take_hit"):
 		_melee_hit_done = true
 		_player.take_hit(int(cfg["damage"]), global_position)
+		if cfg.has("poison"):   # serangan beracun: HP berkurang pelan beberapa detik
+			var pz: Dictionary = cfg["poison"]
+			GameManager.apply_poison(float(pz.get("seconds", 3.0)), int(pz.get("dps", 2)))
+			FloatingText.spawn(get_parent(), _player.global_position + Vector2(0, -44), "Racun!", Color(0.6, 1.0, 0.4))
 
 
 func _end_attack() -> void:
