@@ -99,7 +99,8 @@ func _process(delta: float) -> void:
 		return
 	visible = true
 	var center: Vector2 = screen * 0.5
-	var dir: Vector2 = (pos - center).normalized()
+	var aim: Vector2 = _guide_point(pos)
+	var dir: Vector2 = (aim - center).normalized()
 	# Titik potong garis dari tengah ke target dengan kotak layar (dikurangi margin)
 	var half: Vector2 = screen * 0.5 - Vector2(MARGIN, MARGIN)
 	var scale_x: float = half.x / maxf(absf(dir.x), 0.0001)
@@ -107,6 +108,42 @@ func _process(delta: float) -> void:
 	_arrow_pos = center + dir * minf(scale_x, scale_y)
 	_arrow_dir = dir
 	queue_redraw()
+
+
+## Titik yang dibidik panah. Bila wilayah punya jalur utama (Region.guide_route) dan target ada di dekat jalur itu,
+## panah menuntun ke titik jalur berikutnya (~260 px di depan Raka) sehingga mengikuti jalan, bukan garis lurus menembus hutan/awan.
+## Mengembalikan posisi layar yang dibidik; bila tak ada jalur, kembali ke posisi layar target.
+func _guide_point(target_screen: Vector2) -> Vector2:
+	var scene: Node = get_tree().get_first_node_in_group("region")
+	var player: Node2D = get_tree().get_first_node_in_group("player") as Node2D
+	if scene == null or player == null or not ("guide_route" in scene):
+		return target_screen
+	var route: PackedVector2Array = scene.guide_route
+	if route.size() < 4:
+		return target_screen
+	var ip: int = _nearest_index(route, player.global_position)
+	var it: int = _nearest_index(route, _target.global_position)
+	# target jauh dari jalur utama (mis. di dalam desa samping): jalur tidak relevan
+	if route[it].distance_to(_target.global_position) > 420.0 or route[ip].distance_to(player.global_position) > 300.0:
+		return target_screen
+	if ip == it:
+		return target_screen
+	var step: int = 1 if it > ip else -1
+	var i: int = ip
+	while i != it and route[i].distance_to(player.global_position) < 260.0:
+		i += step
+	return get_viewport().get_canvas_transform() * (route[i] + Vector2(0, -16))
+
+
+static func _nearest_index(route: PackedVector2Array, p: Vector2) -> int:
+	var best: int = 0
+	var best_d: float = INF
+	for k in route.size():
+		var d: float = route[k].distance_squared_to(p)
+		if d < best_d:
+			best_d = d
+			best = k
+	return best
 
 
 func _draw() -> void:

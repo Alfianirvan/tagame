@@ -328,7 +328,8 @@ def build():
     atmos_script = sc.ext_res("Script", "res://scripts/world/Atmosphere.gd")
 
     sc.node("Ch1_HutanIndeks", "Node2D", script=f'ExtResource("{script}")', chapter="1", music_name='"ch1_hutan_indeks"',
-            boss_music_name='"boss"', opening_story="true", map_size=f"Vector2i({PX_W}, {PX_H})", boss_scene=f'ExtResource("{boss_scene}")')
+            boss_music_name='"boss"', opening_story="true",
+            guide_route="PackedVector2Array(" + ", ".join(f"{int(x)}, {int(y)}" for x, y in route[::5]) + ")", map_size=f"Vector2i({PX_W}, {PX_H})", boss_scene=f'ExtResource("{boss_scene}")')
     sc.node("Ground", "TileMapLayer", ".", tile_map_data=b64cells(ground), tile_set=f'ExtResource("{ts_world}")')
     sc.node("Tercemar", "TileMapLayer", ".", tile_map_data=b64cells(taintc), tile_set=f'ExtResource("{ts_world}")',
             modulate="Color(0.74, 0.54, 0.9, 1)")
