@@ -44,7 +44,10 @@ static func build(sprite_folder: String, death_frames: int) -> SpriteFrames:
 ## "windup" = frame 0-2 (bersiap), "strike" = frame 3-5 (menebas). FPS 3 = 1 detik per animasi pada speed_scale 1;
 ## Enemy.gd mengatur speed_scale supaya pas dengan lama windup / terjangan. Musuh jarak jauh tidak punya sheet ini.
 static func _add_attack(frames: SpriteFrames, sprite_folder: String) -> void:
-	var texture: Texture2D = load("%s%s/Attack/Attack-Sheet.png" % [DIR, sprite_folder]) as Texture2D
+	var attack_path: String = "%s%s/Attack/Attack-Sheet.png" % [DIR, sprite_folder]
+	if not ResourceLoader.exists(attack_path):
+		return          # monster tanpa animasi serang (Slime/Jamur): memakai gerakan menerjang saja
+	var texture: Texture2D = load(attack_path) as Texture2D
 	if texture == null:
 		return
 	var size: int = texture.get_height()

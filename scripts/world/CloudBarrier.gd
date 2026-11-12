@@ -16,6 +16,10 @@ const CLOUD := preload("res://assets/ninja/fx/Particle/Clouds.png")
 @export var cloud_points: PackedVector2Array = PackedVector2Array()
 @export var seed_value: int = 7
 @export var locked_text: String = ""
+## Warna awan (putih = awan biasa; ungu/kelabu untuk kabut desa).
+@export var tint: Color = Color.WHITE
+@export var scale_min: float = 2.0
+@export var scale_max: float = 3.0
 
 var is_open: bool = false
 var _visual: Node2D
@@ -32,8 +36,8 @@ func _ready() -> void:
 		var c: Sprite2D = Sprite2D.new()
 		c.texture = CLOUD
 		c.position = p + Vector2(rng.randf_range(-10, 10), rng.randf_range(-8, 8))
-		c.scale = Vector2.ONE * rng.randf_range(2.0, 3.0)
-		c.modulate = Color(1, 1, 1, rng.randf_range(0.88, 1.0))
+		c.scale = Vector2.ONE * rng.randf_range(scale_min, scale_max)
+		c.modulate = Color(tint.r, tint.g, tint.b, rng.randf_range(0.88, 1.0))
 		_visual.add_child(c)
 		# melayang pelan
 		var tw: Tween = create_tween().set_loops()

@@ -1,0 +1,16 @@
+{
+  "lines": [
+    {
+      "speaker": "rani",
+      "text": "Syukurlah ada yang datang! Rumah kami diserbu, lumbung dan segala rak kami berantakan."
+    },
+    {
+      "speaker": "rani",
+      "text": "Dengar baik-baik, Nak. Rak di lumbung kami berderet dari kiri ke kanan, dan nomor pertamanya itu NOL, bukan satu."
+    },
+    {
+      "speaker": "rani",
+      "text": "PETUNJUK 1: indeks pertama sebuah array adalah 0. Rak pertama berindeks 0, rak kedua berindeks 1, dan seterusnya."
+    }
+  ]
+}

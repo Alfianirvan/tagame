@@ -32,6 +32,8 @@ LAYOUT, W, H, PX_W, PX_H, BACKUP = v2mod.LAYOUT, v2mod.W, v2mod.H, v2mod.PX_W, v
 dist_to, dilate, erode, b64cells, tpx = v2mod.dist_to, v2mod.dilate, v2mod.erode, v2mod.b64cells, v2mod.tpx
 
 C = (104, 102)                                       # pusat dusun (tile)
+D2 = (160, 85)                                       # pusat Desa 2 (timur, tercemar)
+D3 = (43, 87)                                        # pusat Desa 3 (barat, porak-poranda)
 CX, CY = C[0] * TILE + 8, C[1] * TILE + 8            # pusat dusun (px)
 DIRS8 = [(0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1)]
 PREFAB_SIZE = {}                                     # nama prefab -> (lebar, tinggi) sprite (dari _prefabs.json)
@@ -147,7 +149,7 @@ def build():
         skeleton += [(x, y, -125) for x, y in pts] + [(pts[-1][0], pts[-1][1], 20)]
     # ------------------------------------------------------------ SELURUH daratan bisa dijelajahi (tanpa dinding pohon)
     # batas hanya: (a) laut & sungai selatan (tile air + tepi pantai), (b) awan tebal ber-collision di perbatasan wilayah lain
-    gate_v_y = (C[1] - 21) * TILE + 8
+    gate_v_y = 69 * TILE + 8                                  # pita awan 'gerbang desa' (baris 68-70), di atas Desa 2/3
     ga = route[route_i((P["bonfire_preboss"][0], ga_row * TILE + 8))]
     ga_col = int(ga[0] // TILE)
     gate_a = (int(ga_col * TILE + 8), ga_row * TILE + 8)
@@ -188,6 +190,39 @@ def build():
     bc = (P["boss_arena"][0] / TILE, P["boss_arena"][1] / TILE)
     dd = np.hypot(gx / TILE - bc[0], gy / TILE - bc[1])
     bands["arena"] = (dd >= 7.5) & (dd <= 9.2) & land & ~cloud_b
+    # ---- Desa 2 (timur, tercemar) & Desa 3 (barat, porak-poranda): cincin kabut sampai Quest Awal selesai
+    def ell(c, rx, ry):
+        return np.hypot((gx - (c[0] * TILE + 8)) / (rx * TILE), (gy - (c[1] * TILE + 8)) / (ry * TILE))
+    e2, e3 = ell(D2, 24, 20), ell(D3, 24, 20)
+    ring2 = (e2 >= 0.93) & (e2 <= 1.07) & land & ~cloud_b
+    ring3 = (e3 >= 0.93) & (e3 <= 1.07) & land & ~cloud_b
+    # cincin menutup rapat sampai garis pantai (tidak ada celah di antara elips dan tepi pulau)
+    ring3 |= land & (gx < D3[0] * TILE + 8 - 23.0 * TILE) & (np.abs(gy - (D3[1] * TILE + 8)) < 21.5 * TILE)
+    ring2 |= land & (gx > D2[0] * TILE + 8 + 23.0 * TILE) & (np.abs(gy - (D2[1] * TILE + 8)) < 21.5 * TILE)
+    no_trees = (e2 < 1.1) | (e3 < 1.1)
+    pond = np.hypot((gx - (D2[0] * TILE + 8 + 13.5 * TILE)) / (4.4 * TILE), (gy - (D2[1] * TILE + 8 + 3.5 * TILE)) / (3.2 * TILE)) < 1.0
+    nz = organic.smooth_noise(gx, gy, 6)
+    tainted = (e2 + 0.10 * nz) < 0.88                               # tanah tercemar Desa 2
+    scorched = (e3 + 0.10 * nz) < 0.80                              # tanah hangus Desa 3
+    plaza_d = (np.hypot(gx - (D2[0] * TILE + 8), gy - (D2[1] * TILE + 8)) < 5.5 * TILE) |               (np.hypot(gx - (D3[0] * TILE + 8), gy - (D3[1] * TILE + 8)) < 5.5 * TILE)
+
+    def winding(a, b, amp, seed, n=7):
+        r_ = random.Random(seed)
+        dxv, dyv = b[0] - a[0], b[1] - a[1]
+        ln = math.hypot(dxv, dyv)
+        nx_, ny_ = -dyv / ln, dxv / ln
+        ph = r_.uniform(0, 6.28)
+        pts_ = [a]
+        for k in range(1, n):
+            t_ = k / n
+            off = amp * math.sin(t_ * math.pi * 1.7 + ph) * math.sin(math.pi * t_)
+            pts_.append((a[0] + dxv * t_ + nx_ * off, a[1] + dyv * t_ + ny_ * off))
+        pts_.append(b)
+        return organic.polyline_samples(pts_, 12.0)
+
+    road_e = winding(tp(27, 0), (D2[0] * TILE + 8, D2[1] * TILE + 8), 90, 41)
+    road_w = winding(tp(-17, 0), (D3[0] * TILE + 8, D3[1] * TILE + 8), 80, 43)
+    roads_all = np.vstack([road_e, road_w])
 
     # ------------------------------------------------------------ sungai + jembatan di START (selatan), sejajar sumbu
     rivers = []
@@ -214,9 +249,9 @@ def build():
     forest_cells = ~sea_img & ~land
     sea = sea_img & ~land
     river |= ring_s
-    water = sea | river
+    water = sea | river | pond
     # dataran yang boleh dihuni dekorasi/musuh/item: tidak termasuk awan perbatasan & pita gerbang quest
-    corridor = land & ~cloud_b & ~bands["desa"] & ~bands["arena"]
+    corridor = land & ~cloud_b & ~bands["desa"] & ~bands["arena"] & ~ring2 & ~ring3
 
     # ------------------------------------------------------------ peta tile
     grass = [(1, 10), (2, 10), (3, 10)]          # hanya baris 10: baris 11 lebih gelap -> pola kotak-kotak
@@ -229,9 +264,10 @@ def build():
     in_village_stone[C[0] - 18:C[0] + 28, C[1] - 1:C[1] + 2] = True               # jalan barat-timur, 3 tile
     in_village_stone &= mask_d
     is_dirt = (d_route <= 30 + 5 * organic.smooth_noise(gx, gy, 5)) | causeway
+    is_dirt |= (dist_to(gx, gy, roads_all) <= 22 + 4 * organic.smooth_noise(gx, gy, 4)) | plaza_d
     for pt, rr in ((P["puzzle"], 52), (P["bonfire_preboss"], 40), (P["boss_arena"], 150), (P["exit"], 40), (P["entry"], 40)):
         is_dirt |= np.hypot(gx - pt[0], gy - pt[1]) <= rr
-    ground, pathc, watc, rivc, brc, forest = [], [], [], [], [], []
+    ground, pathc, watc, rivc, brc, forest, pondc = [], [], [], [], [], [], []
     for tx in range(W):
         for ty in range(H):
             g = grass[(tx * 7 + ty * 13) % 3]
@@ -246,7 +282,9 @@ def build():
             if water[tx, ty]:
                 i = water_idx(water, tx, ty)
                 cell = (tx, ty, 0, i % 16, i // 16)
-                if sea[tx, ty]:
+                if pond[tx, ty]:
+                    pondc.append(cell)
+                elif sea[tx, ty]:
                     watc.append(cell)
                 elif bridge[tx, ty]:
                     brc.append(cell)
@@ -254,6 +292,13 @@ def build():
                     rivc.append(cell)
             if forest_cells[tx, ty]:
                 forest.append((tx, ty, 1, tx % 25, ty % 25))
+
+    taintc, scorchc = [], []
+    for tx in range(W):
+        for ty in range(H):
+            if (tainted[tx, ty] or scorched[tx, ty]) and land[tx, ty] and not water[tx, ty] and not ring2[tx, ty] and not ring3[tx, ty]:
+                dd_ = grass[(tx * 3 + ty * 7) % 3] if tainted[tx, ty] else dirt[(tx * 3 + ty * 7) % 3]
+                (taintc if tainted[tx, ty] else scorchc).append((tx, ty, 0, dd_[0], dd_[1]))
 
     # ------------------------------------------------------------ scene
     sc = Scene()
@@ -285,10 +330,16 @@ def build():
     sc.node("Ch1_HutanIndeks", "Node2D", script=f'ExtResource("{script}")', chapter="1", music_name='"ch1_hutan_indeks"',
             boss_music_name='"boss"', opening_story="true", map_size=f"Vector2i({PX_W}, {PX_H})", boss_scene=f'ExtResource("{boss_scene}")')
     sc.node("Ground", "TileMapLayer", ".", tile_map_data=b64cells(ground), tile_set=f'ExtResource("{ts_world}")')
+    sc.node("Tercemar", "TileMapLayer", ".", tile_map_data=b64cells(taintc), tile_set=f'ExtResource("{ts_world}")',
+            modulate="Color(0.74, 0.54, 0.9, 1)")
+    sc.node("Hangus", "TileMapLayer", ".", tile_map_data=b64cells(scorchc), tile_set=f'ExtResource("{ts_world}")',
+            modulate="Color(0.42, 0.38, 0.36, 1)")
     sc.node("Path", "TileMapLayer", ".", tile_map_data=b64cells(pathc), tile_set=f'ExtResource("{ts_world}")')
     sc.node("Forest", "TileMapLayer", ".", tile_map_data=b64cells(forest), tile_set=f'ExtResource("{ts_forest}")')
     sc.node("Water", "TileMapLayer", ".", tile_map_data=b64cells(watc), tile_set=f'ExtResource("{ts_water}")')
     sc.node("River", "TileMapLayer", ".", tile_map_data=b64cells(rivc), tile_set=f'ExtResource("{ts_water}")')
+    sc.node("AirUngu", "TileMapLayer", ".", tile_map_data=b64cells(pondc), tile_set=f'ExtResource("{ts_water}")',
+            modulate="Color(1.25, 0.45, 1.0, 1)")
     sc.node("RiverBridge", "TileMapLayer", ".", tile_map_data=b64cells(brc), tile_set=f'ExtResource("{ts_nocol}")')
     sc.node("Decor", "Node2D", ".")
     sc.node("Objects", "Node2D", ".", y_sort_enabled="true")
@@ -382,6 +433,10 @@ def build():
         return len(pts)
 
     n_cb = cloud_barrier("AwanPerbatasan", cloud_b, "chapter", 46)
+    n_c2 = cloud_barrier("AwanDesa2", ring2, "stage", 40, "Kabut ungu pekat menghalangi.\nBantu Arman dulu.", required_stage="1",
+                         tint="Color(0.82, 0.72, 0.95, 1)", scale_min="1.3", scale_max="1.9")
+    n_c3 = cloud_barrier("AwanDesa3", ring3, "stage", 40, "Asap hitam menghalangi.\nBantu Arman dulu.", required_stage="1",
+                         tint="Color(0.62, 0.6, 0.62, 1)", scale_min="1.3", scale_max="1.9")
     n_cd = cloud_barrier("AwanGerbangDesa", bands["desa"], "stage", 40, "Kabut tebal menghalangi.\nBantu Arman dulu.", required_stage="1")
     n_ca = cloud_barrier("AwanGerbangArena", bands["arena"], "stage", 40, "Kabut tebal menghalangi.\nSelesaikan Quest Tengah.", required_stage="2")
     inst("PulangBarat", exit_scene, exit_south, to_chapter="0", sign_text='"Kembali ke Desa Algoria"')
@@ -405,6 +460,59 @@ def build():
     sc.node("PintuArman", "Area2D", "Objects", position=v2(door_x, door_y + 14), script=f'ExtResource("{door_script}")',
             interior_scene='"res://scenes/world/Interior_RumahArman.tscn"', hint_text='"E: Masuk rumah Arman"')
     sc.node("CollisionShape2D", "CollisionShape2D", "Objects/PintuArman", shape=f'SubResource("{sc.rect_shape(46, 26)}")')
+
+    # ------------------------------------------------------------ DESA 2 (tercemar) & DESA 3 (porak-poranda)
+    def d2(dx, dy):
+        return (round(D2[0] * TILE + 8 + dx * TILE), round(D2[1] * TILE + 8 + dy * TILE))
+
+    def d3(dx, dy):
+        return (round(D3[0] * TILE + 8 + dx * TILE), round(D3[1] * TILE + 8 + dy * TILE))
+
+    PURPLE = "Color(0.8, 0.6, 1, 1)"
+    prefab("D2Sumur", "Sumur", d2(0, 0), modulate=PURPLE)
+    for nm, pref, (dx, dy) in (("D2Rumah1", "Rumah_Papan", (-9.5, -4.5)), ("D2Rumah2", "Rumah_Kayu", (8.5, -4.5)),
+                               ("D2Rumah3", "Rumah_Krem", (-9.5, 10.0)), ("D2Lumbung", "Lumbung", (7.5, 10.2))):
+        prefab(nm, pref, d2(dx, dy), modulate="Color(0.85, 0.8, 0.9, 1)")
+    prefab("D2Barel", "Barel_Air", d2(-4.0, -6.0), modulate=PURPLE)
+    prefab("D2Peti", "Peti_Kayu_A", d2(4.2, -5.5))
+    prefab("D2Guci", "Guci", d2(-3.8, 6.0), modulate=PURPLE)
+    prefab("D2PapanMasuk", "Papan_Kanan", d2(-15.8, 2.2), solid=False)
+    mill_tex = sc.ext_res("Texture2D", "res://assets/ninja/animated/WaterMill/Watermill_A_34x36.png")
+    sc.node("D2Kincir", "Node2D", "Objects", script=f'ExtResource("{animprop_script}")', strip=f'ExtResource("{mill_tex}")',
+            position=v2(*d2(13.5, -0.9)), frame_w="34", frame_h="36", fps="4.0", random_phase="false", modulate="Color(0.85, 0.75, 0.95, 1)")
+    buildings.append((d2(13.5, -0.9)[0], d2(13.5, -0.9)[1], 34, 36))
+    inst("BonfireDesa2", bonfire_scene, d2(-2.5, 7.8))
+    inst("BenderaDesa2", checkpoint_scene, d2(-14.5, 5.2))
+    inst("PetiDesa2", chest_scene, d2(1.5, 13.0), roll_count="2")
+
+    prefab("D3Ruina1", "Ruina_1", d3(-9.5, -5.5))
+    prefab("D3Ruina2", "Ruina_3", d3(9.5, -6.5))
+    prefab("D3Ruina3", "Ruina_4", d3(-11.5, 7.0))
+    prefab("D3Ruina4", "Ruina_5", d3(12.0, 7.5))
+    prefab("D3Tenda1", "Tenda_1", d3(-5.0, 11.2))
+    prefab("D3Tenda2", "Tenda_3", d3(5.2, 11.6))
+    prefab("D3Tenda3", "Tenda_2", d3(0.4, 14.0))
+    for nm, pref, (dx, dy) in (("D3PuingA", "Puing_Batu", (-1.5, -9.0)), ("D3PuingB", "Puing_Pilar", (3.5, -8.4)),
+                               ("D3PuingC", "Puing_Kayu", (-14.0, 0.5)), ("D3Tronk", "Tronk_Kayu", (14.5, -1.8)),
+                               ("D3Kotak", "Kotak_Rusak", (6.8, 3.2)), ("D3Peti", "Peti_Kayu_B", (-7.0, 13.0))):
+        prefab(nm, pref, d3(dx, dy), solid=False)
+    flam_tex = sc.ext_res("Texture2D", "res://assets/ninja/fx/Flam/Flam.png")
+    smoke_tex = sc.ext_res("Texture2D", "res://assets/ninja/fx/Smoke/Smoke/SpriteSheet.png")
+    for i, (dx, dy) in enumerate(((-7.0, -3.2), (7.4, -3.4), (-12.5, 3.2), (14.2, 3.4), (0.5, -7.4))):
+        fp = d3(dx, dy)
+        sc.node(f"D3Api{i}", "Node2D", "Objects", script=f'ExtResource("{animprop_script}")', strip=f'ExtResource("{flam_tex}")',
+                position=v2(*fp), frame_w="20", frame_h="30", fps="9.0")
+        sc.node(f"D3Asap{i}", "Node2D", "Objects", script=f'ExtResource("{animprop_script}")', strip=f'ExtResource("{smoke_tex}")',
+                position=v2(fp[0], fp[1] - 22), frame_w="32", frame_h="32", fps="5.0", z_index="6", modulate="Color(0.7, 0.7, 0.7, 0.8)")
+    inst("BonfireDesa3", bonfire_scene, d3(0.2, 9.0))
+    inst("BenderaDesa3", checkpoint_scene, d3(14.5, 6.0))
+    inst("PetiDesa3", chest_scene, d3(-15.0, -7.5), roll_count="2")
+    prefab("D3PapanMasuk", "Papan_Kiri", d3(16.4, 0.4), solid=False)
+    surv = [("Rani", d3(-3.0, 8.4)), ("Darso", d3(3.4, 8.8)), ("Tami", d3(-5.5, -1.6))]
+    for nm, pos in surv:
+        inst(nm, npc_scene, pos, npc_id=f'"{nm.lower()}"', dialog_id=f'"ch1_{nm.lower()}"', villager_chapter="101")
+        npc_positions.append((nm, pos))
+    npc_positions += [("Bf2", d2(-2.5, 7.8)), ("Bf3", d3(0.2, 9.0)), ("Fl2", d2(-14.5, 5.2)), ("Fl3", d3(14.5, 6.0))]
 
     # ------------------------------------------------------------ pohon (bersih 4 tile dari bangunan)
     cells = {"m1a": ("Trees/Model_01/Size_03.png", (0, 0, 48, 96)), "m1b": ("Trees/Model_01/Size_03.png", (48, 0, 96, 96)),
@@ -478,7 +586,7 @@ def build():
             break
         x, y = rng.randint(60, PX_W - 60), rng.randint(80, PX_H - 60)
         tx, ty = int(x // TILE), int(y // TILE)
-        if not corridor[tx, ty] or water[tx, ty] or village_rect[tx, ty] or road_dist(x, y) < 70 or near_building(x, y, 5 * TILE):
+        if not corridor[tx, ty] or water[tx, ty] or village_rect[tx, ty] or no_trees[tx, ty] or road_dist(x, y) < 70 or near_building(x, y, 5 * TILE):
             continue
         if any(math.hypot(x - cx, y - cy) < 170 for cx, cy in clusters):
             continue
@@ -487,7 +595,7 @@ def build():
             ang, rad = rng.random() * math.tau, rng.random() * 52
             px_, py_ = round(x + math.cos(ang) * rad), round(y + math.sin(ang) * rad * 0.7)
             tx2, ty2 = int(px_ // TILE), int(py_ // TILE)
-            if 0 <= tx2 < W and 0 <= ty2 < H and corridor[tx2, ty2] and not water[tx2, ty2] and not village_rect[tx2, ty2]                     and road_dist(px_, py_) > 50 and tree_ok(px_, py_, 34):
+            if 0 <= tx2 < W and 0 <= ty2 < H and corridor[tx2, ty2] and not water[tx2, ty2] and not village_rect[tx2, ty2] and not no_trees[tx2, ty2]                     and road_dist(px_, py_) > 50 and tree_ok(px_, py_, 34):
                 placed_t.append((px_, py_))
                 tree_at(px_, py_, True)
     near_forest = dilate(corridor, 4) & forest_cells
@@ -626,6 +734,41 @@ def build():
             hn += 1
     inst("Potion1", collect["Potion"], at(i_puz_r, i_pre, 0.8, -1, 70))
 
+    # ---- musuh jalur & dalam Desa 2 / Desa 3 (naik bertahap: Goblin/Slime lemah -> Orc Warrior/Shaman sedang-kuat)
+    def spot_near(x, y, avoid_village1=True):
+        pt = find_clear(x, y)
+        if pt is None:
+            return None
+        if avoid_village1 and village_rect[int(pt[0] // TILE), int(pt[1] // TILE)]:
+            return None
+        return pt
+
+    def along(road, t, side, dist):
+        i_ = min(len(road) - 2, max(1, int(len(road) * t)))
+        a_, b_ = road[i_ - 1], road[i_ + 1]
+        th = math.atan2(b_[1] - a_[1], b_[0] - a_[0]) + math.pi / 2
+        return (road[i_][0] + math.cos(th) * side * dist, road[i_][1] + math.sin(th) * side * dist)
+
+    def mob(name, eid, pt, **props):
+        q = spot_near(pt[0], pt[1])
+        if q:
+            inst(name, enemy_scene, q, enemy_id=f'"{eid}"', **props)
+
+    n_ = 0
+    for t, side, eid in ((0.18, 1, "slime"), (0.30, -1, "mushroom"), (0.42, 1, "slime"), (0.52, -1, "slime"), (0.62, 1, "mushroom")):
+        n_ += 1
+        mob(f"JalurT{n_}", eid, along(road_e, t, side, rng.randint(36, 70)))
+    n_ = 0
+    for t, side, eid in ((0.15, 1, "orc"), (0.28, -1, "orc"), (0.40, 1, "orc_rogue"), (0.52, -1, "orc"), (0.64, 1, "orc_rogue")):
+        n_ += 1
+        mob(f"JalurB{n_}", eid, along(road_w, t, side, rng.randint(36, 70)))
+    for k, (dx, dy, eid) in enumerate(((-7, -1, "slime2"), (6, 2, "slime2"), (-1, -8, "slime2"), (3, 9, "slime2"),
+                                       (-8, 5, "mushroom2"), (11, -7, "mushroom2"), (-4, 12, "mushroom2"))):
+        mob(f"D2Musuh{k + 1}", eid, d2(dx, dy))
+    for k, (dx, dy, eid) in enumerate(((-6, -1, "orc_warrior"), (5, 0, "orc_warrior"), (2, -9, "orc_warrior"),
+                                       (-10, 2, "orc_shaman"), (9, 3, "orc_shaman"))):
+        mob(f"D3Musuh{k + 1}", eid, d3(dx, dy))
+
     # ------------------------------------------------------------ jembatan, marker, pemain, batas
     for r in rivers:
         y0, y1 = r["rows"][0] * TILE, (r["rows"][1] + 1) * TILE
@@ -673,10 +816,14 @@ def build():
     open_all = reach(set())
     closed_v = reach({gate_v_y // TILE})
     closed_a = reach(set(), bands["arena"])
+    d2t = (D2[0], D2[1])
+    d3t = (D3[0], D3[1])
+    r_closed = reach(set(), ring2 | ring3 | cloud_b)
+    print("Desa 2/3: terjangkau saat terbuka =", bool(open_all[d2t]), bool(open_all[d3t]), "| terkunci selama kabut =", not r_closed[d2t], not r_closed[d3t])
     closed_c = reach(set(), cloud_b)
     print("awan perbatasan: exit terkunci selama awan ada =", not closed_c[ex, ey], "| exit terjangkau setelah awan hilang =", bool(open_all[ex, ey]))
     print("keterhubungan: exit terjangkau (gerbang terbuka) =", bool(open_all[ex, ey]),
-          "| puzzle terkunci oleh gerbang desa =", not closed_v[pz],
+          "| arena boss terkunci oleh gerbang desa =", not closed_v[bossp],
           "| arena terkunci oleh gerbang arena =", not closed_a[bossp])
     out_b = [(n, (bx, by)) for bx, by, w, h in buildings for n in [0]
              if not all(corridor[int(px // TILE), int(py // TILE)] for px, py in ((bx - w / 2, by), (bx + w / 2, by), (bx - w / 2, by - h * 0.6), (bx + w / 2, by - h * 0.6)))]
