@@ -163,7 +163,7 @@ def build():
     south = np.arange(H)[None, :] >= 95
     land |= dilate(mask, 9) & gray & south                       # sungai selatan 9 tile (lebar, pembatas alami)
     ring = land & ~mask & gray                                   # 2 tile di luar mask yang berbatasan dengan wilayah lain
-    ring_s = land & ~mask & gray & south                                        # tepi selatan = SUNGAI (air + tepi pantai), bukan awan
+    ring_s = land & ~mask & gray & south & (dist_to(gx, gy, route) > 64)                                        # tepi selatan = SUNGAI (air + tepi pantai), bukan awan
     ring &= ~south
     exit_t = (int(P["exit"][0] // TILE), int(P["exit"][1] // TILE))
     plug = np.hypot(gx / TILE - exit_t[0], gy / TILE - exit_t[1]) <= 6.5
@@ -354,7 +354,8 @@ def build():
     bf3 = at(i_boss, i_exit, 0.62, 1, 56)
     cp1 = at(i_puz_r, i_pre, 0.55, 1, 48)
     cp2 = at(i_boss, i_exit, 0.30, -1, 52)
-    start = tuple(int(v) for v in route[min(len(route) - 1, 3)])
+    # START: di tepi selatan jembatan (darat), bukan di atas jembatan/air
+    start = (int(round(rivers[0]["bx"])), (rivers[0]["rows"][1] + 1) * TILE + 34)
     inst("Bonfire1", bonfire_scene, bf1)
     inst("Bonfire2", bonfire_scene, bf_pre)
     inst("Bonfire3", bonfire_scene, bf3)
@@ -534,8 +535,9 @@ def build():
     for sheet_, pos in animals:
         if land_ok(pos):
             tex = sc.ext_res("Texture2D", f"res://assets/ninja/animals/{sheet_}.png")
+            bscale = 1.0 if sheet_.startswith(("Chicken", "Cat")) else (1.2 if sheet_.startswith("Dog") else 1.5)
             sc.node(f"Hewan{na}", "Node2D", "Objects", script=f'ExtResource("{animal_script}")', sheet=f'ExtResource("{tex}")',
-                    position=v2(*pos))
+                    position=v2(*pos), body_scale=str(bscale), wander_radius="55.0")
             na += 1
     plant_tex = sc.ext_res("Texture2D", "res://assets/ninja/animated/Plant/SpriteSheet16x16.png")
     nb = 0
@@ -554,7 +556,7 @@ def build():
         nb += 1
     for nm, (dx, dy) in (("BenderaMasuk", (3.8, 15.4)), ("BenderaBarat", (-19.6, 2.8)), ("BenderaTimur", (28.6, 2.8))):
         inst(nm, checkpoint_scene, tp(dx, dy))
-    for i, (dx, dy) in enumerate(((-5, 20.5), (5.2, 21.5), (-1.5, 24), (3.0, 19.2))):
+    for i, (dx, dy) in enumerate(((-5, 17.6), (5.2, 18.4), (-2.5, 19.6), (3.0, 16.8))):
         inst(f"GoblinEvent{i + 1}", enemy_scene, tp(dx, dy), enemy_id='"orc"', damage_scale="0.6")
     sc.node("Suasana", "Node2D", ".", script=f'ExtResource("{atmos_script}")')
 
