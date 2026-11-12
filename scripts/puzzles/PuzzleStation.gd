@@ -2,7 +2,7 @@ class_name PuzzleStation
 extends Area2D
 ## Titik di dunia yang membuka puzzle Quest Tengah saat Raka menekan E di dekatnya (dipasang di wilayah, Tahap 10).
 ## Puzzle baru bisa dibuka setelah Quest Awal chapter itu selesai. Setelah puzzle beres, hadiahnya
-## diberikan PuzzleBase lewat QuestManager; stasiun tetap bisa dibuka lagi untuk latihan (tanpa hadiah).
+## diberikan PuzzleBase lewat QuestManager. Setelah selesai (quest_stage >= 2) stasiun tidak membuka puzzle lagi.
 
 signal puzzle_solved
 
@@ -62,6 +62,8 @@ func _update_hint() -> void:
 func _block_reason() -> String:
 	if GameManager.get_quest_stage(chapter) < 1:
 		return "Selesaikan Quest Awal dulu"
+	if GameManager.get_quest_stage(chapter) >= 2:
+		return "Puzzle sudah selesai"      # jawaban tersimpan: tidak perlu mengulang
 	return ""
 
 

@@ -5,6 +5,8 @@ extends Node2D
 @export var sheet: Texture2D
 @export var wander_radius: float = 70.0
 @export var speed: float = 14.0
+## Ukuran tampil (sprite asli 16x16). Ayam/kucing kecil, sapi/babi sedang.
+@export var body_scale: float = 1.2
 
 var _sprite: AnimatedSprite2D
 var _home: Vector2
@@ -18,7 +20,7 @@ func _ready() -> void:
 	_home = position
 	_target = position
 	_sprite = AnimatedSprite2D.new()
-	_sprite.scale = Vector2(2, 2)
+	_sprite.scale = Vector2(body_scale, body_scale)
 	_sprite.offset = Vector2(0, -7)
 	var sf := SpriteFrames.new()
 	sf.remove_animation("default")
@@ -50,6 +52,21 @@ func _process(delta: float) -> void:
 		_wait = _rng.randf_range(2.0, 6.0)
 		_sprite.play("diam")
 		return
-	position += d.normalized() * speed * delta
+	var step: Vector2 = d.normalized() * speed * delta
+	# hewan hanya berjalan di darat: air, pohon, dan bangunan (collision dunia) menghalangi
+	if _blocked(global_position + step * 6.0 + Vector2(0, -2)):
+		_target = position
+		_wait = _rng.randf_range(1.0, 3.0)
+		_sprite.play("diam")
+		return
+	position += step
 	if absf(d.x) > 1.0:
 		_sprite.flip_h = d.x < 0.0
+
+
+func _blocked(world_pos: Vector2) -> bool:
+	var q := PhysicsPointQueryParameters2D.new()
+	q.position = world_pos
+	q.collision_mask = 1
+	q.collide_with_bodies = true
+	return not get_world_2d().direct_space_state.intersect_point(q, 1).is_empty()
