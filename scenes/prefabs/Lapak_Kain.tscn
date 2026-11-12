@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/props/prefab_sprites/Lapak_Kain.png" id="1"]
+
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(44, 38)
+
+[node name="Lapak_Kain" type="StaticBody2D"]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sombra" type="Polygon2D" parent="."]
+color = Color(0, 0, 0, 0.26)
+polygon = PackedVector2Array(22.8, -4.0, 21.9, -2.9, 19.2, -1.8, 14.9, -1.0, 9.5, -0.4, 3.2, -0.0, -3.2, -0.0, -9.5, -0.4, -14.9, -1.0, -19.2, -1.8, -21.9, -2.9, -22.8, -4.0, -21.9, -5.1, -19.2, -6.2, -14.9, -7.0, -9.5, -7.6, -3.2, -8.0, 3.2, -8.0, 9.5, -7.6, 14.9, -7.0, 19.2, -6.2, 21.9, -5.1)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1")
+offset = Vector2(0, -19.0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -19.0)
+shape = SubResource("1")

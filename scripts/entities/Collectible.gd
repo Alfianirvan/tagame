@@ -18,9 +18,17 @@ const COLLECTED_SIZE := 32
 @onready var sprite: Sprite2D = $Sprite2D
 
 var _taken: bool = false
+var _persist_key: String = ""   # hanya untuk item yang diletakkan di scene (drop dinamis tidak punya kunci)
 
 
 func _ready() -> void:
+	# Item scene yang sudah pernah diambil tidak muncul lagi walau Raka mati / scene dimuat ulang.
+	if owner != null:
+		var base_key: String = GameManager.enemy_key(self)
+		_persist_key = ("ambil:" + base_key) if base_key != "" else ""
+		if GameManager.is_enemy_killed(_persist_key):
+			queue_free()
+			return
 	collision_layer = 0
 	collision_mask = 2  # layer player
 	body_entered.connect(_on_body_entered)
@@ -51,6 +59,7 @@ func _on_body_entered(body: Node2D) -> void:
 	if _taken or not body.is_in_group("player"):
 		return
 	_taken = true
+	GameManager.mark_enemy_killed(_persist_key)
 	if item_id == "gold":
 		GameManager.add_gold(amount)
 	else:

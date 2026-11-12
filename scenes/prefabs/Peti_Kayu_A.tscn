@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/props/prefab_sprites/Peti_Kayu_A.png" id="1"]
+
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(15, 23)
+
+[node name="Peti_Kayu_A" type="StaticBody2D"]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sombra" type="Polygon2D" parent="."]
+color = Color(0, 0, 0, 0.26)
+polygon = PackedVector2Array(7.6, -4.0, 7.3, -2.9, 6.4, -1.8, 5.0, -1.0, 3.2, -0.4, 1.1, -0.0, -1.1, -0.0, -3.2, -0.4, -5.0, -1.0, -6.4, -1.8, -7.3, -2.9, -7.6, -4.0, -7.3, -5.1, -6.4, -6.2, -5.0, -7.0, -3.2, -7.6, -1.1, -8.0, 1.1, -8.0, 3.2, -7.6, 5.0, -7.0, 6.4, -6.2, 7.3, -5.1)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1")
+offset = Vector2(0, -11.5)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -11.5)
+shape = SubResource("1")

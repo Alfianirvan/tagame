@@ -14,6 +14,10 @@ var _list: VBoxContainer
 var _resources: Label
 var _icon: TextureRect
 var _title: Label
+var _head_title: Label           # judul panel (berubah di mode landasan)
+var _tabs_box: HBoxContainer     # deret tombol tab (disembunyikan di mode landasan)
+var _forge_only: bool = false    # true = dibuka dari landasan: hanya tab Tempa
+var _pending_forge: bool = false
 var _detail: Label
 var _message: Label
 var _action: Button
@@ -60,6 +64,7 @@ func _build_ui() -> void:
 	var title: Label = UIKit.label("Kantong Pedagang  (Tab / Esc: tutup)", 13, UIKit.TITLE)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.autowrap_mode = TextServer.AUTOWRAP_OFF   # satu baris, jangan dipecah per huruf
+	_head_title = title
 	head.add_child(title)
 	_resources = UIKit.label("", 10, Color(0.45, 0.28, 0.05))
 	_resources.autowrap_mode = TextServer.AUTOWRAP_OFF   # tanpa ini teks Gold/Ore/Herb pecah per huruf & mendorong panel
@@ -69,6 +74,7 @@ func _build_ui() -> void:
 	var tabs: HBoxContainer = HBoxContainer.new()
 	tabs.add_theme_constant_override("separation", 4)
 	v.add_child(tabs)
+	_tabs_box = tabs
 	for i in range(TABS.size()):
 		var b: Button = UIKit.button(TABS[i], Vector2(80, 22))
 		b.pressed.connect(_set_tab.bind(i))
@@ -149,8 +155,18 @@ func open_shop(tab: int = 0) -> void:
 	open()
 
 
+## Dibuka dari landasan tempa: hanya Tempa (tanpa tab Toko/Jual/Racik/Skill).
+func open_forge() -> void:
+	_pending_forge = true
+	_tab = 2
+	open()
+	_pending_forge = false
+
+
 ## Dipanggil Tab atau tombol di menu Jeda. Menolak bila sedang bertarung / dialog / UI lain terbuka.
 func open() -> void:
+	var forge: bool = _pending_forge
+	_pending_forge = false
 	if _open or DialogManager.is_active or QuestManager.quiz_active:
 		return
 	for n in get_tree().get_nodes_in_group("ui_overlay"):
@@ -169,7 +185,10 @@ func open() -> void:
 	_root.visible = true
 	AudioManager.play_sfx("menu_pindah")
 	_message.text = ""
-	_set_tab(_tab)
+	_forge_only = forge
+	_tabs_box.visible = not forge
+	_head_title.text = "Landasan Tempa  (Tab / Esc: tutup)" if forge else "Kantong Pedagang  (Tab / Esc: tutup)"
+	_set_tab(2 if forge else _tab)
 
 
 func close() -> void:

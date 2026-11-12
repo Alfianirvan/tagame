@@ -64,7 +64,7 @@ func _refresh() -> void:
 		any_active = true
 		var q: Dictionary = QuestManager.get_quest(id)
 		out += "[b]%s[/b]  [color=#7a5c4c](%s)[/color]\n" % [q.get("title", id), _stage_name(int(q.get("stage", 1)))]
-		out += "  %s\n" % q.get("objective", "")
+		out += "  %s\n" % QuestManager.get_objective_text(id)
 		if QuestManager.quest_progress_data.has(id) and QuestManager.quiz_db.has(id):
 			var total: int = QuestManager.quiz_db[id].get("questions", []).size()
 			out += "  Progres kuis: %d/%d\n" % [QuestManager.quest_progress_data[id], total]

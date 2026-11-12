@@ -38,5 +38,17 @@
   "pedagang": {
     "name": "Pedagang Ramuan",
     "portrait": ""
+  },
+  "penjaga": {
+    "name": "Penjaga Lumbung",
+    "portrait": ""
+  },
+  "penebang": {
+    "name": "Penebang Kayu",
+    "portrait": ""
+  },
+  "sari": {
+    "name": "Bu Sari",
+    "portrait": ""
   }
 }

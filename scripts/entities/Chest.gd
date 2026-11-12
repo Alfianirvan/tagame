@@ -19,6 +19,7 @@ const COLLECTIBLE_SCENE := preload("res://scenes/entities/Collectible.tscn")
 var is_open: bool = false
 var _player_in_range: bool = false
 var _table: Array = []
+var _persist_key: String = ""
 
 
 func _ready() -> void:
@@ -28,7 +29,12 @@ func _ready() -> void:
 	interact_area.body_entered.connect(func(b: Node2D) -> void: _set_range(b, true))
 	interact_area.body_exited.connect(func(b: Node2D) -> void: _set_range(b, false))
 	hint.visible = false
-	_set_visual(false)
+	# Peti yang sudah pernah dibuka tetap terbuka dan kosong setelah Raka mati / scene dimuat ulang.
+	var base_key: String = GameManager.enemy_key(self)
+	_persist_key = ("peti:" + base_key) if base_key != "" else ""
+	if GameManager.is_enemy_killed(_persist_key):
+		is_open = true
+	_set_visual(is_open)
 
 
 func _set_range(body: Node2D, inside: bool) -> void:
@@ -54,6 +60,7 @@ func open() -> void:
 	if is_open:
 		return
 	is_open = true
+	GameManager.mark_enemy_killed(_persist_key)
 	hint.visible = false
 	_set_visual(true)
 	AudioManager.play_sfx("ambil_item")

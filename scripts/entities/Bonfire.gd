@@ -84,13 +84,16 @@ func get_respawn_point() -> Vector2:
 
 
 ## Memulihkan HP/Stamina, menyimpan checkpoint, lalu autosave.
-func rest() -> void:
+## Mengembalikan true bila ada musuh yang dihidupkan lagi (scene perlu dimuat ulang).
+func rest() -> bool:
 	GameManager.restore_full()
+	var respawned: int = GameManager.reset_enemy_kills()
 	GameManager.set_checkpoint(get_tree().current_scene.scene_file_path, get_respawn_point(), str(get_tree().current_scene.get_path_to(self)))
 	SaveManager.save_game()
 	AudioManager.play_sfx("heal_potion")
 	FloatingText.spawn(get_parent(), global_position + Vector2(0, -60), "HP & Stamina pulih. Tersimpan.", Color(1.0, 0.9, 0.5))
 	rested.emit()
+	return respawned > 0
 
 
 ## Pilihan saat berdiri di dekat api unggun.
@@ -112,7 +115,8 @@ func _open_menu() -> void:
 	var rest_btn: Button = UIKit.button("Istirahat (pulih + simpan)", Vector2(190, 24))
 	rest_btn.pressed.connect(func() -> void:
 		_close_menu()
-		rest())
+		if rest():
+			SceneManager.reload_current())
 	var quit_btn: Button = UIKit.button("Simpan & Keluar ke Menu", Vector2(190, 24))
 	quit_btn.pressed.connect(func() -> void:
 		_close_menu()

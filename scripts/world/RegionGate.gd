@@ -9,7 +9,8 @@ const FONT := preload("res://assets/fonts/Square-Black.ttf")
 
 @export var chapter: int = 1
 @export var required_stage: int = 2
-@export var gate_height: float = 160.0        # panjang gerbang (vertikal)
+@export var gate_height: float = 160.0        # panjang gerbang
+@export var horizontal: bool = false          # true = palang mendatar (melintang jalan utara-selatan); node TIDAK diputar
 @export var locked_text: String = "Gerbang terkunci.\nSelesaikan Quest Tengah."
 
 var is_open: bool = false
@@ -24,7 +25,7 @@ func _ready() -> void:
 	collision_mask = 0
 	_shape = CollisionShape2D.new()
 	var rect: RectangleShape2D = RectangleShape2D.new()
-	rect.size = Vector2(14, gate_height)
+	rect.size = Vector2(gate_height, 14) if horizontal else Vector2(14, gate_height)
 	_shape.shape = rect
 	add_child(_shape)
 	_hint_area = Area2D.new()
@@ -50,7 +51,7 @@ func _refresh(animate: bool) -> void:
 	_shape.set_deferred("disabled", true)
 	if animate:
 		AudioManager.play_sfx("jingle_wilayah_terbuka")
-		FloatingText.spawn(get_parent(), global_position + Vector2(0, -gate_height * 0.5 - 8), "Gerbang terbuka!", Color(0.6, 1.0, 0.6), 2.2)
+		FloatingText.spawn(get_parent(), global_position + _label_offset(), "Gerbang terbuka!", Color(0.6, 1.0, 0.6), 2.2)
 		var tw: Tween = create_tween()
 		tw.tween_property(self, "modulate:a", 0.0, 0.8)
 		tw.tween_callback(func() -> void: visible = false)
@@ -61,17 +62,31 @@ func _refresh(animate: bool) -> void:
 
 func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("player") and not is_open:
-		FloatingText.spawn(get_parent(), global_position + Vector2(-60, -gate_height * 0.5 - 8), locked_text, Color(1, 0.6, 0.5), 2.4)
+		FloatingText.spawn(get_parent(), global_position + _label_offset() + Vector2(-60, 0), locked_text, Color(1, 0.6, 0.5), 2.4)
 
 
-## Pagar kayu tegak lurus sepanjang gerbang.
+## Posisi teks di atas gerbang.
+func _label_offset() -> Vector2:
+	return Vector2(0, -34) if horizontal else Vector2(0, -gate_height * 0.5 - 8)
+
+
+## Pagar kayu sepanjang gerbang (tegak atau mendatar).
 func _draw() -> void:
-	var top: float = -gate_height / 2.0
-	var y: float = top
-	while y < gate_height / 2.0:
-		draw_rect(Rect2(-7, y, 14, 18), Color(0.5, 0.33, 0.18))
-		draw_rect(Rect2(-7, y, 14, 18), Color(0.25, 0.15, 0.08), false, 1.0)
-		draw_rect(Rect2(-7, y, 14, 3), Color(0.65, 0.45, 0.25))
-		y += 20.0
-	draw_rect(Rect2(-9, top - 4, 18, 6), Color(0.3, 0.2, 0.1))
-	draw_rect(Rect2(-9, gate_height / 2.0 - 2, 18, 6), Color(0.3, 0.2, 0.1))
+	var half: float = gate_height / 2.0
+	var p: float = -half
+	while p < half:
+		if horizontal:
+			draw_rect(Rect2(p, -9, 18, 18), Color(0.5, 0.33, 0.18))
+			draw_rect(Rect2(p, -9, 18, 18), Color(0.25, 0.15, 0.08), false, 1.0)
+			draw_rect(Rect2(p, -9, 3, 18), Color(0.65, 0.45, 0.25))
+		else:
+			draw_rect(Rect2(-7, p, 14, 18), Color(0.5, 0.33, 0.18))
+			draw_rect(Rect2(-7, p, 14, 18), Color(0.25, 0.15, 0.08), false, 1.0)
+			draw_rect(Rect2(-7, p, 14, 3), Color(0.65, 0.45, 0.25))
+		p += 20.0
+	if horizontal:
+		draw_rect(Rect2(-half - 4, -11, 6, 22), Color(0.3, 0.2, 0.1))
+		draw_rect(Rect2(half - 2, -11, 6, 22), Color(0.3, 0.2, 0.1))
+	else:
+		draw_rect(Rect2(-9, -half - 4, 18, 6), Color(0.3, 0.2, 0.1))
+		draw_rect(Rect2(-9, half - 2, 18, 6), Color(0.3, 0.2, 0.1))

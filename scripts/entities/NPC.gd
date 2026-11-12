@@ -15,6 +15,8 @@ const ICON_Y := -80.0   # di atas kepala, di atas label [E]
 @export var has_new_quest: bool = false: set = set_has_new_quest
 ## NPC pedagang: setelah dialog selesai, Kantong Pedagang (tab Toko) langsung terbuka.
 @export var opens_shop: bool = false
+## Warga desa chapter ini (>0): ikon "?" sampai diajak bicara; dihitung untuk syarat Quest Awal (requires_villagers).
+@export var villager_chapter: int = 0
 
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var interact_area: Area2D = $InteractArea
@@ -59,6 +61,10 @@ func _build_quest_icon() -> void:
 
 ## "!" = quest baru, "?" = quest akhir siap diserahkan (Kristal sudah di tangan).
 func _refresh_quest_icon() -> void:
+	if villager_chapter > 0:
+		quest_icon.text = "?"
+		set_has_new_quest(not QuestManager.has_talked_to_villager(villager_chapter, npc_id) and GameManager.get_quest_stage(villager_chapter) < 1)
+		return
 	if QuestManager.npc_has_quests(npc_id):
 		var stage: int = QuestManager.get_ready_stage(npc_id)
 		quest_icon.text = "?" if stage == QuestManager.Stage.AKHIR else "!"
@@ -101,12 +107,19 @@ func _on_body_exited(body: Node2D) -> void:
 		_update_hint()
 
 
+## Warga yang percakapannya sudah selesai tidak bisa diajak bicara lagi (sekali saja).
+func _villager_done() -> bool:
+	return villager_chapter > 0 and QuestManager.has_talked_to_villager(villager_chapter, npc_id)
+
+
 func _update_hint() -> void:
-	hint.visible = _player_in_range and not DialogManager.is_active
+	hint.visible = _player_in_range and not DialogManager.is_active and not _villager_done()
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not _player_in_range or DialogManager.is_active or not event.is_action_pressed("interact"):
+		return
+	if _villager_done():
 		return
 	var player: Node2D = get_tree().get_first_node_in_group("player") as Node2D
 	if player:
@@ -125,6 +138,9 @@ func _on_dialog_ended(finished_id: String) -> void:
 	_update_hint()
 	if finished_id == get_dialog_id():
 		dialog_finished.emit(npc_id)
+		if villager_chapter > 0:
+			QuestManager.mark_villager(villager_chapter, npc_id)
+			_update_hint()
 		if opens_shop:
 			GameManager.mark_met(npc_id)   # percakapan cukup sekali; berikutnya langsung buka toko
 			_open_shop.call_deferred()

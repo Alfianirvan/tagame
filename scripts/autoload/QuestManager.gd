@@ -95,11 +95,43 @@ func is_available(quest_id: String) -> bool:
 	return true
 
 
-## Siap dikerjakan: tersedia, dan (untuk quest akhir) Kristal sudah diambil.
+## Warga yang sudah diajak bicara di sebuah chapter (disimpan di GameManager.met_npcs, jadi ikut tersimpan di save).
+func villagers_talked(chapter: int) -> int:
+	var prefix: String = "warga_ch%d_" % chapter
+	var n: int = 0
+	for m: String in GameManager.met_npcs:
+		if m.begins_with(prefix):
+			n += 1
+	return n
+
+
+func has_talked_to_villager(chapter: int, npc_id: String) -> bool:
+	return GameManager.has_met("warga_ch%d_%s" % [chapter, npc_id])
+
+
+func mark_villager(chapter: int, npc_id: String) -> void:
+	GameManager.mark_met("warga_ch%d_%s" % [chapter, npc_id])
+	quests_changed.emit()    # ikon NPC, pelacak tujuan, dan panah ikut diperbarui
+
+
+## Teks tujuan untuk HUD / Catatan Misi; quest dengan syarat warga menampilkan hitungannya.
+func get_objective_text(quest_id: String) -> String:
+	var q: Dictionary = get_quest(quest_id)
+	var need: int = int(q.get("requires_villagers", 0))
+	if need > 0 and is_available(quest_id):
+		var have: int = villagers_talked(int(q.get("chapter", 0)))
+		if have < need:
+			return "Tanya warga tentang masalah desa (%d/%d)" % [have, need]
+	return String(q.get("objective", q.get("title", "")))
+
+
+## Siap dikerjakan: tersedia, cukup warga sudah diajak bicara, dan (untuk quest akhir) Kristal sudah diambil.
 func is_ready(quest_id: String) -> bool:
 	if not is_available(quest_id):
 		return false
 	var q: Dictionary = get_quest(quest_id)
+	if villagers_talked(int(q.get("chapter", 0))) < int(q.get("requires_villagers", 0)):
+		return false
 	return not bool(q.get("requires_crystal", false)) or GameManager.has_crystal(int(q["chapter"]))
 
 

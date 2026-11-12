@@ -1,4 +1,4 @@
-[gd_scene load_steps=127 format=3]
+[gd_scene load_steps=140 format=3]
 
 [ext_resource type="TileSet" path="res://assets/tilesets/desert_tileset.tres" id="ext_0"]
 [ext_resource type="Script" path="res://scripts/world/Region.gd" id="ext_1"]
@@ -19,6 +19,11 @@
 [ext_resource type="PackedScene" path="res://scenes/entities/Ore.tscn" id="ext_16"]
 [ext_resource type="Texture2D" path="res://assets/props/Rocks.png" id="ext_17"]
 
+[ext_resource type="Texture2D" path="res://assets/props/stations/Anvil/Anvil.png" id="decor_stations_Anvil_Anvil_png"]
+[ext_resource type="Texture2D" path="res://assets/props/stations/Furnace/Furnace.png" id="decor_stations_Furnace_Furnace_png"]
+[ext_resource type="Texture2D" path="res://assets/props/Furniture.png" id="decor_Furniture_png"]
+[ext_resource type="Texture2D" path="res://assets/props/stations/Workbench/Workbench.png" id="decor_stations_Workbench_Workbench_png"]
+[ext_resource type="Script" path="res://scripts/entities/Anvil.gd" id="decor_script_anvil"]
 [sub_resource type="RectangleShape2D" id="sub_1"]
 size = Vector2(8, 6)
 
@@ -342,6 +347,30 @@ size = Vector2(32, 4000)
 
 [sub_resource type="RectangleShape2D" id="sub_108"]
 size = Vector2(32, 4000)
+
+[sub_resource type="RectangleShape2D" id="decor_rect_71_12"]
+size = Vector2(71, 12)
+
+[sub_resource type="RectangleShape2D" id="decor_rect_29_12"]
+size = Vector2(29, 12)
+
+[sub_resource type="RectangleShape2D" id="decor_rect_6_6"]
+size = Vector2(6, 6)
+
+[sub_resource type="RectangleShape2D" id="decor_rect_16_7"]
+size = Vector2(16, 7)
+
+[sub_resource type="RectangleShape2D" id="decor_rect_40_11"]
+size = Vector2(40, 11)
+
+[sub_resource type="RectangleShape2D" id="decor_rect_28_12"]
+size = Vector2(28, 12)
+
+[sub_resource type="RectangleShape2D" id="decor_rect_88_12"]
+size = Vector2(88, 12)
+
+[sub_resource type="RectangleShape2D" id="decor_rect_30_12"]
+size = Vector2(30, 12)
 
 [node name="Ch2_TambangTumpuk" type="Node2D"]
 script = ExtResource("ext_1")
@@ -2197,3 +2226,424 @@ shape = SubResource("sub_107")
 [node name="Kanan" type="CollisionShape2D" parent="Bounds"]
 position = Vector2(2416.0, 2000.0)
 shape = SubResource("sub_108")
+[node name="Dekor_anvil_m_0" type="StaticBody2D" parent="Objects"]
+script = ExtResource("decor_script_anvil")
+position = Vector2(427, 311)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="Objects/Dekor_anvil_m_0"]
+texture = ExtResource("decor_stations_Anvil_Anvil_png")
+offset = Vector2(0, -28.0)
+region_enabled = true
+region_rect = Rect2(80, 36, 79, 56)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Objects/Dekor_anvil_m_0"]
+position = Vector2(0, -6.0)
+shape = SubResource("decor_rect_71_12")
+
+[node name="Dekor_furnace_stone_1" type="StaticBody2D" parent="Objects"]
+position = Vector2(521, 291)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="Objects/Dekor_furnace_stone_1"]
+texture = ExtResource("decor_stations_Furnace_Furnace_png")
+offset = Vector2(0, -24.5)
+region_enabled = true
+region_rect = Rect2(52, 15, 37, 49)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Objects/Dekor_furnace_stone_1"]
+position = Vector2(0, -6.0)
+shape = SubResource("decor_rect_29_12")
+
+[node name="Dekor_barrel_e_2" type="StaticBody2D" parent="Objects"]
+position = Vector2(560, 334)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="Objects/Dekor_barrel_e_2"]
+texture = ExtResource("decor_Furniture_png")
+offset = Vector2(0, -9.5)
+region_enabled = true
+region_rect = Rect2(785, 13, 14, 19)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Objects/Dekor_barrel_e_2"]
+position = Vector2(0, -3.0)
+shape = SubResource("decor_rect_6_6")
+
+[node name="Dekor_crate_a_3" type="StaticBody2D" parent="Objects"]
+position = Vector2(510, 371)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="Objects/Dekor_crate_a_3"]
+texture = ExtResource("decor_Furniture_png")
+offset = Vector2(0, -11.5)
+region_enabled = true
+region_rect = Rect2(720, 73, 24, 23)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Objects/Dekor_crate_a_3"]
+position = Vector2(0, -3.5)
+shape = SubResource("decor_rect_16_7")
+
+[node name="Dekor_workbench_4" type="StaticBody2D" parent="Objects"]
+position = Vector2(593, 2129)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="Objects/Dekor_workbench_4"]
+texture = ExtResource("decor_stations_Workbench_Workbench_png")
+offset = Vector2(0, -17.0)
+region_enabled = true
+region_rect = Rect2(48, 14, 48, 34)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Objects/Dekor_workbench_4"]
+position = Vector2(0, -5.5)
+shape = SubResource("decor_rect_40_11")
+
+[node name="Dekor_furnace_brick_5" type="StaticBody2D" parent="Objects"]
+position = Vector2(499, 2149)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="Objects/Dekor_furnace_brick_5"]
+texture = ExtResource("decor_stations_Furnace_Furnace_png")
+offset = Vector2(0, -28.5)
+region_enabled = true
+region_rect = Rect2(54, 71, 36, 57)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Objects/Dekor_furnace_brick_5"]
+position = Vector2(0, -6.0)
+shape = SubResource("decor_rect_28_12")
+
+[node name="Dekor_crate_b_6" type="StaticBody2D" parent="Objects"]
+position = Vector2(460, 2106)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="Objects/Dekor_crate_b_6"]
+texture = ExtResource("decor_Furniture_png")
+offset = Vector2(0, -11.5)
+region_enabled = true
+region_rect = Rect2(744, 73, 24, 23)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Objects/Dekor_crate_b_6"]
+position = Vector2(0, -3.5)
+shape = SubResource("decor_rect_16_7")
+
+[node name="Dekor_barrel_w_7" type="StaticBody2D" parent="Objects"]
+position = Vector2(510, 2069)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="Objects/Dekor_barrel_w_7"]
+texture = ExtResource("decor_Furniture_png")
+offset = Vector2(0, -9.5)
+region_enabled = true
+region_rect = Rect2(769, 13, 14, 19)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Objects/Dekor_barrel_w_7"]
+position = Vector2(0, -3.0)
+shape = SubResource("decor_rect_6_6")
+
+[node name="Dekor_anvil_l_8" type="StaticBody2D" parent="Objects"]
+script = ExtResource("decor_script_anvil")
+position = Vector2(1427, 3741)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="Objects/Dekor_anvil_l_8"]
+texture = ExtResource("decor_stations_Anvil_Anvil_png")
+offset = Vector2(0, -41.5)
+region_enabled = true
+region_rect = Rect2(176, 14, 96, 83)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Objects/Dekor_anvil_l_8"]
+position = Vector2(0, -6.0)
+shape = SubResource("decor_rect_88_12")
+
+[node name="Dekor_furnace_iron_9" type="StaticBody2D" parent="Objects"]
+position = Vector2(1521, 3721)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="Objects/Dekor_furnace_iron_9"]
+texture = ExtResource("decor_stations_Furnace_Furnace_png")
+offset = Vector2(0, -29.5)
+region_enabled = true
+region_rect = Rect2(53, 133, 38, 59)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Objects/Dekor_furnace_iron_9"]
+position = Vector2(0, -6.0)
+shape = SubResource("decor_rect_30_12")
+
+[node name="Dekor_barrel_e_10" type="StaticBody2D" parent="Objects"]
+position = Vector2(1560, 3764)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="Objects/Dekor_barrel_e_10"]
+texture = ExtResource("decor_Furniture_png")
+offset = Vector2(0, -9.5)
+region_enabled = true
+region_rect = Rect2(785, 13, 14, 19)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Objects/Dekor_barrel_e_10"]
+position = Vector2(0, -3.0)
+shape = SubResource("decor_rect_6_6")
+
+[node name="Dekor_crate_a_11" type="StaticBody2D" parent="Objects"]
+position = Vector2(1510, 3801)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="Objects/Dekor_crate_a_11"]
+texture = ExtResource("decor_Furniture_png")
+offset = Vector2(0, -11.5)
+region_enabled = true
+region_rect = Rect2(720, 73, 24, 23)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Objects/Dekor_crate_a_11"]
+position = Vector2(0, -3.5)
+shape = SubResource("decor_rect_16_7")
+
+[node name="Dekor_pot_12" type="StaticBody2D" parent="Objects"]
+position = Vector2(391, 2582)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="Objects/Dekor_pot_12"]
+texture = ExtResource("decor_Furniture_png")
+offset = Vector2(0, -8.0)
+region_enabled = true
+region_rect = Rect2(769, 80, 14, 16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Objects/Dekor_pot_12"]
+position = Vector2(0, -3.0)
+shape = SubResource("decor_rect_6_6")
+
+[node name="Dekor_crate_a_13" type="StaticBody2D" parent="Objects"]
+position = Vector2(453, 2566)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="Objects/Dekor_crate_a_13"]
+texture = ExtResource("decor_Furniture_png")
+offset = Vector2(0, -11.5)
+region_enabled = true
+region_rect = Rect2(720, 73, 24, 23)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Objects/Dekor_crate_a_13"]
+position = Vector2(0, -3.5)
+shape = SubResource("decor_rect_16_7")
+
+[node name="Dekor_bucket_14" type="StaticBody2D" parent="Objects"]
+position = Vector2(2081, 1562)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="Objects/Dekor_bucket_14"]
+texture = ExtResource("decor_Furniture_png")
+offset = Vector2(0, -7.5)
+region_enabled = true
+region_rect = Rect2(738, 17, 12, 15)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Objects/Dekor_bucket_14"]
+position = Vector2(0, -3.0)
+shape = SubResource("decor_rect_6_6")
+
+[node name="Dekor_barrel_e_15" type="StaticBody2D" parent="Objects"]
+position = Vector2(2143, 1546)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="Objects/Dekor_barrel_e_15"]
+texture = ExtResource("decor_Furniture_png")
+offset = Vector2(0, -9.5)
+region_enabled = true
+region_rect = Rect2(785, 13, 14, 19)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Objects/Dekor_barrel_e_15"]
+position = Vector2(0, -3.0)
+shape = SubResource("decor_rect_6_6")
+
+[node name="Dekor_bucket_16" type="StaticBody2D" parent="Objects"]
+position = Vector2(1076, 1750)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="Objects/Dekor_bucket_16"]
+texture = ExtResource("decor_Furniture_png")
+offset = Vector2(0, -7.5)
+region_enabled = true
+region_rect = Rect2(738, 17, 12, 15)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Objects/Dekor_bucket_16"]
+position = Vector2(0, -3.0)
+shape = SubResource("decor_rect_6_6")
+
+[node name="Dekor_pot_17" type="StaticBody2D" parent="Objects"]
+position = Vector2(1224, 1190)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="Objects/Dekor_pot_17"]
+texture = ExtResource("decor_Furniture_png")
+offset = Vector2(0, -8.0)
+region_enabled = true
+region_rect = Rect2(769, 80, 14, 16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Objects/Dekor_pot_17"]
+position = Vector2(0, -3.0)
+shape = SubResource("decor_rect_6_6")
+
+[node name="Dekor_bucket_18" type="StaticBody2D" parent="Objects"]
+position = Vector2(1274, 2330)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="Objects/Dekor_bucket_18"]
+texture = ExtResource("decor_Furniture_png")
+offset = Vector2(0, -7.5)
+region_enabled = true
+region_rect = Rect2(738, 17, 12, 15)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Objects/Dekor_bucket_18"]
+position = Vector2(0, -3.0)
+shape = SubResource("decor_rect_6_6")
+
+[node name="Dekor_barrel_e_19" type="StaticBody2D" parent="Objects"]
+position = Vector2(1526, 960)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="Objects/Dekor_barrel_e_19"]
+texture = ExtResource("decor_Furniture_png")
+offset = Vector2(0, -9.5)
+region_enabled = true
+region_rect = Rect2(785, 13, 14, 19)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Objects/Dekor_barrel_e_19"]
+position = Vector2(0, -3.0)
+shape = SubResource("decor_rect_6_6")
+
+[node name="Dekor_bucket_20" type="StaticBody2D" parent="Objects"]
+position = Vector2(1678, 3093)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="Objects/Dekor_bucket_20"]
+texture = ExtResource("decor_Furniture_png")
+offset = Vector2(0, -7.5)
+region_enabled = true
+region_rect = Rect2(738, 17, 12, 15)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Objects/Dekor_bucket_20"]
+position = Vector2(0, -3.0)
+shape = SubResource("decor_rect_6_6")
+
+[node name="Dekor_crate_a_21" type="StaticBody2D" parent="Objects"]
+position = Vector2(2021, 1391)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="Objects/Dekor_crate_a_21"]
+texture = ExtResource("decor_Furniture_png")
+offset = Vector2(0, -11.5)
+region_enabled = true
+region_rect = Rect2(720, 73, 24, 23)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Objects/Dekor_crate_a_21"]
+position = Vector2(0, -3.5)
+shape = SubResource("decor_rect_16_7")
+
+[node name="Dekor_crate_b_22" type="StaticBody2D" parent="Objects"]
+position = Vector2(395, 1538)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="Objects/Dekor_crate_b_22"]
+texture = ExtResource("decor_Furniture_png")
+offset = Vector2(0, -11.5)
+region_enabled = true
+region_rect = Rect2(744, 73, 24, 23)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Objects/Dekor_crate_b_22"]
+position = Vector2(0, -3.5)
+shape = SubResource("decor_rect_16_7")
+
+[node name="Dekor_crate_b_23" type="StaticBody2D" parent="Objects"]
+position = Vector2(1211, 2171)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="Objects/Dekor_crate_b_23"]
+texture = ExtResource("decor_Furniture_png")
+offset = Vector2(0, -11.5)
+region_enabled = true
+region_rect = Rect2(744, 73, 24, 23)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Objects/Dekor_crate_b_23"]
+position = Vector2(0, -3.5)
+shape = SubResource("decor_rect_16_7")
+
+[node name="Dekor_bucket_24" type="StaticBody2D" parent="Objects"]
+position = Vector2(1323, 917)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="Objects/Dekor_bucket_24"]
+texture = ExtResource("decor_Furniture_png")
+offset = Vector2(0, -7.5)
+region_enabled = true
+region_rect = Rect2(738, 17, 12, 15)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Objects/Dekor_bucket_24"]
+position = Vector2(0, -3.0)
+shape = SubResource("decor_rect_6_6")
+
+[node name="Dekor_crate_a_25" type="StaticBody2D" parent="Objects"]
+position = Vector2(1822, 1414)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="Objects/Dekor_crate_a_25"]
+texture = ExtResource("decor_Furniture_png")
+offset = Vector2(0, -11.5)
+region_enabled = true
+region_rect = Rect2(720, 73, 24, 23)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Objects/Dekor_crate_a_25"]
+position = Vector2(0, -3.5)
+shape = SubResource("decor_rect_16_7")
+
+[node name="Dekor_crate_a_26" type="StaticBody2D" parent="Objects"]
+position = Vector2(978, 2054)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="Objects/Dekor_crate_a_26"]
+texture = ExtResource("decor_Furniture_png")
+offset = Vector2(0, -11.5)
+region_enabled = true
+region_rect = Rect2(720, 73, 24, 23)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Objects/Dekor_crate_a_26"]
+position = Vector2(0, -3.5)
+shape = SubResource("decor_rect_16_7")
+
+[node name="Dekor_crate_a_27" type="StaticBody2D" parent="Objects"]
+position = Vector2(707, 2128)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="Objects/Dekor_crate_a_27"]
+texture = ExtResource("decor_Furniture_png")
+offset = Vector2(0, -11.5)
+region_enabled = true
+region_rect = Rect2(720, 73, 24, 23)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Objects/Dekor_crate_a_27"]
+position = Vector2(0, -3.5)
+shape = SubResource("decor_rect_16_7")

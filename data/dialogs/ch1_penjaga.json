@@ -1,0 +1,24 @@
+{
+  "lines": [
+    {
+      "speaker": "penjaga",
+      "text": "Berhenti dulu, Nak! Lumbung Dusun Larik kacau sejak semalam. Rak-rak benihnya tertukar semua."
+    },
+    {
+      "speaker": "penjaga",
+      "text": "Dulu tiap rak punya nomor urut: 0, 1, 2, 3, dan seterusnya. Kami tinggal sebut nomornya dan benih yang dicari langsung ketemu."
+    },
+    {
+      "speaker": "penjaga",
+      "text": "Sekarang nomornya acak, hasil panen pun hilang. Gara-gara Golem batu di hutan itu, kata orang-orang."
+    },
+    {
+      "speaker": "raka",
+      "text": "Nomor urut dari 0... seperti indeks pada array, ya."
+    },
+    {
+      "speaker": "penjaga",
+      "text": "Entahlah apa itu. Coba tanya Arman, dia yang paling tahu soal rak benih."
+    }
+  ]
+}

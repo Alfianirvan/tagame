@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/props/prefab_sprites/Dapur_Panggangan_Kecil.png" id="1"]
+
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(52, 44)
+
+[node name="Dapur_Panggangan_Kecil" type="StaticBody2D"]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sombra" type="Polygon2D" parent="."]
+color = Color(0, 0, 0, 0.26)
+polygon = PackedVector2Array(27.1, -4.4, 26.0, -3.2, 22.8, -2.0, 17.7, -1.1, 11.2, -0.4, 3.9, -0.0, -3.9, -0.0, -11.2, -0.4, -17.7, -1.1, -22.8, -2.0, -26.0, -3.2, -27.1, -4.4, -26.0, -5.6, -22.8, -6.8, -17.7, -7.7, -11.2, -8.4, -3.9, -8.8, 3.9, -8.8, 11.2, -8.4, 17.7, -7.7, 22.8, -6.8, 26.0, -5.6)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1")
+offset = Vector2(0, -22.0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -22.0)
+shape = SubResource("1")

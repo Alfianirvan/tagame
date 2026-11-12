@@ -11,8 +11,12 @@ const FONT := preload("res://assets/fonts/Square-Black.ttf")
 ## Isi bila ingin menimpa scene tujuan (kosong = pakai chapters.json).
 @export_file("*.tscn") var target_scene: String = ""
 @export var sign_text: String = "Kembali ke Desa"
+## Berpindah otomatis saat Raka melangkah ke papan ini (tanpa menekan E), ke depan maupun mundur.
+## Setelah muncul di dekat papan, Raka harus menjauh dulu (supaya tidak langsung terlempar balik).
+@export var auto_forward: bool = true
 
 var _player_in_range: bool = false
+var _armed: bool = false        # pindah otomatis baru aktif setelah Raka pernah berada di luar area papan
 var _hint: Label
 var _chapters: Dictionary = {}
 
@@ -41,10 +45,16 @@ func _ready() -> void:
 	add_child(_hint)
 	body_entered.connect(func(b: Node2D) -> void: _set_range(b, true))
 	body_exited.connect(func(b: Node2D) -> void: _set_range(b, false))
-	GameManager.quest_stage_changed.connect(func(_c: int, _s: int) -> void: _refresh())
+	GameManager.quest_stage_changed.connect(func(_c: int, _s: int) -> void:
+		_refresh()
+		if _player_in_range and _armed and _is_auto() and not is_locked():
+			_travel.call_deferred())
 	GameManager.chapter_changed.connect(func(_c: int) -> void: _refresh())  # chapter aktif baru ditetapkan Region setelah node ini siap
 	z_index = 1
 	_refresh()
+	get_tree().create_timer(0.6).timeout.connect(func() -> void:
+		if not _player_in_range:
+			_armed = true)
 
 
 ## Maju ke chapter berikutnya terkunci sampai chapter sebelumnya tuntas.
@@ -72,7 +82,11 @@ func _lock_text() -> String:
 
 func _refresh() -> void:
 	modulate = Color(0.65, 0.65, 0.65) if is_locked() else Color.WHITE
-	_hint.text = _lock_text() if is_locked() else "E: %s" % sign_text
+	_hint.text = _lock_text() if is_locked() else ("%s" % sign_text if _is_auto() else "E: %s" % sign_text)
+
+
+func _is_auto() -> bool:
+	return auto_forward
 
 
 func _set_range(body: Node2D, inside: bool) -> void:
@@ -80,6 +94,10 @@ func _set_range(body: Node2D, inside: bool) -> void:
 		_player_in_range = inside
 		_refresh()
 		_hint.visible = inside
+		if not inside:
+			_armed = true
+		elif _armed and _is_auto():
+			_travel.call_deferred()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -88,6 +106,13 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not event.is_action_pressed("interact"):
 		return
 	get_viewport().set_input_as_handled()
+	_travel()
+
+
+## Pindah ke wilayah tujuan (dipanggil E atau otomatis saat Raka melangkah ke sini).
+func _travel() -> void:
+	if SceneManager.is_changing or DialogManager.is_active or QuestManager.quiz_active:
+		return
 	if is_locked():
 		AudioManager.play_sfx("menu_batal")
 		return
@@ -95,6 +120,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	if path == "" or not ResourceLoader.exists(path):
 		FloatingText.spawn(get_parent(), global_position + Vector2(-50, -60), "Wilayah ini belum tersedia.", Color(1, 0.8, 0.5), 2.2)
 		return
+	# Mundur ke chapter sebelumnya: wilayah tujuan memunculkan Raka di dekat papan jalan ke chapter ini, bukan di titik awal.
+	GameManager.return_from_chapter = GameManager.current_chapter if to_chapter < GameManager.current_chapter else -1
 	# Tabrakan tidak mengunci kontrol saat berpindah; fade SceneManager yang menahan klik.
 	SceneManager.change_scene(path)
 
