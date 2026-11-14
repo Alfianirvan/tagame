@@ -178,6 +178,9 @@ func _guide_point(target_screen: Vector2) -> Vector2:
 	if scene == null or player == null or not ("guide_route" in scene):
 		return target_screen
 	var route: PackedVector2Array = scene.guide_route
+	# setelah Kristal didapat: pakai jalur pintas (bila ada) supaya Raka dituntun pulang lewat jalan pintas
+	if "shortcut_route" in scene and (scene.shortcut_route as PackedVector2Array).size() >= 4 and GameManager.has_crystal(int(scene.chapter)):
+		route = scene.shortcut_route
 	if route.size() < 4:
 		return target_screen
 	var ip: int = _nearest_index(route, player.global_position)

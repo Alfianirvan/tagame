@@ -11,6 +11,8 @@ const DUST := preload("res://assets/ninja/fx/Smoke/Smoke/SpriteSheet.png")
 @export var chapter: int = 2
 @export var required_stage: int = 2
 @export var locked_text: String = ""
+## Teks melayang di atas Raka saat penghalang terbuka (kosong = tanpa teks).
+@export var opened_text: String = ""
 ## Ukuran area peringatan (teks muncul saat Raka mendekat dan masih tertutup).
 @export var hint_size: Vector2 = Vector2(140, 120)
 
@@ -35,6 +37,10 @@ func _refresh(animate: bool) -> void:
 	if is_open or not _condition():
 		return
 	is_open = true
+	if animate and opened_text != "":
+		var pl: Node2D = get_tree().get_first_node_in_group("player") as Node2D
+		if pl:
+			FloatingText.spawn(get_parent(), pl.global_position + Vector2(0, -44), opened_text, Color(1, 0.9, 0.6), 3.0)
 	for c in get_children():
 		if c is CollisionObject2D:
 			(c as CollisionObject2D).set_deferred("collision_layer", 0)
