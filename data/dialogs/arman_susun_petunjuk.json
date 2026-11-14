@@ -1,0 +1,28 @@
+{
+  "lines": [
+    {
+      "speaker": "arman",
+      "text": "Kamu menyelamatkan ketiganya! Ceritakan petunjuk mereka... baik, kususun satu per satu."
+    },
+    {
+      "speaker": "arman",
+      "text": "Bu Rani: indeks pertama sebuah array adalah 0."
+    },
+    {
+      "speaker": "arman",
+      "text": "Pak Darso: obor dinyalakan berurutan dari indeks terkecil ke terbesar."
+    },
+    {
+      "speaker": "arman",
+      "text": "Tami: ada lima obor, jadi indeksnya 0 sampai 4. Indeks terakhir = jumlah elemen dikurangi satu."
+    },
+    {
+      "speaker": "arman",
+      "text": "Jadi obor di gerbang arena itu sebuah array: obor[0], obor[1], obor[2], obor[3], obor[4]. Nyalakan tepat dengan urutan itu."
+    },
+    {
+      "speaker": "arman",
+      "text": "Kabut di jalan utara sudah kusingkirkan. Gerbang arena ada di pusat hutan, di dekat api unggun terakhir. Pergilah!"
+    }
+  ]
+}

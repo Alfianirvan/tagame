@@ -1,0 +1,20 @@
+{
+  "lines": [
+    {
+      "speaker": "tetua",
+      "text": "Segelnya pudar... Akhirnya kami bebas. Akulah tetua Desa 4. Terima kasih, Raka."
+    },
+    {
+      "speaker": "tetua",
+      "text": "Kristal Array menjaga keteraturan: setiap rak, obor, dan rumah di hutan ini punya nomor urut, dan semuanya dimulai dari nol."
+    },
+    {
+      "speaker": "tetua",
+      "text": "Rangkumannya: Array menyimpan elemen berurutan, setiap elemen diambil langsung lewat indeksnya, dan indeks terakhir adalah ukuran dikurangi satu."
+    },
+    {
+      "speaker": "tetua",
+      "text": "Sebelum kuberi hadiah, jawab dua pertanyaan terakhir ini."
+    }
+  ]
+}

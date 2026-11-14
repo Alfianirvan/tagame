@@ -9,6 +9,10 @@ signal puzzle_solved
 @export var puzzle_scene: PackedScene
 @export var chapter: int = 1
 @export var station_label: String = "Puzzle"
+## Bila diisi: puzzle menyelesaikan langkah quest (flag cerita ini), bukan Quest Tengah. Lihat PuzzleBase.complete_flag.
+@export var complete_flag: String = ""
+## Langkah quest yang harus sudah terbuka ("quest_id:step_id"), kosong = cukup Quest Awal selesai.
+@export var required_step: String = ""
 
 const FONT := preload("res://assets/fonts/Square-Black.ttf")
 const REOPEN_GUARD_MSEC := 300
@@ -62,6 +66,12 @@ func _update_hint() -> void:
 func _block_reason() -> String:
 	if GameManager.get_quest_stage(chapter) < 1:
 		return "Selesaikan Quest Awal dulu"
+	if complete_flag != "":
+		if GameManager.has_story_flag(complete_flag):
+			return "Puzzle sudah selesai"
+		if required_step != "" and not QuestManager.is_step_unlocked(required_step.get_slice(":", 0), required_step.get_slice(":", 1)):
+			return "Belum saatnya"
+		return ""
 	if GameManager.get_quest_stage(chapter) >= 2:
 		return "Puzzle sudah selesai"      # jawaban tersimpan: tidak perlu mengulang
 	return ""
@@ -88,6 +98,7 @@ func _open() -> void:
 	if _puzzle == null:
 		_puzzle = puzzle_scene.instantiate() as PuzzleBase
 		_puzzle.chapter = chapter
+		_puzzle.complete_flag = complete_flag
 		_puzzle.solved.connect(func() -> void: puzzle_solved.emit())
 		_puzzle.closed.connect(_on_puzzle_closed)
 		add_child(_puzzle)

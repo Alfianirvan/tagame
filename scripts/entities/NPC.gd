@@ -17,6 +17,8 @@ const ICON_Y := -80.0   # di atas kepala, di atas label [E]
 @export var opens_shop: bool = false
 ## Warga desa chapter ini (>0): ikon "?" sampai diajak bicara; dihitung untuk syarat Quest Awal (requires_villagers).
 @export var villager_chapter: int = 0
+## NPC baru muncul setelah flag cerita ini disetel (mis. Tetua Desa 4 setelah segel pudar). Kosong = selalu ada.
+@export var hidden_until_flag: String = ""
 
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var interact_area: Area2D = $InteractArea
@@ -42,6 +44,23 @@ func _ready() -> void:
 	# Ikon "!" mengikuti status quest bila NPC ini punya quest di quests.json
 	QuestManager.quests_changed.connect(_refresh_quest_icon)
 	_refresh_quest_icon()
+	if hidden_until_flag != "":
+		GameManager.story_flag_set.connect(func(_f: String) -> void: _refresh_presence(true))
+		_refresh_presence(false)
+
+
+## Sembunyikan NPC (tanpa tabrakan & interaksi) sampai flag `hidden_until_flag` disetel, lalu muncul memudar.
+func _refresh_presence(animate: bool) -> void:
+	var present: bool = GameManager.has_story_flag(hidden_until_flag)
+	if present and visible and process_mode != Node.PROCESS_MODE_DISABLED:
+		return
+	visible = present
+	process_mode = Node.PROCESS_MODE_INHERIT if present else Node.PROCESS_MODE_DISABLED
+	collision_layer = 1 if present else 0
+	interact_area.set_deferred("monitoring", present)
+	if present and animate:
+		modulate.a = 0.0
+		create_tween().tween_property(self, "modulate:a", 1.0, 1.2)
 
 
 func _build_quest_icon() -> void:

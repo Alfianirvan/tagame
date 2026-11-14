@@ -1,0 +1,12 @@
+{
+  "lines": [
+    {
+      "speaker": "narator",
+      "text": "Catatan sobek milik Arman di dekat dapur umum: \"Lumbung Desa 2 punya 5 rak bernomor 0 sampai 4. Sumurnya tercemar sejak raknya kacau.\""
+    },
+    {
+      "speaker": "raka",
+      "text": "Lima rak, nomor 0 sampai 4. Jadi nomor terakhir = jumlah rak dikurangi satu."
+    }
+  ]
+}

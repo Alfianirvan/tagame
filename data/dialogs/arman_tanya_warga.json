@@ -2,11 +2,15 @@
   "lines": [
     {
       "speaker": "arman",
-      "text": "Raka! Aku sedang pusing memikirkan rak-rak benihku, tapi aku belum tahu seberapa parah kekacauannya di dusun."
+      "text": "Raka! Syukurlah kamu datang. Goblin menyerbu Dusun Larik sejak pagi!"
     },
     {
       "speaker": "arman",
-      "text": "Tolong tanyakan dulu ke warga: penjaga lumbung, penebang kayu, atau Bu Sari. Setelah itu kembalilah, kita bicara serius."
+      "text": "Usir dulu Goblin di selatan desa. Setelah aman, tanyai warga: penjaga lumbung, penebang kayu, dan Bu Sari."
+    },
+    {
+      "speaker": "arman",
+      "text": "Mereka melihat sesuatu. Cari petunjuk di pinggiran desa, lalu kembali padaku."
     }
   ]
 }

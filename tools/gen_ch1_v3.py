@@ -34,6 +34,9 @@ dist_to, dilate, erode, b64cells, tpx = v2mod.dist_to, v2mod.dilate, v2mod.erode
 C = (104, 102)                                       # pusat dusun (tile)
 D2 = (160, 85)                                       # pusat Desa 2 (timur, tercemar)
 D3 = (43, 87)                                        # pusat Desa 3 (barat, porak-poranda)
+D4 = (136, 22)                                       # pusat Desa 4 (utara, kubah segel) = titik_tile desa4
+D4_RX, D4_RY = 150, 112                              # jari-jari kubah segel (px)
+ARENA_CURSE = (640, 500)                             # ukuran tekstur tanah terkutuk arena (tools/make_cursed_ground.py)
 CX, CY = C[0] * TILE + 8, C[1] * TILE + 8            # pusat dusun (px)
 DIRS8 = [(0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1)]
 PREFAB_SIZE = {}                                     # nama prefab -> (lebar, tinggi) sprite (dari _prefabs.json)
@@ -200,6 +203,11 @@ def build():
     ring3 |= land & (gx < D3[0] * TILE + 8 - 23.0 * TILE) & (np.abs(gy - (D3[1] * TILE + 8)) < 21.5 * TILE)
     ring2 |= land & (gx > D2[0] * TILE + 8 + 23.0 * TILE) & (np.abs(gy - (D2[1] * TILE + 8)) < 21.5 * TILE)
     no_trees = (e2 < 1.1) | (e3 < 1.1)
+    # tanah terkutuk arena & kubah Desa 4: tanpa kelompok pohon
+    ac = P["boss_arena"]
+    no_trees |= np.hypot((gx - ac[0]) / (ARENA_CURSE[0] / 2 + 16), (gy - ac[1]) / (ARENA_CURSE[1] / 2 + 16)) < 1.0
+    e4 = np.hypot((gx - (D4[0] * TILE + 8)) / (D4_RX + 70), (gy - (D4[1] * TILE + 8)) / (D4_RY + 60))
+    no_trees |= e4 < 1.0
     pond = np.hypot((gx - (D2[0] * TILE + 8 + 13.5 * TILE)) / (4.4 * TILE), (gy - (D2[1] * TILE + 8 + 3.5 * TILE)) / (3.2 * TILE)) < 1.0
     nz = organic.smooth_noise(gx, gy, 6)
     tainted = (e2 + 0.10 * nz) < 0.88                               # tanah tercemar Desa 2
@@ -222,7 +230,10 @@ def build():
 
     road_e = winding(tp(27, 0), (D2[0] * TILE + 8, D2[1] * TILE + 8), 90, 41)
     road_w = winding(tp(-17, 0), (D3[0] * TILE + 8, D3[1] * TILE + 8), 80, 43)
-    roads_all = np.vstack([road_e, road_w])
+    # jalan setapak Desa 4: dari jalur utama (sesudah arena) naik ke kaki kubah segel
+    j4 = route[route_i((127 * TILE + 8, 38 * TILE + 8))]
+    road_4 = winding((float(j4[0]), float(j4[1])), (D4[0] * TILE + 8, D4[1] * TILE + 8 + D4_RY + 20), 40, 47, n=5)
+    roads_all = np.vstack([road_e, road_w, road_4])
 
     # ------------------------------------------------------------ sungai + jembatan di START (selatan), sejajar sumbu
     rivers = []
@@ -326,6 +337,12 @@ def build():
     animal_script = sc.ext_res("Script", "res://scripts/world/Animal.gd")
     animprop_script = sc.ext_res("Script", "res://scripts/world/AnimProp.gd")
     atmos_script = sc.ext_res("Script", "res://scripts/world/Atmosphere.gd")
+    clue_script = sc.ext_res("Script", "res://scripts/world/Clue.gd")
+    watcher_script = sc.ext_res("Script", "res://scripts/world/EventWatcher.gd")
+    torch_script = sc.ext_res("Script", "res://scripts/puzzles/TorchSeal.gd")
+    dome_script = sc.ext_res("Script", "res://scripts/world/SealDome.gd")
+    altar_script = sc.ext_res("Script", "res://scripts/world/Altar.gd")
+    tint_script = sc.ext_res("Script", "res://scripts/world/FlagTint.gd")
 
     sc.node("Ch1_HutanIndeks", "Node2D", script=f'ExtResource("{script}")', chapter="1", music_name='"ch1_hutan_indeks"',
             boss_music_name='"boss"', opening_story="true",
@@ -421,7 +438,6 @@ def build():
     inst("Bonfire3", bonfire_scene, bf3)
     inst("Checkpoint1", checkpoint_scene, cp1)
     inst("Checkpoint2", checkpoint_scene, cp2)
-    inst("StasiunRak", station_scene, P["puzzle"], puzzle_scene=f'ExtResource("{puzzle_scene}")', chapter="1", station_label='"Rak Benih"')
     def cloud_barrier(name, cells_mask, mode, dist, text="", **props):
         """Awan ber-collision: node CloudBarrier + anak Block (TileMapLayer tak terlihat)."""
         pts = thin_cells(cells_mask, dist)
@@ -436,10 +452,13 @@ def build():
     n_cb = cloud_barrier("AwanPerbatasan", cloud_b, "chapter", 46)
     n_c2 = cloud_barrier("AwanDesa2", ring2, "stage", 40, "Kabut ungu pekat menghalangi.\nBantu Arman dulu.", required_stage="1",
                          tint="Color(0.82, 0.72, 0.95, 1)", scale_min="1.3", scale_max="1.9")
-    n_c3 = cloud_barrier("AwanDesa3", ring3, "stage", 40, "Asap hitam menghalangi.\nBantu Arman dulu.", required_stage="1",
+    n_c3 = cloud_barrier("AwanDesa3", ring3, "flag", 40, "Asap hitam menghalangi.\nLapor dulu kepada Arman.", required_stage="2",
+                         required_flag='"ch1_lapor_desa2"',
                          tint="Color(0.62, 0.6, 0.62, 1)", scale_min="1.3", scale_max="1.9")
-    n_cd = cloud_barrier("AwanGerbangDesa", bands["desa"], "stage", 40, "Kabut tebal menghalangi.\nBantu Arman dulu.", required_stage="1")
-    n_ca = cloud_barrier("AwanGerbangArena", bands["arena"], "stage", 40, "Kabut tebal menghalangi.\nSelesaikan Quest Tengah.", required_stage="2")
+    n_cd = cloud_barrier("AwanGerbangDesa", bands["desa"], "flag", 40, "Kabut tebal menghalangi.\nArman belum menyusun petunjuk.",
+                         required_stage="2", required_flag='"ch1_petunjuk_disusun"')
+    n_ca = cloud_barrier("AwanGerbangArena", bands["arena"], "stage", 24, "Segel kabut arena.\nNyalakan obor segel dulu.", required_stage="2",
+                         scale_min="1.3", scale_max="1.7")
     inst("PulangBarat", exit_scene, exit_south, to_chapter="0", sign_text='"Kembali ke Desa Algoria"')
     inst("PulangTimur", exit_scene, tuple(int(v) for v in P["exit"]), to_chapter="2", sign_text='"Ke Tambang Tumpuk"')
     # perkemahan kecil di Bonfire pra-boss & pasca-boss (prefab)
@@ -485,6 +504,14 @@ def build():
     inst("BonfireDesa2", bonfire_scene, d2(-2.5, 7.8))
     inst("BenderaDesa2", checkpoint_scene, d2(-14.5, 5.2))
     inst("PetiDesa2", chest_scene, d2(1.5, 13.0), roll_count="2")
+    # puzzle rak lumbung (Quest Tengah langkah 1): memurnikan sumur Desa 2
+    inst("StasiunRak", station_scene, d2(7.5, 12.8), puzzle_scene=f'ExtResource("{puzzle_scene}")', chapter="1",
+         station_label='"Rak Lumbung"', complete_flag='"ch1_sumur_murni"', required_step='"ch1_tengah:desa2"')
+    npc_positions.append(("Rak", d2(7.5, 12.8)))
+    tint_targets = ", ".join(f'"{n}"' for n in ("Tercemar", "AirUngu", "D2Sumur", "D2Barel", "D2Guci", "D2Kincir",
+                                                  "D2Rumah1", "D2Rumah2", "D2Rumah3", "D2Lumbung"))
+    sc.node("Desa2Pulih", "Node", ".", script=f'ExtResource("{tint_script}")', flag='"ch1_sumur_murni"',
+            target_names=f"PackedStringArray({tint_targets})")
 
     prefab("D3Ruina1", "Ruina_1", d3(-9.5, -5.5))
     prefab("D3Ruina2", "Ruina_3", d3(9.5, -6.5))
@@ -515,6 +542,75 @@ def build():
         npc_positions.append((nm, pos))
     npc_positions += [("Bf2", d2(-2.5, 7.8)), ("Bf3", d3(0.2, 9.0)), ("Fl2", d2(-14.5, 5.2)), ("Fl3", d3(14.5, 6.0))]
 
+    # ------------------------------------------------------------ ARENA GOLEM: tanah terkutuk, obor segel, bendera, Skeleton
+    def land_ok_px(x_, y_):
+        tx2_, ty2_ = int(x_ // TILE), int(y_ // TILE)
+        return 0 <= tx2_ < W and 0 <= ty2_ < H and corridor[tx2_, ty2_] and not water[tx2_, ty2_]
+
+    def before_arena(tiles, side=0, off=0):
+        """Titik rute `tiles` tile sebelum pusat arena (diukur lurus), digeser ke samping `side*off` px."""
+        k = i_boss
+        while k > 0 and math.hypot(route[k][0] - P["boss_arena"][0], route[k][1] - P["boss_arena"][1]) < tiles * TILE:
+            k -= 1
+        return at(k, k, 0, side, off)
+
+    ax, ay = int(P["boss_arena"][0]), int(P["boss_arena"][1])
+    curse_tex = sc.ext_res("Texture2D", "res://assets/props/generated/cursed_arena.png")
+    sc.node("TanahKutukArena", "Sprite2D", "Decor", texture=f'ExtResource("{curse_tex}")', position=v2(ax, ay))
+    torch_c = before_arena(14.2, -1, 130)   # di sisi jalan, terpisah dari perkemahan Bonfire pra-boss
+    sc.node("OborSegel", "Node2D", "Objects", script=f'ExtResource("{torch_script}")', position=v2(*torch_c))
+    for k_ in range(5):
+        buildings.append((torch_c[0] - 72 + 36 * k_, torch_c[1], 12, 20))
+    cp_curse = before_arena(18.0, -1, 48)    # di luar pita kabut jalan utara (baris 68-70)
+    cp_arena = before_arena(13.5, -1, 70)
+    inst("BenderaKutuk", checkpoint_scene, cp_curse)
+    inst("BenderaArena", checkpoint_scene, cp_arena)
+    npc_positions += [("Obor", torch_c), ("FlKutuk", cp_curse), ("FlArena", cp_arena)]
+    # dekorasi kutukan di sekitar arena (tidak memudar; arena tetap bekas pertempuran)
+    curse_deco = ["Kutuk_TanamanMata_1", "Kutuk_TanamanMata_2", "Kutuk_BanyakMata", "Kutuk_BatuMata", "Kutuk_Batu_1",
+                  "Kutuk_Batu_2", "Kutuk_Tentakel", "Kutuk_Tulang_1", "Kutuk_Tulang_2", "Kutuk_Tulang_3"]
+    arena_deco = []
+    for k_ in range(26):
+        ang = rng.random() * math.tau
+        rr = rng.uniform(10.5, 18.0)
+        x_ = round(ax + math.cos(ang) * rr * TILE * 1.0)
+        y_ = round(ay + math.sin(ang) * rr * TILE * 0.75)
+        tx_, ty_ = int(x_ // TILE), int(y_ // TILE)
+        pref = curse_deco[k_ % len(curse_deco)]
+        pw_, ph_ = PREFAB_SIZE.get(pref, (16, 16))
+        if not all(land_ok_px(x_ + ox_, y_ + oy_) for ox_, oy_ in ((0, 0), (-pw_ / 2, 0), (pw_ / 2, 0), (-pw_ / 2, -ph_ * 0.6), (pw_ / 2, -ph_ * 0.6))):
+            continue
+        if float(d_route[tx_, ty_]) < 40 or any(math.hypot(x_ - qx, y_ - qy) < 46 for qx, qy in arena_deco):
+            continue
+        if any(math.hypot(x_ - vx, y_ - vy) < 70 for vx, vy in (torch_c, cp_curse, cp_arena, bf_pre)):
+            continue
+        prefab(f"KutukArena{k_}", pref, (x_, y_), solid=not pref.startswith("Kutuk_Tulang"))
+        arena_deco.append((x_, y_))
+
+    # ------------------------------------------------------------ DESA 4 (utara): kubah segel, reruntuhan, altar, tetua
+    def d4(dx, dy):
+        return (round(D4[0] * TILE + 8 + dx * TILE), round(D4[1] * TILE + 8 + dy * TILE))
+
+    d4tex = sc.ext_res("Texture2D", "res://assets/props/generated/cursed_desa4.png")
+    sc.node("D4KutukTanah", "Sprite2D", "Decor", texture=f'ExtResource("{d4tex}")', position=v2(*d4(0, 0)))
+    prefab("D4Altar", "Altar_Segel", d4(0, 0.5))
+    sc.node("AltarSegel", "Area2D", "Objects", script=f'ExtResource("{altar_script}")', position=v2(*d4(0, 0.5)))
+    for nm, pref, (dx, dy) in (("D4Ruina1", "Ruina_2", (-6.0, -3.2)), ("D4Ruina2", "Ruina_1", (5.6, -3.6)),
+                               ("D4Ruina3", "Ruina_3", (-6.4, 4.2)), ("D4Pilar1", "Pilar_Lumut", (-2.4, -2.0)),
+                               ("D4Pilar2", "Pilar_Lumut", (2.4, -2.0)), ("D4Pilar3", "Pilar_Lumut", (6.0, 3.6))):
+        prefab(nm, pref, d4(dx, dy))
+    for k_, (pref, (dx, dy)) in enumerate((("Kutuk_Reruntuhan_1", (3.6, 4.6)), ("Kutuk_Reruntuhan_2", (-3.4, 5.0)),
+                                           ("Kutuk_TanamanMata_1", (-7.6, 0.6)), ("Kutuk_BanyakMata", (7.4, 0.2)),
+                                           ("Kutuk_Tulang_1", (-1.8, 3.0)), ("Kutuk_Tulang_3", (2.0, 2.8)),
+                                           ("Kutuk_BatuMata", (0.4, -4.6)), ("Kutuk_Tentakel", (-4.6, -0.6)))):
+        prefab(f"D4Kutuk{k_}", pref, d4(dx, dy), solid=False)
+    inst("Tetua", npc_scene, d4(2.6, 1.6), npc_id='"tetua"', hidden_until_flag='"ch1_segel_pudar"')
+    sc.node("KubahSegel", "Node2D", ".", script=f'ExtResource("{dome_script}")', position=v2(*d4(0, 0)),
+            radius_x=str(float(D4_RX)), radius_y=str(float(D4_RY)))
+    prefab("PapanDesa4", "Papan_Kanan", (round(j4[0]) + 30, round(j4[1]) - 18), solid=False)
+    npc_positions += [("Tetua", d4(2.6, 1.6)), ("Altar", d4(0, 0.5))]
+    extra_keypts = [torch_c, cp_curse, cp_arena, d4(0, 0)]
+
     # ------------------------------------------------------------ pohon (bersih 4 tile dari bangunan)
     cells = {"m1a": ("Trees/Model_01/Size_03.png", (0, 0, 48, 96)), "m1b": ("Trees/Model_01/Size_03.png", (48, 0, 96, 96)),
              "m2a": ("Trees/Model_02/Size_03.png", (0, 0, 48, 80)), "m2b": ("Trees/Model_02/Size_03.png", (0, 80, 48, 160))}
@@ -533,7 +629,7 @@ def build():
                 return True
         return False
 
-    keypts = list(P.values()) + [cp1, cp2, bf3, gate_a, (CX, gate_v_y), start, bf1]
+    keypts = list(P.values()) + [cp1, cp2, bf3, gate_a, (CX, gate_v_y), start, bf1] + extra_keypts
     inner = erode(corridor, 2)
     placed_t = []
     tnum = 0
@@ -675,6 +771,10 @@ def build():
         inst(nm, checkpoint_scene, tp(dx, dy))
     for i, (dx, dy) in enumerate(((-5, 17.6), (5.2, 18.4), (-2.5, 19.6), (3.0, 16.8))):
         inst(f"GoblinEvent{i + 1}", enemy_scene, tp(dx, dy), enemy_id='"orc"', damage_scale="0.6")
+    sc.node("SeranganGoblin", "Node2D", ".", script=f'ExtResource("{watcher_script}")', position=v2(*tp(0, 17.5)))
+    for k_, (ck, (dx, dy)) in enumerate((("barang", (19.6, 15.4)), ("catatan", (-14.2, -11.0)), ("jejak", (31.6, -4.6))), start=1):
+        sc.node(f"Petunjuk{k_}", "Area2D", "Objects", script=f'ExtResource("{clue_script}")', position=v2(*tp(dx, dy)),
+                flag=f'"ch1_petunjuk_{k_}"', dialog_id=f'"ch1_petunjuk_{k_}"', required_step='"ch1_awal:petunjuk"', clue_kind=f'"{ck}"')
     sc.node("Suasana", "Node2D", ".", script=f'ExtResource("{atmos_script}")')
 
     # ------------------------------------------------------------ musuh, peti, collectible
@@ -769,6 +869,14 @@ def build():
     for k, (dx, dy, eid) in enumerate(((-6, -1, "orc_warrior"), (5, 0, "orc_warrior"), (2, -9, "orc_warrior"),
                                        (-10, 2, "orc_shaman"), (9, 3, "orc_shaman"))):
         mob(f"D3Musuh{k + 1}", eid, d3(dx, dy))
+    # tanah terkutuk sekitar arena: Skeleton (kuat), di luar cincin awan arena dan jauh dari obor/bendera
+    for k, (ang, rr, eid) in enumerate(((200, 13, "skeleton"), (240, 15, "skeleton_warrior"), (300, 12.5, "skeleton_rogue"),
+                                        (20, 14, "skeleton"), (60, 13.5, "skeleton_mage"), (120, 15, "skeleton_warrior"),
+                                        (160, 12, "skeleton_rogue"))):
+        x_ = ax + math.cos(math.radians(ang)) * rr * TILE
+        y_ = ay + math.sin(math.radians(ang)) * rr * TILE * 0.75
+        if all(math.hypot(x_ - vx, y_ - vy) > 90 for vx, vy in (torch_c, cp_curse, cp_arena, bf_pre)):
+            mob(f"Kerangka{k + 1}", eid, (x_, y_))
 
     # ------------------------------------------------------------ jembatan, marker, pemain, batas
     for r in rivers:
@@ -781,8 +889,6 @@ def build():
     sc.node("BossSpawn", "Marker2D", ".", position=v2(*[int(v) for v in P["boss_arena"]]))
     sc.node("NPCSpawns", "Node2D", ".")
     sc.node("Arman", "Marker2D", "NPCSpawns", position=v2(door_x + 38, door_y + 18), **{"metadata/npc_id": '"arman"'})
-    sc.node("FinalNPCs", "Node2D", ".")
-    sc.node("Arman", "Marker2D", "FinalNPCs", position=v2(*at(i_boss, i_exit, 0.5, -1, 64)), **{"metadata/npc_id": '"arman"'})
     sc.nodes.append(f'[node name="Player" parent="Objects" instance=ExtResource("{player_scene}")]\nposition = {v2(*start)}\n')
     sc.node("Bounds", "StaticBody2D", ".", collision_layer=1, collision_mask=0)
     t = 32

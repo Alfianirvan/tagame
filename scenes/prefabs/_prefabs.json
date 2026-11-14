@@ -488,6 +488,118 @@
   "cdx": 0
  },
  {
+  "name": "Altar_Segel",
+  "w": 30,
+  "h": 30,
+  "cw": 24,
+  "ch": 10,
+  "cdx": 0
+ },
+ {
+  "name": "Pilar_Lumut",
+  "w": 16,
+  "h": 42,
+  "cw": 12,
+  "ch": 8,
+  "cdx": 0
+ },
+ {
+  "name": "Kutuk_TanamanMata_1",
+  "w": 51,
+  "h": 56,
+  "cw": 10,
+  "ch": 6,
+  "cdx": 0
+ },
+ {
+  "name": "Kutuk_TanamanMata_2",
+  "w": 39,
+  "h": 57,
+  "cw": 10,
+  "ch": 6,
+  "cdx": 0
+ },
+ {
+  "name": "Kutuk_BanyakMata",
+  "w": 32,
+  "h": 56,
+  "cw": 10,
+  "ch": 6,
+  "cdx": 0
+ },
+ {
+  "name": "Kutuk_BatuMata",
+  "w": 54,
+  "h": 49,
+  "cw": 40,
+  "ch": 14,
+  "cdx": 0
+ },
+ {
+  "name": "Kutuk_Batu_1",
+  "w": 51,
+  "h": 59,
+  "cw": 40,
+  "ch": 14,
+  "cdx": 0
+ },
+ {
+  "name": "Kutuk_Batu_2",
+  "w": 38,
+  "h": 39,
+  "cw": 28,
+  "ch": 10,
+  "cdx": 0
+ },
+ {
+  "name": "Kutuk_Reruntuhan_1",
+  "w": 64,
+  "h": 55,
+  "cw": 48,
+  "ch": 14,
+  "cdx": 0
+ },
+ {
+  "name": "Kutuk_Reruntuhan_2",
+  "w": 51,
+  "h": 48,
+  "cw": 38,
+  "ch": 12,
+  "cdx": 0
+ },
+ {
+  "name": "Kutuk_Tentakel",
+  "w": 51,
+  "h": 56,
+  "cw": 12,
+  "ch": 6,
+  "cdx": 0
+ },
+ {
+  "name": "Kutuk_Tulang_1",
+  "w": 41,
+  "h": 38,
+  "cw": 6,
+  "ch": 4,
+  "cdx": 0
+ },
+ {
+  "name": "Kutuk_Tulang_2",
+  "w": 36,
+  "h": 32,
+  "cw": 6,
+  "ch": 4,
+  "cdx": 0
+ },
+ {
+  "name": "Kutuk_Tulang_3",
+  "w": 35,
+  "h": 35,
+  "cw": 6,
+  "ch": 4,
+  "cdx": 0
+ },
+ {
   "name": "Kotak_Rusak",
   "w": 17,
   "h": 16,

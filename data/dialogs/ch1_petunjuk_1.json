@@ -1,0 +1,12 @@
+{
+  "lines": [
+    {
+      "speaker": "narator",
+      "text": "Kantong benih tercecer di dekat lumbung. Labelnya bertuliskan: Rak[0] Padi, Rak[1] Jagung, Rak[2] Wortel..."
+    },
+    {
+      "speaker": "raka",
+      "text": "Rak pertama bernomor 0, bukan 1. Seperti indeks array. Goblin membawa kabur isinya ke arah timur."
+    }
+  ]
+}
