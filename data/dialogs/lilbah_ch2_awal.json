@@ -2,15 +2,15 @@
   "lines": [
     {
       "speaker": "lilbah",
-      "text": "Raka! Akhirnya kamu sampai di Tambang Tumpuk. Guru senang melihatmu selamat."
+      "text": "Jadi begitu. Peti yang terakhir ditumpuk harus diambil pertama, kalau tidak tumpukannya runtuh."
     },
     {
       "speaker": "lilbah",
-      "text": "Terowongan ini dulu rapi: barang dimasukkan satu per satu, diambil dari tumpukan paling atas. Sekarang peti-petinya berantakan karena Kristal Stack pecah."
+      "text": "Itulah Stack: tumpukan data. Menaruh di puncak disebut push, mengambil dari puncak disebut pop. Prinsipnya LIFO."
     },
     {
       "speaker": "lilbah",
-      "text": "Sebelum masuk lebih dalam, jawab tiga pertanyaan dari guru. Anggap ini ujian bengkel."
+      "text": "Sebelum kamu menuju tambang, jawab tiga pertanyaan dari guru. Anggap ini ujian bengkel."
     }
   ]
 }

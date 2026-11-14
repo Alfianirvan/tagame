@@ -66,5 +66,17 @@
   "tetua": {
     "name": "Tetua Desa",
     "portrait": ""
+  },
+  "mandor": {
+    "name": "Mandor Tambang",
+    "portrait": ""
+  },
+  "mirah": {
+    "name": "Bu Mirah",
+    "portrait": ""
+  },
+  "udin": {
+    "name": "Udin",
+    "portrait": ""
   }
 }

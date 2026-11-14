@@ -1,0 +1,12 @@
+{
+  "lines": [
+    {
+      "speaker": "narator",
+      "text": "Tumpukan peti di depan gudang. Label dari atas ke bawah: Peti C (atas), Peti B, Peti A (dasar)."
+    },
+    {
+      "speaker": "raka",
+      "text": "Peti A ditaruh paling awal, jadi ada di dasar. Untuk mengambilnya, C dan B harus diturunkan dulu. Seperti pop pada stack."
+    }
+  ]
+}

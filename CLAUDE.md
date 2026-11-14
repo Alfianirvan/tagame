@@ -197,6 +197,11 @@ Struktur tiap wilayah (desa alun-alun, cari petunjuk, zona aman, skala map): iku
 
 **Ch1 (keputusan Tahap 3, menggantikan baris Ch1 di atas):** alur 4 desa: Goblin menyerbu Desa 1 → tanya 3 warga → 3 petunjuk → kuis Arman (Quest Awal) → rak lumbung Desa 2 memurnikan sumur → lapor Arman → selamatkan 3 penyintas Desa 3 → Arman menyusun petunjuk → obor segel [0]..[4] di gerbang arena (Quest Tengah) → Golem → Kristal di altar Desa 4 (kubah segel pudar) → **Quest Akhir dari Tetua Desa 4** (2 soal) → awan perbatasan hilang. Quest berlangkah memakai `steps` di quests.json + flag cerita (`GameManager.story_flags`, ikut tersimpan); uji alur: `tools/test_ch1_flow.tscn` (headless).
 
+**Ch2 (keputusan, dikerjakan 3 tahap):** peta dibangun ulang 161×161 sesuai region_layout (generator `tools/gen_ch2_v2.py`; prototipe lama
+dicadangkan di `..\_backup_scenes_organik\`). Batas = laut (barat) + dataran tinggi bertebing (TilesetRelief, `canyon_tileset.tres`),
+awan hanya di titik keluar. 1 desa (Kampung Tumpuk) + tambang. Quest Awal: tanya 3 warga (Mandor, Bu Mirah, Udin) → 3 petunjuk Stack →
+kuis Lilbah → kabut debu gerbang desa hilang. Uji alur: `tools/test_ch2_flow.tscn` (headless).
+
 ## 10. Boss (sprite di `boss_preview/`, sudah diperbesar 2×)
 | Boss | Idle (frame) | Serang (frame) | Mati (frame) | Pola serangan |
 |---|---|---|---|---|

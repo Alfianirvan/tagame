@@ -24,6 +24,10 @@ VILLAGERS = {
     "Tami": ("Citizen_F/Tavern_B/Idle/Idle_Side-Sheet.png", 0.3, 0.8),
     # tetua Desa 4 (Ch1): penyihir tua berjubah hijau lumut
     "Tetua": ("Wizzard/Idle/Idle-Sheet.png", 0.42, 0.85),
+    # warga Kampung Tumpuk (Ch2): mandor tambang, istri penambang, pengangkut peti
+    "Mandor": ("Knight/Idle/Idle-Sheet.png", 0.08, 0.85),
+    "Mirah": ("Citizen_F/Peasant_A/Idle/Idle-Sheet.png", 0.92, 0.95),
+    "Udin": ("Rogue/Idle/Idle-Sheet.png", 0.12, 0.9),
 }
 
 
