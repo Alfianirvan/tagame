@@ -205,6 +205,9 @@ Tahap 2: rute desa → kantong utara → NGARAI BARAT (punggung tebing A/C/D = d
 (stasiun tumpukan peti) → LORONG TAMBANG (kolom peti `StageBlocker`, hilang di quest_stage 2) → AULA TAMBANG berlantai abu
 (Bonfire pra-boss, arena Penyihir Menara) → keluar. ±134 tile desa→arena. Jalan pintas aula→desa = longsoran batu (`StageBlocker`
 mode crystal). Musuh: Orc (perampok) di ngarai, Skeleton di aula tambang.
+Tahap 3: Quest Tengah = puzzle tumpukan peti di mulut tambang → hadiah **Pedang Besi** (pedang di dasar tumpukan) + peti lorong hilang.
+Quest Akhir berlangkah: kalahkan Penyihir Menara (Kristal) → longsoran jalan pintas terbuka → **Lilbah tetap di Kampung Tumpuk**
+(2 soal) → Data Fragment + Gold → awan perbatasan ke Pelabuhan Antre hilang. Panah memakai `Region.shortcut_route` setelah Kristal.
 
 ## 10. Boss (sprite di `boss_preview/`, sudah diperbesar 2×)
 | Boss | Idle (frame) | Serang (frame) | Mati (frame) | Pola serangan |

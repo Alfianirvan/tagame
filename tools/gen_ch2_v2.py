@@ -233,6 +233,9 @@ def build():
                 stonec.append((tx, ty, 0, s_[0], s_[1]))
 
     # ------------------------------------------------------------ scene
+    # jalur pintas (panah setelah Kristal): arena -> celah longsoran -> kantong utara -> gerbang desa -> alun-alun -> Lilbah
+    sxm = (SHORTCUT_X[0] + SHORTCUT_X[1]) / 2
+    short_route = organic.polyline_samples([P["boss_arena"], tpx((sxm, 57)), tpx((sxm, 72)), tp(0, -16), tp(0, 0), tp(-21, 1.6)], 12.0)
     sc = Scene()
     ts_canyon = sc.ext_res("TileSet", "res://assets/tilesets/canyon_tileset.tres")
     ts_world = sc.ext_res("TileSet", "res://assets/tilesets/world_tileset.tres")
@@ -260,6 +263,7 @@ def build():
     sc.node("Ch2_TambangTumpuk", "Node2D", script=f'ExtResource("{script}")', chapter="2", music_name='"ch2_tambang_tumpuk"',
             boss_music_name='"boss"',
             guide_route="PackedVector2Array(" + ", ".join(f"{int(x)}, {int(y)}" for x, y in route[::5]) + ")",
+            shortcut_route="PackedVector2Array(" + ", ".join(f"{int(x)}, {int(y)}" for x, y in short_route[::4]) + ")",
             map_size=f"Vector2i({PX_W}, {PX_H})", boss_scene=f'ExtResource("{boss_scene}")')
     sc.node("Ground", "TileMapLayer", ".", tile_map_data=b64cells(ground), tile_set=f'ExtResource("{ts_canyon}")')
     sc.node("Path", "TileMapLayer", ".", tile_map_data=b64cells(stonec), tile_set=f'ExtResource("{ts_world}")')
@@ -413,11 +417,11 @@ def build():
     # penghalang tumpukan objek: hilang saat syarat terpenuhi (scripts/world/StageBlocker.gd)
     blocker_script = sc.ext_res("Script", "res://scripts/world/StageBlocker.gd")
 
-    def blocker(name, cells, mode, stage, text, pieces):
+    def blocker(name, cells, mode, stage, text, pieces, opened=""):
         xs, ys = np.nonzero(cells)
         c0 = (int(xs.mean()) * TILE + 8, int(ys.max() + 1) * TILE)
         sc.node(name, "Node2D", "Objects", script=f'ExtResource("{blocker_script}")', position=v2(*c0), y_sort_enabled="true",
-                mode=f'"{mode}"', chapter="2", required_stage=str(stage), locked_text=f'"{text}"',
+                mode=f'"{mode}"', chapter="2", required_stage=str(stage), locked_text=f'"{text}"', opened_text=f'"{opened}"',
                 hint_size=f"Vector2({(xs.max() - xs.min() + 9) * TILE}, {(ys.max() - ys.min() + 9) * TILE})")
         for k, (pref, (ox, oy)) in enumerate(pieces):
             pid = sc.ext_res("PackedScene", f"res://scenes/prefabs/{pref}.tscn")
@@ -429,10 +433,11 @@ def build():
         recorded.append(c0)
 
     blocker("PetiTerowongan", crate_block, "stage", 2, "Tumpukan peti menutup terowongan.\nSelesaikan teka-teki peti dulu.",
-            [("Peti_Tumpuk_2", (-8, -50)), ("Peti_Tumpuk_1", (10, -32)), ("Peti_Tumpuk_3", (-6, -14)), ("Peti_Tong", (12, 2))])
+            [("Peti_Tumpuk_2", (-8, -50)), ("Peti_Tumpuk_1", (10, -32)), ("Peti_Tumpuk_3", (-6, -14)), ("Peti_Tong", (12, 2))],
+            "Peti penutup terowongan disingkirkan.\nJalan ke aula tambang terbuka.")
     blocker("LongsoranPintas", rock_block, "crystal", 3, "Longsoran batu menutup jalan.\nMungkin terbuka setelah tambang aman.",
             [("Batu_Besar_1", (-28, -2)), ("Batu_Besar_2", (4, -10)), ("Batu_Gelap_2", (30, 0)), ("Batu_Sedang_1", (-8, 6)),
-             ("Batu_Abu_1", (46, -8))])
+             ("Batu_Abu_1", (46, -8))], "Gemuruh! Longsoran di selatan aula tersingkir.\nJalan pintas ke Kampung Tumpuk terbuka.")
     # dekorasi lorong & mulut tambang, obor di tepi arena
     tx0, tx1 = TUNNEL_X
     ty_t = TUNNEL_Y * TILE + 8

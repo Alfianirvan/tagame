@@ -107,6 +107,7 @@ chapter = 2
 music_name = "ch2_tambang_tumpuk"
 boss_music_name = "boss"
 guide_route = PackedVector2Array(2024, 1768, 2008, 1698, 2017, 1633, 2028, 1572, 2000, 1544, 1940, 1544, 1880, 1544, 1820, 1544, 1760, 1544, 1700, 1544, 1640, 1544, 1640, 1483, 1640, 1422, 1640, 1361, 1640, 1300, 1602, 1273, 1537, 1258, 1469, 1254, 1402, 1244, 1343, 1210, 1281, 1185, 1233, 1164, 1174, 1139, 1110, 1131, 1048, 1118, 990, 1092, 970, 1055, 970, 994, 953, 935, 935, 876, 949, 836, 1017, 820, 1073, 796, 1144, 788, 1205, 791, 1274, 779, 1326, 773, 1390, 769, 1453, 768, 1516, 768, 1579, 768, 1628, 800, 1677, 811, 1730, 779, 1784, 747, 1841, 721, 1905, 705, 1968, 692, 2031, 683)
+shortcut_route = PackedVector2Array(1816, 728, 1799, 773, 1782, 818, 1765, 863, 1748, 908, 1744, 956, 1744, 1004, 1744, 1052, 1744, 1100, 1744, 1148, 1720, 1189, 1688, 1228, 1656, 1268, 1640, 1312, 1640, 1361, 1640, 1409, 1640, 1458, 1640, 1507, 1628, 1544, 1580, 1548, 1532, 1552, 1484, 1556, 1436, 1559, 1388, 1563, 1340, 1567)
 map_size = Vector2i(2576, 2576)
 boss_scene = ExtResource("ext_5")
 
@@ -486,6 +487,8 @@ chapter = 2
 required_stage = 2
 locked_text = "Tumpukan peti menutup terowongan.
 Selesaikan teka-teki peti dulu."
+opened_text = "Peti penutup terowongan disingkirkan.
+Jalan ke aula tambang terbuka."
 hint_size = Vector2(160, 192)
 
 [node name="PetiTerowongan0" parent="Objects/PetiTerowongan" instance=ExtResource("ext_38")]
@@ -514,6 +517,8 @@ chapter = 2
 required_stage = 3
 locked_text = "Longsoran batu menutup jalan.
 Mungkin terbuka setelah tambang aman."
+opened_text = "Gemuruh! Longsoran di selatan aula tersingkir.
+Jalan pintas ke Kampung Tumpuk terbuka."
 hint_size = Vector2(224, 160)
 
 [node name="LongsoranPintas0" parent="Objects/LongsoranPintas" instance=ExtResource("ext_74")]

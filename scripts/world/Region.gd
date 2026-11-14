@@ -13,6 +13,8 @@ extends Node2D
 ## Kristal chapter sudah diambil = boss dianggap sudah kalah, tidak muncul lagi.
 ## Titik-titik jalur utama (dari titik awal ke arena/keluar). Dipakai panah penunjuk agar menuntun lewat jalan, bukan garis lurus.
 @export var guide_route: PackedVector2Array = PackedVector2Array()
+## Jalur pengganti untuk panah setelah Kristal chapter didapat (mis. jalan pintas arena -> desa). Kosong = pakai guide_route.
+@export var shortcut_route: PackedVector2Array = PackedVector2Array()
 ## Tampilkan opening credit (teks bergulir) saat pertama kali masuk wilayah ini.
 @export var opening_story: bool = false
 @export var respawn_boss_until_crystal: bool = true

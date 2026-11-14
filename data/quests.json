@@ -254,11 +254,15 @@
     "type": "puzzle",
     "npc": "",
     "title": "Pedang di Dasar Tumpukan",
-    "objective": "Di Tambang Tumpuk: ambil pedang di dasar tumpukan peti (pop dulu peti yang di atas).",
+    "objective": "Di mulut tambang (ujung ngarai barat): ambil pedang di dasar tumpukan peti dengan POP peti dari atas.",
     "reward": {
       "gold": 70,
-      "xp": 40
-    }
+      "xp": 40,
+      "items": {
+        "pedang_besi": 1
+      }
+    },
+    "final_target": "StasiunPeti"
   },
   "ch2_akhir": {
     "chapter": 2,
@@ -267,7 +271,18 @@
     "npc": "lilbah",
     "requires_crystal": true,
     "title": "Kristal Stack",
-    "objective": "Kalahkan Penyihir Menara, lalu serahkan Kristal Stack kepada Lilbah.",
+    "objective": "Bawa Kristal Stack kepada Lilbah di Kampung Tumpuk (jalan pintas lewat longsoran di selatan aula), lalu jawab 2 soal.",
+    "steps": [
+      {
+        "id": "boss",
+        "text": "Kalahkan Penyihir Menara di aula tambang",
+        "crystal": true,
+        "target_group": "boss",
+        "npc_dialogs": {
+          "lilbah": "lilbah_ch2_tunggu_boss"
+        }
+      }
+    ],
     "dialog": "lilbah_ch2_akhir",
     "dialog_success": "lilbah_ch2_akhir_sukses",
     "dialog_waiting": "lilbah_ch2_menunggu",
