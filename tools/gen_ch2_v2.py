@@ -24,7 +24,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import gen_ch1_v2 as v2mod  # noqa: E402  (bantuan numpy)
 import organic  # noqa: E402
-from gen_canyon_tileset import CORNER_TILES, LIGHT_DETAIL, SAND  # noqa: E402
+from gen_canyon_tileset import CORNER_TILES, LIGHT_DETAIL, MINE_CORNER, MINE_DETAIL, MINE_FLOOR, SAND  # noqa: E402
 from gen_village import ROOT, TILE, Scene, v2  # noqa: E402
 
 dist_to, dilate, erode, b64cells, tpx = v2mod.dist_to, v2mod.dilate, v2mod.erode, v2mod.b64cells, v2mod.tpx
@@ -34,6 +34,14 @@ PX_W, PX_H = LAYOUT["ukuran_px"]        # 2576 x 2576
 C = tuple(LAYOUT["titik_tile"]["village_center"])   # (102, 96) pusat Kampung Tumpuk
 CX, CY = C[0] * TILE + 8, C[1] * TILE + 8
 GATE_ROW = C[1] - 17                    # baris tengah pita kabut debu gerbang desa (79)
+MINE_MOUTH = (80, 48)                   # mulut tambang = stasiun puzzle tumpukan peti (titik_tile puzzle asli (84,67) dipindah)
+TUNNEL_Y = 47.5                         # baris tengah lorong tambang (baris 45-50, 4 baris bisa dilalui di bawah wajah tebing)
+TUNNEL_X = (86, 98)                     # lorong menembus punggung tebing C
+SHORTCUT_X = (106, 111)                 # celah longsoran di punggung tebing A = jalan pintas aula -> desa (terbuka setelah Kristal)
+# punggung tebing (dataran tinggi di DALAM wilayah, tile): (polyline, setengah lebar)
+RIDGES = [([(93, 66), (110, 66), (130, 65), (156, 66)], 3.2),      # A: memisahkan aula tambang dari kantong utara desa
+          ([(92, -2), (92, 30), (92, 44), (92, 66)], 3.0),         # C: dinding barat aula tambang (ditembus lorong)
+          ([(66, 61), (80, 62), (92, 62)], 2.6)]                   # D: memaksa jalan memutar lewat ngarai barat
 DIRS8 = [(0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1)]
 PREFAB_SIZE = {}
 
@@ -91,12 +99,18 @@ def build():
     def idx_near(arr, pt):
         return int(np.argmin(np.hypot(arr[:, 0] - pt[0], arr[:, 1] - pt[1])))
 
-    # ------------------------------------------------------------ rute: entry -> jalan timur -> alun-alun -> jalan utara (gerbang) -> puzzle -> boss -> exit
+    # ------------------------------------------------------------ rute (Tahap 2): entry -> alun-alun -> gerbang utara -> kantong barat ->
+    # NGARAI BARAT (memutar ke utara) -> mulut tambang (stasiun tumpukan peti) -> LORONG TAMBANG menembus punggung tebing ->
+    # aula tambang (Bonfire pra-boss, arena Penyihir Menara) -> exit. Panjang desa->arena >= 120 tile (PANDUAN 2b).
+    P["puzzle"] = tpx(MINE_MOUTH)
     seg_in = winding(P["entry"], tp(24, 0), 24, 11, n=4)
     seg_vil = organic.polyline_samples([tp(24, 0), tp(0, 0), tp(0, -16)], 12.0)
-    i_j = idx_near(orig, tpx((83, 72)))
-    seg_up = winding(tp(0, -16), tuple(orig[i_j]), 40, 13, n=5)
-    route = np.vstack([seg_in, seg_vil, seg_up, orig[i_j:]])
+    seg_w = winding(tp(0, -16), tpx((78, 73)), 26, 13, n=5)
+    seg_c = np.vstack([winding(tpx((78, 73)), tpx((60, 67)), 18, 14, n=4), winding(tpx((60, 67)), tpx((58, 52)), 22, 15, n=4),
+                       winding(tpx((58, 52)), tpx(MINE_MOUTH), 20, 16, n=5)])
+    seg_t = organic.polyline_samples([tpx(MINE_MOUTH), tpx((88, TUNNEL_Y)), tpx((99, TUNNEL_Y)), P["bonfire_preboss"],
+                                      P["boss_arena"], tpx((121, 43)), P["exit"]], 12.0)
+    route = np.vstack([seg_in, seg_vil, seg_w, seg_c, seg_t])
 
     def route_i(pt):
         return idx_near(route, pt)
@@ -116,7 +130,17 @@ def build():
     for key, pts in (("entry", seg_in[:8]), ("exit", orig[-6:])):
         land |= dist_to(gx, gy, pts) <= 3.2 * TILE
         land |= np.hypot(gx - P[key][0], gy - P[key][1]) <= 3.5 * TILE
+    nz_r = organic.smooth_noise(gx, gy, 9)
+    ridge = np.zeros_like(mask)
+    for pts, hw in RIDGES:
+        ridge |= dist_to(gx, gy, organic.polyline_samples([tpx(p_) for p_ in pts], 12.0)) <= hw * TILE + 10 * nz_r
+    land &= ~ridge
+    tcol, trow = np.arange(W)[:, None], np.arange(H)[None, :]
+    tunnel = (tcol >= TUNNEL_X[0]) & (tcol <= TUNNEL_X[1]) & (trow >= int(TUNNEL_Y) - 2) & (trow <= int(TUNNEL_Y) + 3)
+    shortcut = (tcol >= SHORTCUT_X[0]) & (tcol <= SHORTCUT_X[1]) & (trow >= 61) & (trow <= 71)
+    land |= tunnel | (shortcut & dilate(mask, 1))
     land = dilate(erode(land, 1), 1) | (land & dilate(sea_img, 1))   # haluskan tonjolan selebar 1 tile
+    mine = land & (((tcol >= 95) & (trow <= 62)) | (tunnel & ridge))   # lantai tambang abu: lorong (di dalam tebing) + aula tambang
     sea = sea_img & ~land
     plateau = ~land & ~sea
     # wajah tebing: 2 tile di bawah tepi selatan dataran tinggi (menjorok ke daratan, bertabrakan)
@@ -141,8 +165,11 @@ def build():
     plug = (np.hypot(gx / TILE - exit_t[0], gy / TILE - exit_t[1]) <= 4.5) & land & ~face_m
     bc = (P["boss_arena"][0] / TILE, P["boss_arena"][1] / TILE)
     dd = np.hypot(gx / TILE - bc[0], gy / TILE - bc[1])
-    arena_ring = (dd >= 7.5) & (dd <= 9.2) & land & ~face_m & ~plug
-    corridor = land & ~face_m & ~band & ~plug & ~arena_ring      # dataran yang boleh dihuni objek
+    arena_ring = np.zeros_like(mask)        # (Tahap 2) arena dikunci oleh peti di lorong tambang, bukan cincin awan
+    # penghalang: kolom peti di lorong tambang (Quest Tengah) & longsoran batu di celah jalan pintas (Kristal)
+    crate_block = tunnel & (tcol >= 91) & (tcol <= 92) & ~face_m
+    rock_block = shortcut & land & (trow >= 65) & (trow <= 66) & ~face_m
+    corridor = land & ~face_m & ~band & ~plug & ~arena_ring & ~crate_block & ~rock_block   # dataran yang boleh dihuni objek
 
     # ------------------------------------------------------------ jalan cabang (tanah terang) di dalam kampung & pinggiran
     QUARRY = tp(-33, 5)       # galian batu (barat)
@@ -193,12 +220,13 @@ def build():
                 continue
             key = (int(light_v[tx, ty]), int(light_v[tx + 1, ty]), int(light_v[tx, ty + 1]), int(light_v[tx + 1, ty + 1]))
             h_ = (tx * 7 + ty * 13 + tx * ty) % 97
+            in_mine = mine[tx, ty]
             if key == (0, 0, 0, 0):
-                a_ = SAND[h_ % len(SAND)]
+                a_ = (MINE_FLOOR if in_mine else SAND)[h_ % len(MINE_FLOOR if in_mine else SAND)]
             elif key == (1, 1, 1, 1) and h_ % 23 == 0:
-                a_ = LIGHT_DETAIL[h_ % 2]
+                a_ = (MINE_DETAIL if in_mine else LIGHT_DETAIL)[h_ % 2]
             else:
-                a_ = CORNER_TILES[key]
+                a_ = (MINE_CORNER if in_mine else CORNER_TILES)[key]
             ground.append((tx, ty, 0, a_[0], a_[1]))
             if in_stone[tx, ty] and corridor[tx, ty]:
                 s_ = stone[(tx * 7 + ty * 3) % 3]
@@ -364,18 +392,65 @@ def build():
         recorded.append(pos)
         npc_positions.append(pos)
 
-    # ---- perjalanan (Tahap 2 akan diperkaya): stasiun puzzle, Bonfire pra-boss, arena boss, keluar
-    inst("StasiunPeti", station_scene, tuple(int(v) for v in P["puzzle"]), puzzle_scene=f'ExtResource("{puzzle_scene}")', chapter="2",
+    # ---- perjalanan: mulut tambang (puzzle), lorong tambang (peti penghalang), aula tambang, Bonfire, bendera
+    mx, my = P["puzzle"]
+    inst("StasiunPeti", station_scene, (int(mx), int(my) + 36), puzzle_scene=f'ExtResource("{puzzle_scene}")', chapter="2",
          station_label='"Tumpukan Peti"')
     k_ = i_boss
     while k_ > 0 and math.hypot(route[k_][0] - P["boss_arena"][0], route[k_][1] - P["boss_arena"][1]) < 12 * TILE:
         k_ -= 1
-    bf_pre = (int(route[k_][0]) + 40, int(route[k_][1]) + 8)
+    bf_pre = (int(route[k_][0]) - 6, int(route[k_][1]) + 44)
+    bf_canyon = tpx((65, 55))
     inst("Bonfire2", bonfire_scene, bf_pre)
-    inst("BenderaPuzzle", checkpoint_scene, (int(P["puzzle"][0]) + 60, int(P["puzzle"][1]) + 30))
+    inst("Bonfire3", bonfire_scene, bf_canyon)
+    flags = {"BenderaNgarai": tpx((70, 70)), "BenderaTambang": (int(mx) - 70, int(my) + 40), "BenderaAula": tpx((101, 54.5))}
+    for nm, pos in flags.items():
+        inst(nm, checkpoint_scene, pos)
     inst("PulangHutan", exit_scene, tuple(int(v) for v in P["entry"]), to_chapter="1", sign_text='"Kembali ke Hutan Indeks"')
     inst("KePelabuhan", exit_scene, tuple(int(v) for v in P["exit"]), to_chapter="3", sign_text='"Ke Pelabuhan Antre"')
-    npc_positions += [bf1, bf_pre, start, tuple(P["puzzle"])]
+    npc_positions += [bf1, bf_pre, bf_canyon, start, (int(mx), int(my) + 36)] + list(flags.values())
+
+    # penghalang tumpukan objek: hilang saat syarat terpenuhi (scripts/world/StageBlocker.gd)
+    blocker_script = sc.ext_res("Script", "res://scripts/world/StageBlocker.gd")
+
+    def blocker(name, cells, mode, stage, text, pieces):
+        xs, ys = np.nonzero(cells)
+        c0 = (int(xs.mean()) * TILE + 8, int(ys.max() + 1) * TILE)
+        sc.node(name, "Node2D", "Objects", script=f'ExtResource("{blocker_script}")', position=v2(*c0), y_sort_enabled="true",
+                mode=f'"{mode}"', chapter="2", required_stage=str(stage), locked_text=f'"{text}"',
+                hint_size=f"Vector2({(xs.max() - xs.min() + 9) * TILE}, {(ys.max() - ys.min() + 9) * TILE})")
+        for k, (pref, (ox, oy)) in enumerate(pieces):
+            pid = sc.ext_res("PackedScene", f"res://scenes/prefabs/{pref}.tscn")
+            sc.node(f"{name}{k}", None, f"Objects/{name}", instance=pid, position=v2(ox, oy))
+        # tile penghalang tak terlihat (koordinat sel relatif terhadap node; node tepat di batas sel + 8 px)
+        cells_l = [(int(x) - (c0[0] - 8) // TILE, int(y) - c0[1] // TILE, 0, 0, 0) for x, y in zip(xs, ys)]
+        sc.node("Block", "TileMapLayer", f"Objects/{name}", position=v2(-8, 0), tile_map_data=b64cells(cells_l),
+                tile_set=f'ExtResource("{block_ts}")')
+        recorded.append(c0)
+
+    blocker("PetiTerowongan", crate_block, "stage", 2, "Tumpukan peti menutup terowongan.\nSelesaikan teka-teki peti dulu.",
+            [("Peti_Tumpuk_2", (-8, -50)), ("Peti_Tumpuk_1", (10, -32)), ("Peti_Tumpuk_3", (-6, -14)), ("Peti_Tong", (12, 2))])
+    blocker("LongsoranPintas", rock_block, "crystal", 3, "Longsoran batu menutup jalan.\nMungkin terbuka setelah tambang aman.",
+            [("Batu_Besar_1", (-28, -2)), ("Batu_Besar_2", (4, -10)), ("Batu_Gelap_2", (30, 0)), ("Batu_Sedang_1", (-8, 6)),
+             ("Batu_Abu_1", (46, -8))])
+    # dekorasi lorong & mulut tambang, obor di tepi arena
+    tx0, tx1 = TUNNEL_X
+    ty_t = TUNNEL_Y * TILE + 8
+    for k, xx in enumerate((tx0 + 1, tx0 + 9, tx1 - 1)):
+        prefab(f"LenteraLorong{k}", "Lentera_Tiang", (xx * TILE + 8, int(ty_t + 26)), solid=False)
+    prefab("TanggaMulut", "Tangga_Kayu", (tx0 * TILE - 30, int(ty_t - 6)), solid=False)
+    for k, (pref, (ox, oy)) in enumerate((("Bijih_Tumpuk_1", (-62, -20)), ("Tong_Peti", (-74, 30)), ("Peti_Tumpuk_3", (54, 70)),
+                                          ("Bijih_Tumpuk_2", (40, -34)), ("Guci_Tambang", (-40, 70)))):
+        prefab(f"MulutTambang{k}", pref, (int(mx) + ox, int(my) + oy), solid=not pref.startswith("Bijih"))
+    ax_, ay_ = (int(v) for v in P["boss_arena"])
+    flam_arena = sc.ext_res("Texture2D", "res://assets/ninja/fx/Flam/Flam.png")
+    for k in range(6):
+        ang = math.pi * 0.15 + k * math.tau / 6
+        fx, fy = round(ax_ + math.cos(ang) * 150), round(ay_ + math.sin(ang) * 110)
+        prefab(f"TiangObor{k}", "Batu_Sedang_2", (fx, fy + 4), solid=False)
+        sc.node(f"OborArena{k}", "Node2D", "Objects", script=f'ExtResource("{animprop_script}")', strip=f'ExtResource("{flam_arena}")',
+                position=v2(fx, fy), frame_w="20", frame_h="30", fps="9.0")
+    npc_positions += [(ax_, ay_)]
 
     def cloud_barrier(name, cells_mask, mode, dist, text="", **props):
         pts = thin_cells(cells_mask, dist)
@@ -387,11 +462,9 @@ def build():
         sc.node("Block", "TileMapLayer", name, tile_map_data=b64cells(cells), tile_set=f'ExtResource("{block_ts}")')
 
     DUST = "Color(0.96, 0.84, 0.66, 1)"
-    cloud_barrier("AwanPerbatasan", plug, "chapter", 30, tint=DUST)
+    cloud_barrier("AwanPerbatasan", plug, "chapter", 26, tint=DUST, scale_min="1.2", scale_max="1.6")
     cloud_barrier("AwanGerbangDesa", band, "stage", 40, "Badai debu menutup jalan ke tambang.\nBantu Lilbah dulu.",
                   required_stage="1", tint=DUST, scale_min="1.3", scale_max="1.9")
-    cloud_barrier("AwanGerbangArena", arena_ring, "stage", 24, "Kabut debu tebal mengurung menara.\nSelesaikan tumpukan peti dulu.",
-                  required_stage="2", tint=DUST, scale_min="1.3", scale_max="1.7")
 
     # ------------------------------------------------------------ MESA & batu (dekorasi ngarai)
     d_route = dist_to(gx, gy, roads)
@@ -402,12 +475,13 @@ def build():
 
     village_zone = np.hypot((gx - CX) / (32 * TILE), (gy - (CY + 2 * TILE)) / (20 * TILE)) < 1.0
     keypts = list(P.values()) + [bf1, bf_pre, start, QUARRY, CAMP, STORE] + npc_positions
+    no_deco = dilate(tunnel | crate_block | rock_block | shortcut, 3) | (np.hypot(gx - P["boss_arena"][0], gy - P["boss_arena"][1]) < 12 * TILE)
 
     def fits(pref, x, y, margin=10):
         w, h = PREFAB_SIZE[pref]
         for ox, oy in ((-w / 2 - margin, 0), (w / 2 + margin, 0), (-w / 2 - margin, -h), (w / 2 + margin, -h), (0, margin), (0, -h / 2)):
             tx_, ty_ = int((x + ox) // TILE), int((y + oy) // TILE)
-            if not (0 <= tx_ < W and 0 <= ty_ < H) or not corridor[tx_, ty_] or village_zone[tx_, ty_]:
+            if not (0 <= tx_ < W and 0 <= ty_ < H) or not corridor[tx_, ty_] or village_zone[tx_, ty_] or no_deco[tx_, ty_]:
                 return False
         if road_dist(x, y) < w / 2 + 40 or road_dist(x, y - h / 2) < w / 2 + 40:
             return False
@@ -451,7 +525,7 @@ def build():
         x, y = rng.randint(60, PX_W - 60), rng.randint(80, PX_H - 60)
         tx_, ty_ = int(x // TILE), int(y // TILE)
         pref = rng.choice(["Batu_Sedang_1", "Batu_Sedang_2", "Bijih_Kecil"])
-        if corridor[tx_, ty_] and not village_zone[tx_, ty_] and 40 < road_dist(x, y) < 260 and not near_building(x, y, 20) \
+        if corridor[tx_, ty_] and not village_zone[tx_, ty_] and not no_deco[tx_, ty_] and 40 < road_dist(x, y) < 260 and not near_building(x, y, 20) \
                 and all(math.hypot(x - kx, y - ky) > 60 for kx, ky in keypts):
             prefab(f"Kerikil{k}", pref, (x, y), solid=False)
             buildings.append((x, y, 16, 12))
@@ -479,13 +553,79 @@ def build():
             position=v2(cx_ + 6, cy_ + 22), frame_w="20", frame_h="30", fps="9.0", modulate="Color(1, 1, 1, 0.9)")
     sc.node("Suasana", "Node2D", ".", script=f'ExtResource("{atmos_script}")', leaves="false", ray_alpha="0.12")
 
-    # herb/koin/ore di pinggiran (Tahap 1: sedikit; perjalanan menyusul di Tahap 2)
+    # ------------------------------------------------------------ musuh, peti, collectible (perjalanan)
+    enemy_scene = sc.ext_res("PackedScene", "res://scenes/entities/Enemy.tscn")
+    taken = []
+
+    def spot(pt, r_min=20):
+        """Titik bebas terdekat (spiral sampai 140 px) dari pt (px)."""
+        for r in [0] + list(range(12, 141, 12)):
+            for a_ in range(0, 360, 30):
+                x, y = pt[0] + math.cos(math.radians(a_)) * r, pt[1] + math.sin(math.radians(a_)) * r
+                tx_, ty_ = int(x // TILE), int(y // TILE)
+                if not (0 <= tx_ < W and 0 <= ty_ < H) or not corridor[tx_, ty_] or road_dist(x, y) < r_min:
+                    continue
+                if near_building(x, y, 14) or any(math.hypot(x - qx2, y - qy2) < 26 for qx2, qy2 in taken):
+                    continue
+                taken.append((x, y))
+                return (round(x), round(y))
+        return None
+
+    # kelompok musuh (tile): perampok tambang (Orc) di ngarai, kerangka penambang (Skeleton) di dalam tambang.
+    # Zona aman: kelompok pertama >= 45 tile dari tepi kampung (PANDUAN 2b).
+    groups = {"Ngarai1": ((59, 63), ["orc", "orc_rogue", "orc_rogue"]),
+              "Ngarai2": ((53, 50), ["orc", "orc_shaman", "orc_warrior"]),
+              "Ngarai3": ((70, 40), ["orc_warrior", "orc_shaman", "orc_rogue"]),
+              "Ngarai4": ((36, 30), ["orc", "orc_rogue", "orc_shaman"]),
+              "Ngarai5": ((40, 68), ["orc_rogue", "orc"]),
+              "Tambang1": ((99, 30), ["skeleton", "skeleton_rogue", "skeleton"]),
+              "Tambang2": ((105, 24), ["skeleton_mage", "skeleton_warrior", "skeleton"]),
+              "Tambang3": ((125, 56), ["skeleton_warrior", "skeleton_mage", "skeleton_rogue"]),
+              "Tambang4": ((132, 47), ["skeleton_rogue", "skeleton"])}
+    n_mob = 0
+    for gname, ((gx_t, gy_t), ids) in groups.items():
+        for k, eid in enumerate(ids):
+            ang = k * math.tau / len(ids) + 0.5
+            q = spot((gx_t * TILE + 8 + math.cos(ang) * 34, gy_t * TILE + 8 + math.sin(ang) * 26))
+            if q:
+                inst(f"Musuh{gname}_{k + 1}", enemy_scene, q, enemy_id=f'"{eid}"')
+                n_mob += 1
+    # peti harta + herb/ore di ujung cabang
+    chests = {"PetiNgarai": (30, 25), "PetiPantai": (24, 50), "PetiKantong": (140, 74), "PetiAulaUtara": (104, 19),
+              "PetiAulaTimur": (139, 55)}
+    nl = 0
+    for nm, (cx2, cy2) in chests.items():
+        q = spot(tpx((cx2, cy2)))
+        if not q:
+            continue
+        inst(nm, chest_scene, q, roll_count="2")
+        for kind, (ox, oy) in (("Ore", (30, 14)), ("Herb", (-28, 16)), ("Ore" if nm.startswith("PetiAula") else "Herb", (2, 34))):
+            q2 = spot((q[0] + ox, q[1] + oy), 0)
+            if q2:
+                nl += 1
+                inst(f"{kind}{nl}", collect[kind], q2)
+    # di sepanjang jalan: herb, koin, ore (lebih banyak ore di tambang), 2 potion
+    for k in range(26):
+        i_ = rng.randint(route_i(tp(0, -18)), i_boss)
+        th = rng.random() * math.tau
+        pt = (route[i_][0] + math.cos(th) * rng.randint(50, 130), route[i_][1] + math.sin(th) * rng.randint(40, 100))
+        q = spot(pt, 30)
+        if q:
+            in_m = mine[int(q[0] // TILE), int(q[1] // TILE)]
+            kind = ("Ore" if k % 2 else "GoldCoin") if in_m else ("Herb", "Herb", "GoldCoin", "Ore")[k % 4]
+            nl += 1
+            inst(f"{kind}{nl}", collect[kind], q)
+    for k, pt in enumerate((tpx((62, 60)), tpx((99, 52)))):
+        q = spot(pt, 24)
+        if q:
+            inst(f"Potion{k + 1}", collect["Potion"], q)
+    # pinggiran kampung (Tahap 1)
     for k, (nm, ox, oy) in enumerate((("Herb", -40, 70), ("Herb", 90, 60), ("Ore", -96, -6), ("Ore", 30, -70), ("GoldCoin", 110, -20))):
         base = QUARRY if k < 4 else CAMP
         pos = (base[0] + ox, base[1] + oy)
         tx_, ty_ = int(pos[0] // TILE), int(pos[1] // TILE)
         if corridor[tx_, ty_] and not near_building(pos[0], pos[1], 6):
-            inst(f"{nm}{k + 1}", collect[nm], pos)
+            inst(f"Pinggir{nm}{k + 1}", collect[nm], pos)
 
     # ------------------------------------------------------------ marker, pemain, batas
     sc.node("PlayerStart", "Marker2D", ".", position=v2(*start))
@@ -525,15 +665,19 @@ def build():
 
     t_ = {k: (int(v[0] // TILE), int(v[1] // TILE)) for k, v in P.items()}
     none = np.zeros_like(walk)
-    r_open, r_gate, r_arena, r_plug = reach(none), reach(band | plug), reach(arena_ring | plug), reach(plug)
+    r_open, r_gate, r_plug = reach(rock_block), reach(band | plug | rock_block), reach(plug | rock_block)
+    r_arena = reach(crate_block | plug | rock_block)
+    r_short = reach(crate_block | plug)
     clue_ok = all(r_gate[int(px_ // TILE), int(py_ // TILE)] for px_, py_ in ((STORE[0] + 4, STORE[1] + 44), (qx + 4, qy - 14), (cx_ + 26, cy_ - 2)))
     print("start ada di daratan =", bool(walk[int(start[0] // TILE), int(start[1] // TILE)]),
           "| desa & 3 petunjuk terjangkau saat gerbang tertutup =", bool(r_gate[C]) and clue_ok)
     print("gerbang desa mengunci puzzle =", not r_gate[t_["puzzle"]], "| puzzle terjangkau saat terbuka =", bool(r_open[t_["puzzle"]]))
-    print("cincin arena mengunci boss =", not r_arena[t_["boss_arena"]], "| boss terjangkau =", bool(r_open[t_["boss_arena"]]))
+    print("peti lorong mengunci boss =", not r_arena[t_["boss_arena"]], "| boss terjangkau lewat lorong =", bool(r_open[t_["boss_arena"]]),
+          "| jalan pintas (longsoran dibuka) menembus ke aula =", bool(r_short[t_["boss_arena"]]))
     print("awan perbatasan mengunci exit =", not r_plug[t_["exit"]], "| exit terjangkau saat terbuka =", bool(r_open[t_["exit"]]))
     bad = [p for p in recorded if not (0 <= p[0] < PX_W and 0 <= p[1] < PX_H and corridor[int(p[0] // TILE), int(p[1] // TILE)])]
     length = float(np.sum(np.hypot(*np.diff(route[route_i(tp(0, 0)):i_boss], axis=0).T))) / TILE
+    print("musuh:", n_mob, "| collectible:", nl)
     print("Ch2_TambangTumpuk.tscn:", nm_, "mesa/batu, objek di luar koridor:", len(bad), bad[:6],
           "| jalan desa->arena %.0f tile" % length, "| koridor", int(corridor.sum()), "tile")
     return bad

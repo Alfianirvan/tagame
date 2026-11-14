@@ -201,6 +201,10 @@ Struktur tiap wilayah (desa alun-alun, cari petunjuk, zona aman, skala map): iku
 dicadangkan di `..\_backup_scenes_organik\`). Batas = laut (barat) + dataran tinggi bertebing (TilesetRelief, `canyon_tileset.tres`),
 awan hanya di titik keluar. 1 desa (Kampung Tumpuk) + tambang. Quest Awal: tanya 3 warga (Mandor, Bu Mirah, Udin) → 3 petunjuk Stack →
 kuis Lilbah → kabut debu gerbang desa hilang. Uji alur: `tools/test_ch2_flow.tscn` (headless).
+Tahap 2: rute desa → kantong utara → NGARAI BARAT (punggung tebing A/C/D = dataran tinggi di dalam wilayah) → mulut tambang
+(stasiun tumpukan peti) → LORONG TAMBANG (kolom peti `StageBlocker`, hilang di quest_stage 2) → AULA TAMBANG berlantai abu
+(Bonfire pra-boss, arena Penyihir Menara) → keluar. ±134 tile desa→arena. Jalan pintas aula→desa = longsoran batu (`StageBlocker`
+mode crystal). Musuh: Orc (perampok) di ngarai, Skeleton di aula tambang.
 
 ## 10. Boss (sprite di `boss_preview/`, sudah diperbesar 2×)
 | Boss | Idle (frame) | Serang (frame) | Mati (frame) | Pola serangan |

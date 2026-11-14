@@ -1,6 +1,6 @@
 extends Node
-## Uji main otomatis Chapter 2 (headless), Tahap 1: masuk Kampung Tumpuk -> tanya 3 warga -> 3 petunjuk -> kuis Lilbah
-## -> kabut debu gerbang desa terbuka. Aksi pemain disimulasikan lewat API yang sama dengan node game.
+## Uji main otomatis Chapter 2 (headless): masuk Kampung Tumpuk -> tanya 3 warga -> 3 petunjuk -> kuis Lilbah
+## -> kabut debu gerbang desa terbuka -> puzzle tumpukan peti -> peti lorong tambang hilang -> (Kristal) longsoran jalan pintas terbuka. Aksi pemain disimulasikan lewat API yang sama dengan node game.
 ## Jalankan (save asli dicadangkan dulu oleh pemanggil):
 ##   godot --headless --fixed-fps 60 --path . res://tools/test_ch2_flow.tscn
 
@@ -51,7 +51,7 @@ func _ready() -> void:
 	await frames(10)
 	print("== 0 Mulai: ", tracked())
 	check(QuestManager.get_tracked_quest_id() == "ch2_awal", "quest aktif ch2_awal")
-	check(not cloud_open("AwanGerbangDesa") and not cloud_open("AwanGerbangArena") and not cloud_open("AwanPerbatasan"), "kabut gerbang/arena/perbatasan menutup")
+	check(not cloud_open("AwanGerbangDesa") and not cloud_open("AwanPerbatasan"), "kabut gerbang desa & perbatasan menutup")
 	check(not (node("Petunjuk1") as CanvasItem).visible, "petunjuk belum tampak sebelum tanya warga")
 	check(QuestManager.get_dialog_for("lilbah") == "lilbah_ch2_tanya_warga", "Lilbah: suruh tanya warga")
 	for n in ["Lilbah", "Mandor", "Mirah", "Udin"]:
@@ -74,9 +74,31 @@ func _ready() -> void:
 	await frames(200)
 	print("== 3 Kuis Lilbah: hadiah ", lines, " -> ", tracked())
 	check(GameManager.get_quest_stage(2) == 1, "quest_stage Ch2 = 1")
-	check(cloud_open("AwanGerbangDesa") and not cloud_open("AwanGerbangArena"), "kabut debu gerbang desa terbuka, arena masih")
+	check(cloud_open("AwanGerbangDesa") and not cloud_open("AwanPerbatasan"), "kabut debu gerbang desa terbuka, perbatasan masih")
 	var st: PuzzleStation = node("StasiunPeti") as PuzzleStation
 	check(st._block_reason() == "", "stasiun tumpukan peti bisa dibuka")
+
+	# Tahap 2: musuh perjalanan, peti penutup lorong tambang, longsoran jalan pintas
+	var mobs: int = 0
+	for c in region.get_node("Objects").get_children():
+		if c is Enemy:
+			mobs += 1
+	check(mobs >= 20, "musuh perjalanan terpasang (%d)" % mobs)
+	var crates: StageBlocker = node("PetiTerowongan") as StageBlocker
+	var rocks: StageBlocker = node("LongsoranPintas") as StageBlocker
+	check(not crates.is_open and not rocks.is_open, "peti lorong & longsoran masih menutup")
+	st._open()
+	await frames(2)
+	st._puzzle.complete_puzzle()
+	st._puzzle.close_puzzle()
+	await frames(200)
+	print("== 4 Tumpukan peti: ", tracked())
+	check(GameManager.get_quest_stage(2) == 2, "quest_stage Ch2 = 2")
+	check(crates.is_open and not (crates.get_node("Block") as TileMapLayer).collision_enabled, "peti lorong tambang hilang (tabrakan mati)")
+	check(not rocks.is_open, "longsoran jalan pintas masih menutup sebelum Kristal")
+	GameManager.add_crystal(2)
+	await frames(120)
+	check(rocks.is_open, "longsoran jalan pintas terbuka setelah Kristal Stack")
 
 	print("HASIL: ", "SEMUA OK" if fails == 0 else "%d GAGAL" % fails)
 	get_tree().quit(1 if fails > 0 else 0)

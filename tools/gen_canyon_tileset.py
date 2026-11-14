@@ -1,7 +1,7 @@
 """TileSet ngarai Ch2 (Tambang Tumpuk): assets/tilesets/canyon_tileset.tres (FILE BARU, aset asli tidak diubah).
 
 Dua sumber atlas langsung dari Ninja Adventure (CC0) yang sudah ada di proyek:
-  sumber 0 = assets/tilesets_biome/TilesetFloor.png  : pasir oranye + jalan pasir terang bertepi (blok terrain 11x6 di kiri atas),
+  sumber 0 = assets/tilesets_biome/TilesetFloor.png  : pasir oranye + jalan pasir terang bertepi (blok terrain 11x6 di kiri atas) + lantai tambang abu (blok di (11,14)),
              tanpa tabrakan. Pemetaan sudut (marching squares) ada di CORNER_TILES.
   sumber 1 = assets/tilesets_biome/TilesetRelief.png : dataran tinggi (puncak 3x3) + dinding tebing berbibir (3x3), BERTABRAKAN.
 Jalankan:  python tools/gen_canyon_tileset.py
@@ -20,7 +20,12 @@ CORNER_TILES = {
 }
 SAND = [(0, 5), (0, 5), (0, 5), (0, 5), (0, 5), (0, 5), (1, 5), (2, 5), (3, 5), (4, 5)]   # pasir oranye (+ sedikit retak/kerikil)
 LIGHT_DETAIL = [(0, 4), (1, 4)]
-FLOOR_TILES = sorted(set(CORNER_TILES.values()) | set(SAND) | set(LIGHT_DETAIL))
+# lantai TAMBANG (abu-kecokelatan): blok terrain yang sama di (11, 14), pemetaan sudut = CORNER_TILES + offset
+MINE_OFFSET = (11, 14)
+MINE_CORNER = {k: (v[0] + MINE_OFFSET[0], v[1] + MINE_OFFSET[1]) for k, v in CORNER_TILES.items()}
+MINE_FLOOR = [(11, 19), (11, 19), (11, 19), (11, 19), (12, 19), (13, 19), (14, 19), (15, 19)]
+MINE_DETAIL = [(11, 18), (12, 18)]
+FLOOR_TILES = sorted(set(CORNER_TILES.values()) | set(SAND) | set(LIGHT_DETAIL) | set(MINE_CORNER.values()) | set(MINE_FLOOR) | set(MINE_DETAIL))
 RELIEF_TILES = [(x, y) for x in range(1, 7) for y in range(5, 8)]
 
 
