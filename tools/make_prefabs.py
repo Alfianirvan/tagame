@@ -59,6 +59,27 @@ SHEET = {
     "Pagar_Kayu": ("Furniture.png", (179, 422, 237, 445), (58, 8)),
     "Tiang_Pagar": ("Furniture.png", (162, 422, 174, 445), (8, 6)),
     "OrangOrangSawah": ("Farm.png", (245, 34, 267, 80), (10, 6)),
+    # ---- Ch2 Tambang Tumpuk: batu ngarai (Rocks), tumpukan peti & bijih (CraftPix Dungeon Objects), perkemahan tambang (Ninja camp)
+    "Batu_Besar_1": ("Rocks.png", (0, 16, 32, 64), (26, 12)),
+    "Batu_Besar_2": ("Rocks.png", (32, 16, 64, 48), (26, 10)),
+    "Batu_Sedang_1": ("Rocks.png", (64, 16, 80, 32), (12, 6)),
+    "Batu_Sedang_2": ("Rocks.png", (80, 16, 96, 32), (12, 6)),
+    "Batu_Gelap_1": ("Rocks.png", (0, 112, 32, 160), (26, 12)),
+    "Batu_Gelap_2": ("Rocks.png", (32, 112, 64, 144), (26, 10)),
+    "Batu_Abu_1": ("Rocks.png", (96, 16, 128, 64), (26, 12)),
+    "Peti_Tumpuk_1": ("../tilesets/dungeon_craftpix/Objects.png", (258, 10, 283, 40), (24, 10)),
+    "Peti_Tumpuk_2": ("../tilesets/dungeon_craftpix/Objects.png", (290, 5, 318, 41), (26, 10)),
+    "Peti_Tumpuk_3": ("../tilesets/dungeon_craftpix/Objects.png", (320, 32, 349, 64), (26, 10)),
+    "Peti_Tong": ("../tilesets/dungeon_craftpix/Objects.png", (292, 48, 319, 78), (24, 10)),
+    "Tong_Peti": ("../tilesets/dungeon_craftpix/Objects.png", (325, 64, 347, 93), (20, 10)),
+    "Bijih_Tumpuk_1": ("../tilesets/dungeon_craftpix/Objects.png", (197, 38, 219, 55), (18, 6)),
+    "Bijih_Tumpuk_2": ("../tilesets/dungeon_craftpix/Objects.png", (199, 7, 218, 24), (16, 6)),
+    "Bijih_Kecil": ("../tilesets/dungeon_craftpix/Objects.png", (224, 7, 240, 19), (12, 4)),
+    "Guci_Tambang": ("../tilesets/dungeon_craftpix/Objects.png", (241, 64, 255, 83), (12, 6)),
+    "Tangga_Kayu": ("../tilesets/dungeon_craftpix/Objects.png", (98, 1, 110, 50), (10, 4)),
+    "Lentera_Tiang": ("../ninja/tilesets/tileset_camp.png", (96, 82, 109, 112), (8, 6)),
+    "Tumpukan_Kayu": ("../ninja/tilesets/tileset_camp.png", (2, 113, 46, 127), (42, 10)),
+    "Tunggul_Besar": ("../ninja/tilesets/tileset_camp.png", (18, 82, 46, 110), (24, 12)),
 }
 BUILDINGS = {
     "Rumah_Krem": "buildings/house_brown.png", "Rumah_Hijau": "buildings/house_green.png", "Rumah_Kayu": "buildings/house_log.png",
@@ -66,7 +87,7 @@ BUILDINGS = {
 }
 WHOLE = {"Sumur": ("well_stone.png", (26, 12))}
 
-NO_SHADOW = ("Lampu_Tiang", "Pagar_Kayu", "Tiang_Pagar", "Spanduk_1", "Spanduk_2", "Spanduk_3", "Kutuk_")   # Kutuk_*: bayangan sudah ada di gambar
+NO_SHADOW = ("Mesa_", "Tangga_Kayu", "Lentera_Tiang", "Lampu_Tiang", "Pagar_Kayu", "Tiang_Pagar", "Spanduk_1", "Spanduk_2", "Spanduk_3", "Kutuk_")   # Kutuk_*: bayangan sudah ada di gambar
 SOLID_BODY = ("Sawmill", "Landasan", "MejaKerja", "Tungku", "Dapur", "Peti", "Barel", "Sumur", "Lapak")
 
 
@@ -189,6 +210,25 @@ def composite_sprites():
                          ("Kutuk_Tentakel", "Tentacle_plant_shadow1_3.png", (12, 6)), ("Kutuk_Tulang_1", "Bones_shadow1_2.png", (6, 4)),
                          ("Kutuk_Tulang_2", "Bones_shadow1_4.png", (6, 4)), ("Kutuk_Tulang_3", "Bones_shadow1_6.png", (6, 4))):
         out[name] = (Image.open(os.path.join(cursed, f)).convert("RGBA"), col)
+    # Ch2: MESA / tebing ngarai dari Ninja TilesetRelief (puncak dataran + dinding tebing berbibir), file baru
+    relief = Image.open(os.path.join(ROOT, "assets", "tilesets_biome", "TilesetRelief.png")).convert("RGBA")
+
+    def rt(x, y):
+        return relief.crop((x * 16, y * 16, x * 16 + 16, y * 16 + 16))
+
+    for name, (w, ht, hf) in {"Mesa_Kecil": (2, 1, 2), "Mesa_Sedang": (3, 2, 2), "Mesa_Lebar": (5, 2, 2),
+                              "Mesa_Besar": (4, 3, 3), "Mesa_Tinggi": (3, 2, 3)}.items():
+        im = Image.new("RGBA", (w * 16, (ht + hf) * 16), (0, 0, 0, 0))
+        for j in range(ht):
+            for i in range(w):
+                cx = 1 if i == 0 else (3 if i == w - 1 else 2)
+                im.alpha_composite(rt(cx, 5 if j == 0 else 6), (i * 16, j * 16))
+        for j in range(hf):
+            for i in range(w):
+                cx = 4 if i == 0 else (6 if i == w - 1 else 5)
+                cy = 5 if j == 0 else (7 if j == hf - 1 else 6)
+                im.alpha_composite(rt(cx, cy), (i * 16, (ht + j) * 16))
+        out[name] = (im, (w * 16 - 4, (ht + hf) * 16 - 6))
     out["Kotak_Rusak"] = (Image.open(os.path.join(FIELDS, "7 Decor", "Box1.png")).convert("RGBA"), (12, 8))
     return out
 

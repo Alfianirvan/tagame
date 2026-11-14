@@ -272,6 +272,166 @@
   "cdx": 0
  },
  {
+  "name": "Batu_Besar_1",
+  "w": 28,
+  "h": 43,
+  "cw": 26,
+  "ch": 12,
+  "cdx": 0
+ },
+ {
+  "name": "Batu_Besar_2",
+  "w": 26,
+  "h": 27,
+  "cw": 26,
+  "ch": 10,
+  "cdx": 0
+ },
+ {
+  "name": "Batu_Sedang_1",
+  "w": 14,
+  "h": 11,
+  "cw": 12,
+  "ch": 6,
+  "cdx": 0
+ },
+ {
+  "name": "Batu_Sedang_2",
+  "w": 16,
+  "h": 14,
+  "cw": 12,
+  "ch": 6,
+  "cdx": 0
+ },
+ {
+  "name": "Batu_Gelap_1",
+  "w": 28,
+  "h": 43,
+  "cw": 26,
+  "ch": 12,
+  "cdx": 0
+ },
+ {
+  "name": "Batu_Gelap_2",
+  "w": 26,
+  "h": 27,
+  "cw": 26,
+  "ch": 10,
+  "cdx": 0
+ },
+ {
+  "name": "Batu_Abu_1",
+  "w": 28,
+  "h": 43,
+  "cw": 26,
+  "ch": 12,
+  "cdx": 0
+ },
+ {
+  "name": "Peti_Tumpuk_1",
+  "w": 25,
+  "h": 30,
+  "cw": 24,
+  "ch": 10,
+  "cdx": 0
+ },
+ {
+  "name": "Peti_Tumpuk_2",
+  "w": 28,
+  "h": 36,
+  "cw": 26,
+  "ch": 10,
+  "cdx": 0
+ },
+ {
+  "name": "Peti_Tumpuk_3",
+  "w": 29,
+  "h": 32,
+  "cw": 26,
+  "ch": 10,
+  "cdx": 0
+ },
+ {
+  "name": "Peti_Tong",
+  "w": 27,
+  "h": 30,
+  "cw": 24,
+  "ch": 10,
+  "cdx": 0
+ },
+ {
+  "name": "Tong_Peti",
+  "w": 22,
+  "h": 29,
+  "cw": 20,
+  "ch": 10,
+  "cdx": 0
+ },
+ {
+  "name": "Bijih_Tumpuk_1",
+  "w": 22,
+  "h": 17,
+  "cw": 18,
+  "ch": 6,
+  "cdx": 0
+ },
+ {
+  "name": "Bijih_Tumpuk_2",
+  "w": 19,
+  "h": 17,
+  "cw": 16,
+  "ch": 6,
+  "cdx": 0
+ },
+ {
+  "name": "Bijih_Kecil",
+  "w": 16,
+  "h": 12,
+  "cw": 12,
+  "ch": 4,
+  "cdx": 0
+ },
+ {
+  "name": "Guci_Tambang",
+  "w": 14,
+  "h": 19,
+  "cw": 12,
+  "ch": 6,
+  "cdx": 0
+ },
+ {
+  "name": "Tangga_Kayu",
+  "w": 12,
+  "h": 49,
+  "cw": 10,
+  "ch": 4,
+  "cdx": 0
+ },
+ {
+  "name": "Lentera_Tiang",
+  "w": 13,
+  "h": 29,
+  "cw": 8,
+  "ch": 6,
+  "cdx": 0
+ },
+ {
+  "name": "Tumpukan_Kayu",
+  "w": 44,
+  "h": 14,
+  "cw": 42,
+  "ch": 10,
+  "cdx": 0
+ },
+ {
+  "name": "Tunggul_Besar",
+  "w": 28,
+  "h": 28,
+  "cw": 24,
+  "ch": 12,
+  "cdx": 0
+ },
+ {
   "name": "Rumah_Krem",
   "w": 128,
   "h": 138,
@@ -597,6 +757,46 @@
   "h": 35,
   "cw": 6,
   "ch": 4,
+  "cdx": 0
+ },
+ {
+  "name": "Mesa_Kecil",
+  "w": 32,
+  "h": 48,
+  "cw": 28,
+  "ch": 42,
+  "cdx": 0
+ },
+ {
+  "name": "Mesa_Sedang",
+  "w": 48,
+  "h": 64,
+  "cw": 44,
+  "ch": 58,
+  "cdx": 0
+ },
+ {
+  "name": "Mesa_Lebar",
+  "w": 80,
+  "h": 64,
+  "cw": 76,
+  "ch": 58,
+  "cdx": 0
+ },
+ {
+  "name": "Mesa_Besar",
+  "w": 64,
+  "h": 96,
+  "cw": 60,
+  "ch": 90,
+  "cdx": 0
+ },
+ {
+  "name": "Mesa_Tinggi",
+  "w": 48,
+  "h": 80,
+  "cw": 44,
+  "ch": 74,
   "cdx": 0
  },
  {

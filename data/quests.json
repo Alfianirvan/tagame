@@ -205,8 +205,34 @@
     "stage": 1,
     "type": "quiz",
     "npc": "lilbah",
-    "title": "Tumpukan di Tambang",
-    "objective": "Temui Lilbah dan jawab 3 soal tentang Stack.",
+    "title": "Runtuhnya Kampung Tumpuk",
+    "objective": "Laporkan petunjuk kepada Lilbah, lalu jawab 3 soal tentang Stack.",
+    "steps": [
+      {
+        "id": "warga",
+        "text": "Tanya warga Kampung Tumpuk (%d/%d)",
+        "villagers": 3,
+        "villager_chapter": 2
+      },
+      {
+        "id": "petunjuk",
+        "text": "Cari petunjuk di pinggiran kampung (%d/%d)",
+        "flags_all": [
+          "ch2_petunjuk_1",
+          "ch2_petunjuk_2",
+          "ch2_petunjuk_3"
+        ],
+        "target": [
+          "Petunjuk1",
+          "Petunjuk2",
+          "Petunjuk3"
+        ],
+        "reward": {
+          "xp": 10
+        }
+      }
+    ],
+    "dialog_waiting": "lilbah_ch2_tanya_warga",
     "dialog": "lilbah_ch2_awal",
     "dialog_success": "lilbah_ch2_awal_sukses",
     "dialog_done": "lilbah_ch2_awal_sukses",

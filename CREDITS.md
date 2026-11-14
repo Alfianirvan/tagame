@@ -14,7 +14,9 @@
 | Tanah terkutuk arena Golem & Desa 4 (`assets/props/generated/cursed_*.png`, digabung oleh `tools/make_cursed_ground.py`), tanaman bermata, batu, tulang, reruntuhan, urat merah | **CraftPix.net** – Free Cursed Land Top-Down Pixel Art (`assets/craftpix/cursed_land/`) | Free: boleh di gim, tidak boleh disebarkan ulang |
 | Sprite warga Ch1 (Penjaga, Penebang, Sari, Rani, Darso, Tami, Tetua Desa 4) | Diwarnai ulang kelompok dari NPC Pixel Crawler (Knight, Rogue, Wizzard, Citizen_F) oleh Anokolisa | Turunan Pixel Crawler |
 | Orc kecil (cadangan) & prajurit kecil | **Zerie** – Tiny RPG Character Asset Pack (`assets/enemies/tiny_orc/`) | Free, tidak boleh disebarkan ulang |
-| Dungeon CraftPix (peti, tuas, obor) | **CraftPix.net** – Free 2D Top-Down Pixel Dungeon Asset Pack | Free: boleh di gim, tidak boleh disebarkan ulang |
+| Dungeon CraftPix (peti, tuas, obor; Ch2: tumpukan peti, tumpukan bijih, tong, guci, tangga kayu) | **CraftPix.net** – Free 2D Top-Down Pixel Dungeon Asset Pack | Free: boleh di gim, tidak boleh disebarkan ulang |
+| Ch2 Tambang Tumpuk: pasir & jalan pasir (TilesetFloor), dataran tinggi & tebing ngarai serta prefab Mesa_* (TilesetRelief, digabung oleh `tools/make_prefabs.py`), lentera/kayu/tunggul (tileset_camp) | **Ninja Adventure – Asset Pack** oleh pixel-boy & AAA | CC0 |
+| Ch2: batu ngarai (Rocks), bengkel Lilbah (Anvil, Furnace, Workbench), sprite warga Kampung Tumpuk (Mandor, Bu Mirah, Udin; diwarnai ulang dari Knight, Peasant_A, Rogue) | **Pixel Crawler – Free Pack 2.11** oleh Anokolisa | Free / turunan Pixel Crawler |
 
 Lisensi Ninja Adventure: `assets/ui/LICENSE_NinjaAdventure_CC0.txt`.
 
