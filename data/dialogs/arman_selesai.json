@@ -1,6 +1,12 @@
 {
   "lines": [
-    { "speaker": "arman", "text": "Masuklah ke Hutan Indeks. Selesaikan teka-teki rak benih dan nyalakan obornya berurutan." },
-    { "speaker": "arman", "text": "Setelah itu Golem Batu menunggumu. Bawa kristalnya padaku kalau berhasil." }
+    {
+      "speaker": "arman",
+      "text": "Terima kasih, Raka. Dusun Larik dan keempat desa di Hutan Indeks kembali tenang."
+    },
+    {
+      "speaker": "arman",
+      "text": "Jalan ke utara sudah terbuka. Lilbah menunggumu di Tambang Tumpuk. Semoga selamat!"
+    }
   ]
 }

@@ -17,6 +17,7 @@ signal quest_stage_changed(chapter: int, stage: int)
 signal item_forged(item_id: String, new_level: int)   # tempa berhasil
 signal skill_unlocked(skill_id: String)
 signal enemy_killed(enemy_id: String)   # dipancarkan Enemy saat mati (untuk quest/statistik)
+signal story_flag_set(flag: String)     # flag cerita baru (langkah quest, event, segel) -> quest/awan/NPC memperbarui diri
 
 const DATA_DIR := "res://data/"
 const SLOTS: Array[String] = ["weapon", "helm", "armor", "shield", "accessory"]
@@ -60,6 +61,7 @@ var pending_spawn_pos: Vector2 = Vector2.ZERO
 var active_flags: Array[String] = []         # bendera checkpoint yang sudah pernah diaktifkan ("scene:path")
 var met_npcs: Array[String] = []             # NPC pedagang yang dialog perkenalannya sudah selesai (langsung buka toko)
 var killed_enemies: Array[String] = []      # kunci musuh yang sudah dibunuh ("scene:path-node"), tidak muncul lagi
+var story_flags: Array[String] = []         # flag cerita yang sudah terjadi (mis. "ch1_goblin_usir"), ikut disimpan
 
 # --- Database data (dari JSON) ---
 var item_db: Dictionary = {}                # gabungan items + weapons + armors
@@ -155,6 +157,7 @@ func reset_state() -> void:
 	met_npcs = []
 	active_flags = []
 	killed_enemies = []
+	story_flags = []
 	_poison_left = 0.0
 	_recalc_stats(true)
 	stamina = max_stamina
@@ -184,6 +187,7 @@ func get_save_data() -> Dictionary:
 		"killed_enemies": killed_enemies,
 		"met_npcs": met_npcs,
 		"active_flags": active_flags,
+		"story_flags": story_flags,
 	}
 
 
@@ -224,6 +228,9 @@ func apply_save_data(d: Dictionary) -> void:
 	killed_enemies = []
 	for k in d.get("killed_enemies", []):
 		killed_enemies.append(String(k))
+	story_flags = []
+	for f in d.get("story_flags", []):
+		story_flags.append(String(f))
 	_recalc_stats(true)
 	hp = clampi(int(d.get("hp", max_hp)), 1, max_hp)
 	stamina = clampf(float(d.get("stamina", max_stamina)), 0.0, max_stamina)
@@ -553,6 +560,18 @@ func reset_enemy_kills() -> int:
 			removed += 1
 	killed_enemies = keep
 	return removed
+
+
+## Flag cerita: penanda kejadian sekali-jadi (langkah quest, event, segel). Disimpan di save.
+func has_story_flag(flag: String) -> bool:
+	return flag != "" and flag in story_flags
+
+
+func set_story_flag(flag: String) -> void:
+	if flag == "" or flag in story_flags:
+		return
+	story_flags.append(flag)
+	story_flag_set.emit(flag)
 
 
 func is_flag_active(key: String) -> bool:

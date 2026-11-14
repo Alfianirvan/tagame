@@ -8,10 +8,12 @@ signal opened
 
 const CLOUD := preload("res://assets/ninja/fx/Particle/Clouds.png")
 
-## "chapter" = terbuka saat chapter berikutnya terbuka (Quest Akhir selesai); "stage" = quest_stage chapter >= required_stage.
-@export_enum("chapter", "stage") var mode: String = "chapter"
+## "chapter" = terbuka saat chapter berikutnya terbuka (Quest Akhir selesai); "stage" = quest_stage chapter >= required_stage;
+## "flag" = flag cerita `required_flag` sudah disetel (mis. langkah quest "lapor ke Arman").
+@export_enum("chapter", "stage", "flag") var mode: String = "chapter"
 @export var chapter: int = 1
 @export var required_stage: int = 1
+@export var required_flag: String = ""
 ## Titik pusat awan (koordinat lokal). Diisi generator scene.
 @export var cloud_points: PackedVector2Array = PackedVector2Array()
 @export var seed_value: int = 7
@@ -47,6 +49,7 @@ func _ready() -> void:
 	GameManager.quest_stage_changed.connect(func(_c: int, _s: int) -> void: _refresh(true))
 	GameManager.chapter_unlocked.connect(func(_c: int) -> void: _refresh(true))
 	GameManager.crystal_collected.connect(func(_c: int) -> void: _refresh(true))
+	GameManager.story_flag_set.connect(func(_f: String) -> void: _refresh(true))
 	_refresh(false)
 	# area peringatan: teks singkat bila Raka mendekat dan masih tertutup
 	if locked_text != "":
@@ -56,6 +59,8 @@ func _ready() -> void:
 func _condition() -> bool:
 	if mode == "stage":
 		return GameManager.get_quest_stage(chapter) >= required_stage
+	if mode == "flag":
+		return GameManager.has_story_flag(required_flag) or GameManager.get_quest_stage(chapter) >= required_stage
 	return GameManager.unlocked_chapter > chapter
 
 

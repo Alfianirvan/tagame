@@ -22,6 +22,8 @@ VILLAGERS = {
     "Rani": ("Citizen_F/Peasant_A/Idle/Idle-Sheet.png", 0.45, 0.8),
     "Darso": ("Rogue/Idle/Idle-Sheet.png", 0.55, 0.75),
     "Tami": ("Citizen_F/Tavern_B/Idle/Idle_Side-Sheet.png", 0.3, 0.8),
+    # tetua Desa 4 (Ch1): penyihir tua berjubah hijau lumut
+    "Tetua": ("Wizzard/Idle/Idle-Sheet.png", 0.42, 0.85),
 }
 
 

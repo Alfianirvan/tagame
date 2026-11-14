@@ -1,9 +1,20 @@
 {
   "lines": [
-    { "speaker": "arman", "text": "Oh, kamu Raka, murid Lilbah, bukan? Aku Arman, petani di desa ini." },
-    { "speaker": "arman", "text": "Hutan Indeks di timur dulu tempat rak-rak benih tersusun rapi. Setiap rak punya nomor urut." },
-    { "speaker": "arman", "text": "Sejak Kristal Array pecah, semua nomornya kacau. Benih tertukar, obor padam, dan Golem Batu mengamuk." },
-    { "speaker": "arman", "text": "Satu hal yang harus kamu ingat: di hutan itu urutan dimulai dari nol, bukan satu." },
-    { "speaker": "arman", "text": "Sebelum masuk, aku ingin menguji dulu pemahamanmu tentang dasar-dasar Array." }
+    {
+      "speaker": "arman",
+      "text": "Goblin sudah pergi dan kamu membawa tiga petunjuk. Coba kulihat..."
+    },
+    {
+      "speaker": "arman",
+      "text": "Kantong benih berlabel Rak[0], Rak[1], Rak[2]. Catatan tentang lumbung Desa 2. Jejak menuju pusat hutan."
+    },
+    {
+      "speaker": "arman",
+      "text": "Semua mengarah ke satu hal: sejak Kristal Array pecah, semua yang bernomor urut di hutan ini kacau, dan Golem Batu mengamuk."
+    },
+    {
+      "speaker": "arman",
+      "text": "Ingat baik-baik: di sini urutan dimulai dari NOL, bukan satu. Sebelum kuberi tugas, jawab dulu tiga pertanyaanku tentang Array."
+    }
   ]
 }

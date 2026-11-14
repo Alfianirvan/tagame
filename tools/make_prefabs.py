@@ -66,7 +66,7 @@ BUILDINGS = {
 }
 WHOLE = {"Sumur": ("well_stone.png", (26, 12))}
 
-NO_SHADOW = ("Lampu_Tiang", "Pagar_Kayu", "Tiang_Pagar", "Spanduk_1", "Spanduk_2", "Spanduk_3")
+NO_SHADOW = ("Lampu_Tiang", "Pagar_Kayu", "Tiang_Pagar", "Spanduk_1", "Spanduk_2", "Spanduk_3", "Kutuk_")   # Kutuk_*: bayangan sudah ada di gambar
 SOLID_BODY = ("Sawmill", "Landasan", "MejaKerja", "Tungku", "Dapur", "Peti", "Barel", "Sumur", "Lapak")
 
 
@@ -126,7 +126,7 @@ def write_prefab(name, rel, size, col):
     cw, ch = col[0], col[1]
     cdx = col[2] if len(col) > 2 else 0
     shadow = ""
-    if name not in NO_SHADOW:
+    if not name.startswith(NO_SHADOW):
         sw = w * 0.92 if name.startswith(("Rumah", "Lumbung")) else min(w * 0.95, max(14.0, cw * 1.25))
         sh = max(8.0, min(18.0, h * 0.2))
         pts = ", ".join(
@@ -178,6 +178,17 @@ def composite_sprites():
     for k in range(1, 5):
         out[f"Tenda_{k}"] = (Image.open(os.path.join(FIELDS, "8 Camp", f"{k}.png")).convert("RGBA"), None)
     out["Tronk_Kayu"] = (Image.open(os.path.join(FIELDS, "7 Decor", "Log1.png")).convert("RGBA"), (24, 8))
+    # Desa 4 / arena Golem: altar patung berlumut (bola biru = tempat Kristal), pilar berlumut, dekorasi tanah terkutuk (CraftPix)
+    out["Altar_Segel"] = (house.crop((48, 304, 80, 336)), (24, 10))
+    out["Pilar_Lumut"] = (house.crop((0, 304, 16, 352)), (12, 8))
+    cursed = os.path.join(ROOT, "assets", "craftpix", "cursed_land", "objects")
+    for name, f, col in (("Kutuk_TanamanMata_1", "Eye_plant_shadow1_1.png", (10, 6)), ("Kutuk_TanamanMata_2", "Eye_plant_shadow1_2.png", (10, 6)),
+                         ("Kutuk_BanyakMata", "Many_eyes_plant_shadow1_2.png", (10, 6)), ("Kutuk_BatuMata", "Rock_eyes_shadow1_2.png", (40, 14)),
+                         ("Kutuk_Batu_1", "Rock1_shadow1_2.png", (40, 14)), ("Kutuk_Batu_2", "Rock1_shadow1_3.png", (28, 10)),
+                         ("Kutuk_Reruntuhan_1", "Ruins_shadow1_3.png", (48, 14)), ("Kutuk_Reruntuhan_2", "Ruins_shadow1_5.png", (38, 12)),
+                         ("Kutuk_Tentakel", "Tentacle_plant_shadow1_3.png", (12, 6)), ("Kutuk_Tulang_1", "Bones_shadow1_2.png", (6, 4)),
+                         ("Kutuk_Tulang_2", "Bones_shadow1_4.png", (6, 4)), ("Kutuk_Tulang_3", "Bones_shadow1_6.png", (6, 4))):
+        out[name] = (Image.open(os.path.join(cursed, f)).convert("RGBA"), col)
     out["Kotak_Rusak"] = (Image.open(os.path.join(FIELDS, "7 Decor", "Box1.png")).convert("RGBA"), (12, 8))
     return out
 

@@ -10,6 +10,9 @@
 | Potret dialog | Dibuat dengan AI, dirapikan kelompok | — |
 | Monster (Slime, Jamur), hewan ternak, bendera/awan/kabut/daun/berkas cahaya, kincir air, tileset desa terbengkalai & lapak, spanduk | **Ninja Adventure – Asset Pack** oleh pixel-boy & AAA (`assets/ninja/`) | CC0 |
 | Papan penunjuk, bendera checkpoint biru, tenda kamp, kayu/kotak, tanah terkutuk (Cursed Land), Fields | **CraftPix.net** – Free Fields Tileset & Free Cursed Land Top-Down Pixel Art (`assets/craftpix/`) | Free: boleh di gim, tidak boleh disebarkan ulang |
+| Kubah segel Desa 4 (Shield, Circle, Spark), obor segel (Flam), altar & pilar berlumut (TilesetHouse) | **Ninja Adventure – Asset Pack** oleh pixel-boy & AAA | CC0 |
+| Tanah terkutuk arena Golem & Desa 4 (`assets/props/generated/cursed_*.png`, digabung oleh `tools/make_cursed_ground.py`), tanaman bermata, batu, tulang, reruntuhan, urat merah | **CraftPix.net** – Free Cursed Land Top-Down Pixel Art (`assets/craftpix/cursed_land/`) | Free: boleh di gim, tidak boleh disebarkan ulang |
+| Sprite warga Ch1 (Penjaga, Penebang, Sari, Rani, Darso, Tami, Tetua Desa 4) | Diwarnai ulang kelompok dari NPC Pixel Crawler (Knight, Rogue, Wizzard, Citizen_F) oleh Anokolisa | Turunan Pixel Crawler |
 | Orc kecil (cadangan) & prajurit kecil | **Zerie** – Tiny RPG Character Asset Pack (`assets/enemies/tiny_orc/`) | Free, tidak boleh disebarkan ulang |
 | Dungeon CraftPix (peti, tuas, obor) | **CraftPix.net** – Free 2D Top-Down Pixel Dungeon Asset Pack | Free: boleh di gim, tidak boleh disebarkan ulang |
 

@@ -25,6 +25,11 @@ func _init() -> void:
 
 
 func _reset() -> void:
+	if complete_flag != "":
+		puzzle_title = "Rak Lumbung Desa 2"
+		instruction = "Rak lumbung ini adalah ARRAY. Taruh tiap benih di rak sesuai pesanan (rak ke-N = indeks N-1) untuk memurnikan sumur."
+		_title_label.text = puzzle_title
+		_info_label.text = instruction
 	phase = 0
 	placed = 0
 	next_torch = 0
@@ -102,7 +107,10 @@ func _on_slot_pressed(slot_index: int) -> void:
 	report_progress(placed, 10)
 	show_message("Pas! Rak ke-%d berindeks %d." % [slot_index + 1, slot_index], true)
 	if placed == SLOT_COUNT:
-		_start_torch_phase()
+		if complete_flag != "":
+			complete_puzzle()   # versi rak lumbung Desa 2: cukup fase benih (obor ada di gerbang arena)
+		else:
+			_start_torch_phase()
 
 
 # ---------------------------------------------------------------- Fase 2: obor

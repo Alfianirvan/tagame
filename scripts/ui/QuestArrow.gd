@@ -21,6 +21,7 @@ func _ready() -> void:
 	GameManager.quest_stage_changed.connect(func(_c: int, _s: int) -> void: refresh_target())
 	GameManager.crystal_collected.connect(func(_c: int) -> void: refresh_target())
 	GameManager.chapter_changed.connect(func(_c: int) -> void: refresh_target.call_deferred())
+	GameManager.story_flag_set.connect(func(_f: String) -> void: refresh_target.call_deferred())
 	set_process(false)
 	refresh_target.call_deferred()   # tunggu isi scene (boss, NPC) selesai dibuat
 
@@ -40,6 +41,16 @@ func _find_target() -> Node2D:
 	var q: Dictionary = QuestManager.get_quest(id)
 	var chapter: int = int(q.get("chapter", 0))
 	var tree: SceneTree = get_tree()
+	# quest berlangkah: tuntun ke target langkah aktif, lalu ke final_target setelah semua langkah beres
+	var step: Dictionary = QuestManager.get_current_step(id)
+	if not step.is_empty():
+		var st: Node2D = _step_target(step, chapter)
+		if st != null:
+			return st
+	elif not QuestManager.get_steps(id).is_empty() and q.has("final_target"):
+		var ft: Node2D = _nearest_named([q["final_target"]] if q["final_target"] is String else q["final_target"], [])
+		if ft != null:
+			return ft
 	if q.get("type", "") == "puzzle":
 		for s: Node in tree.get_nodes_in_group("puzzle_station"):
 			if s is PuzzleStation and (s as PuzzleStation).chapter == chapter:
@@ -71,6 +82,54 @@ func _find_target() -> Node2D:
 		if String(n.get("npc_id")) == String(q.get("npc", "")):
 			return n as Node2D
 	return _exit_toward(chapter)
+
+
+## Target sebuah langkah quest: warga yang belum diajak bicara, anggota grup, atau node bernama (yang flag-nya belum beres).
+func _step_target(step: Dictionary, chapter: int) -> Node2D:
+	var tree: SceneTree = get_tree()
+	var player: Node2D = tree.get_first_node_in_group("player") as Node2D
+	if step.has("villagers"):
+		var vc: int = int(step.get("villager_chapter", chapter))
+		var cands: Array[Node2D] = []
+		for n: Node in tree.get_nodes_in_group("npc"):
+			if int(n.get("villager_chapter")) == vc and not QuestManager.has_talked_to_villager(vc, String(n.get("npc_id"))):
+				cands.append(n as Node2D)
+		return _nearest(cands, player)
+	if step.has("target_group"):
+		var cands2: Array[Node2D] = []
+		for n: Node in tree.get_nodes_in_group(String(step["target_group"])):
+			if n is Node2D and n.is_inside_tree():
+				cands2.append(n as Node2D)
+		var g: Node2D = _nearest(cands2, player)
+		if g != null:
+			return g
+	if step.has("target"):
+		var names: Array = [step["target"]] if step["target"] is String else step["target"]
+		return _nearest_named(names, step.get("flags_all", []))
+	return null
+
+
+## Node bernama terdekat di scene wilayah; nama ke-i dilewati bila flags[i] sudah disetel.
+func _nearest_named(names: Array, flags: Array) -> Node2D:
+	var scene: Node = get_tree().get_first_node_in_group("region")
+	if scene == null:
+		return null
+	var cands: Array[Node2D] = []
+	for i in names.size():
+		if i < flags.size() and GameManager.has_story_flag(String(flags[i])):
+			continue
+		var n: Node = scene.find_child(String(names[i]), true, false)
+		if n is Node2D and not n.is_queued_for_deletion():
+			cands.append(n as Node2D)
+	return _nearest(cands, get_tree().get_first_node_in_group("player") as Node2D)
+
+
+static func _nearest(cands: Array[Node2D], player: Node2D) -> Node2D:
+	var best: Node2D = null
+	for c in cands:
+		if best == null or (player != null and c.global_position.distance_to(player.global_position) < best.global_position.distance_to(player.global_position)):
+			best = c
+	return best
 
 
 ## Papan jalan menuju wilayah tujuan: satu langkah ke depan/belakang di rute lurus.

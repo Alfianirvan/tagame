@@ -22,6 +22,8 @@ const CONTENT_SIZE := Vector2(576, 200)
 @export var puzzle_title: String = "Puzzle"
 @export_multiline var instruction: String = ""
 
+## Bila diisi: puzzle ini menyelesaikan LANGKAH quest (menyetel flag cerita ini) alih-alih Quest Tengah.
+var complete_flag: String = ""
 var test_mode: bool = false
 var is_solved: bool = false
 var content: Control
@@ -103,7 +105,11 @@ func complete_puzzle() -> void:
 		return
 	is_solved = true
 	var lines: Array[String] = []
-	if not test_mode and GameManager.get_quest_stage(chapter) == 1:
+	if not test_mode and complete_flag != "":
+		if not GameManager.has_story_flag(complete_flag):
+			lines.append("Langkah quest selesai")
+			GameManager.set_story_flag(complete_flag)   # hadiah langkah diberikan QuestManager
+	elif not test_mode and GameManager.get_quest_stage(chapter) == 1:
 		lines = QuestManager.complete_quest(chapter, 2)
 	var text: String = "Puzzle selesai!"
 	if not lines.is_empty():
@@ -117,7 +123,7 @@ func complete_puzzle() -> void:
 
 ## Melaporkan progres ke Quest Log (diabaikan pada mode uji).
 func report_progress(done: int, total: int) -> void:
-	if not test_mode:
+	if not test_mode and complete_flag == "":
 		QuestManager.set_progress(QuestManager.make_id(chapter, 2), done, total)
 
 

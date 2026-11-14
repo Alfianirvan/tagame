@@ -9,6 +9,7 @@ signal quest_completed(quest_id: String)
 signal quest_progress(quest_id: String, progress: int, goal: int)
 signal quests_changed                                        # status quest berubah (untuk ikon NPC & Quest Log)
 signal quiz_started(quest_id: String, questions: Array)      # didengar QuizPanel
+signal step_completed(quest_id: String, step_id: String)     # satu langkah quest selesai
 
 enum Stage { AWAL = 1, TENGAH = 2, AKHIR = 3 }
 
@@ -43,6 +44,7 @@ func _ready() -> void:
 
 	DialogManager.dialog_ended.connect(_on_dialog_ended)
 	GameManager.crystal_collected.connect(func(_chapter: int) -> void: refresh_active())
+	GameManager.story_flag_set.connect(_on_story_flag_set)
 	refresh_active()
 
 
@@ -117,6 +119,13 @@ func mark_villager(chapter: int, npc_id: String) -> void:
 ## Teks tujuan untuk HUD / Catatan Misi; quest dengan syarat warga menampilkan hitungannya.
 func get_objective_text(quest_id: String) -> String:
 	var q: Dictionary = get_quest(quest_id)
+	var step: Dictionary = get_current_step(quest_id)
+	if not step.is_empty():
+		var text: String = String(step.get("text", ""))
+		if "%d" in text:
+			var pr: Vector2i = step_progress(quest_id, step)
+			text = text % [pr.x, pr.y]
+		return text
 	var need: int = int(q.get("requires_villagers", 0))
 	if need > 0 and is_available(quest_id):
 		var have: int = villagers_talked(int(q.get("chapter", 0)))
@@ -131,6 +140,8 @@ func is_ready(quest_id: String) -> bool:
 		return false
 	var q: Dictionary = get_quest(quest_id)
 	if villagers_talked(int(q.get("chapter", 0))) < int(q.get("requires_villagers", 0)):
+		return false
+	if not get_current_step(quest_id).is_empty():
 		return false
 	return not bool(q.get("requires_crystal", false)) or GameManager.has_crystal(int(q["chapter"]))
 
@@ -160,6 +171,89 @@ func set_progress(quest_id: String, progress: int, goal: int = 1) -> void:
 	quest_progress.emit(quest_id, progress, goal)
 
 
+# ---------------------------------------------------------------- Langkah quest (steps)
+## Quest boleh punya "steps": langkah berurutan SEBELUM tujuan akhirnya (kuis NPC / puzzle). Tiap langkah:
+##   id, text ("%d/%d" diganti progres), dan salah satu syarat selesai:
+##     flag | flags_all (+targets sejajar) | villagers (+villager_chapter) | crystal: true
+##   opsional: target (nama node / daftar nama) atau target_group untuk panah penunjuk,
+##             talk {npc, dialog}: bicara dengan NPC itu memutar dialog lalu menyetel flag langkah,
+##             npc_dialogs {npc: dialog}: dialog NPC lain selama langkah ini aktif, reward (seperti reward quest).
+## Quest boleh juga punya final_target / final_npc_dialogs untuk tujuan akhir setelah semua langkah beres.
+
+func get_steps(quest_id: String) -> Array:
+	return get_quest(quest_id).get("steps", [])
+
+
+## Progres langkah sebagai (sudah, butuh).
+func step_progress(quest_id: String, step: Dictionary) -> Vector2i:
+	var chapter: int = int(get_quest(quest_id).get("chapter", 0))
+	if step.has("villagers"):
+		var need: int = int(step["villagers"])
+		return Vector2i(mini(villagers_talked(int(step.get("villager_chapter", chapter))), need), need)
+	if step.has("flags_all"):
+		var flags: Array = step["flags_all"]
+		var n: int = 0
+		for f in flags:
+			if GameManager.has_story_flag(String(f)):
+				n += 1
+		return Vector2i(n, flags.size())
+	if bool(step.get("crystal", false)):
+		return Vector2i(1 if GameManager.has_crystal(chapter) else 0, 1)
+	return Vector2i(1 if GameManager.has_story_flag(String(step.get("flag", ""))) else 0, 1)
+
+
+func is_step_done(quest_id: String, step: Dictionary) -> bool:
+	if is_done(quest_id):
+		return true
+	var pr: Vector2i = step_progress(quest_id, step)
+	return pr.x >= pr.y
+
+
+## Langkah pertama yang belum selesai dari quest yang sedang tersedia ({} bila tidak ada / quest belum tersedia).
+func get_current_step(quest_id: String) -> Dictionary:
+	if not is_available(quest_id):
+		return {}
+	for step: Dictionary in get_steps(quest_id):
+		if not is_step_done(quest_id, step):
+			return step
+	return {}
+
+
+## Langkah `step_id` sudah boleh dikerjakan (atau sudah lewat): quest selesai, atau quest tersedia dan semua langkah sebelumnya beres.
+func is_step_unlocked(quest_id: String, step_id: String) -> bool:
+	if is_done(quest_id):
+		return true
+	if not is_available(quest_id):
+		return false
+	for step: Dictionary in get_steps(quest_id):
+		if String(step.get("id", "")) == step_id:
+			return true
+		if not is_step_done(quest_id, step):
+			return false
+	return false
+
+
+## Flag cerita baru: beri hadiah langkah yang selesai karenanya (sekali saja, karena flag hanya bisa disetel sekali).
+func _on_story_flag_set(flag: String) -> void:
+	for id in _sorted_ids:
+		for step: Dictionary in get_steps(id):
+			var by_flag: bool = String(step.get("flag", "")) == flag
+			var by_all: bool = step.has("flags_all") and flag in step["flags_all"] and is_step_done(id, step)
+			if by_flag or by_all:
+				var lines: Array[String] = _grant_rewards(step, false)
+				if not lines.is_empty():
+					_show_reward_text(lines)
+				step_completed.emit(id, String(step.get("id", "")))
+	refresh_active()
+	SaveManager.save_game()   # langkah penting ikut tersimpan
+
+
+func _show_reward_text(lines: Array[String]) -> void:
+	var player: Node2D = get_tree().get_first_node_in_group("player") as Node2D
+	if player != null and player.get_parent() != null:
+		FloatingText.spawn(player.get_parent(), player.global_position + Vector2(0, -52), ", ".join(lines), Color(1, 0.9, 0.4), 2.6)
+
+
 # ---------------------------------------------------------------- NPC
 
 ## NPC ini punya quest (kuis) di data?
@@ -172,6 +266,8 @@ func npc_has_quests(npc_id: String) -> bool:
 
 ## Ikon "!" muncul bila ada quest kuis milik NPC yang siap dikerjakan.
 func npc_has_ready_quest(npc_id: String) -> bool:
+	if npc_has_step_talk(npc_id):
+		return true
 	for id in _sorted_ids:
 		if quest_db[id].get("npc", "") == npc_id and is_ready(id):
 			return true
@@ -181,10 +277,20 @@ func npc_has_ready_quest(npc_id: String) -> bool:
 ## Tahap (1/2/3) quest milik NPC yang siap dikerjakan sekarang; 0 bila tidak ada.
 ## Dipakai ikon NPC: tahap 3 (serahkan Kristal) = "?", selain itu = "!".
 func get_ready_stage(npc_id: String) -> int:
+	if npc_has_step_talk(npc_id):
+		return Stage.AKHIR   # lapor = ikon "?"
 	for id in _sorted_ids:
 		if quest_db[id].get("npc", "") == npc_id and is_ready(id):
 			return int(quest_db[id].get("stage", 1))
 	return 0
+
+
+## Langkah aktif suatu quest meminta Raka bicara dengan NPC ini (lapor).
+func npc_has_step_talk(npc_id: String) -> bool:
+	for id in active_quests:
+		if String(get_current_step(id).get("talk", {}).get("npc", "")) == npc_id:
+			return true
+	return false
 
 
 ## Quest yang sedang dilacak HUD: quest aktif paling awal (urutan chapter lalu tahap). Kosong bila tidak ada.
@@ -197,6 +303,19 @@ func get_tracked_quest_id() -> String:
 
 ## Memilih dialog NPC sesuai progres quest. String kosong bila tidak ada yang cocok.
 func get_dialog_for(npc_id: String) -> String:
+	# langkah quest aktif boleh mengganti dialog NPC (lapor / menunggu)
+	for id in active_quests:
+		var step: Dictionary = get_current_step(id)
+		var pick: String = ""
+		if step.is_empty():
+			if not get_steps(id).is_empty():
+				pick = String(get_quest(id).get("final_npc_dialogs", {}).get(npc_id, ""))
+		elif String(step.get("talk", {}).get("npc", "")) == npc_id:
+			pick = String(step["talk"].get("dialog", ""))
+		else:
+			pick = String(step.get("npc_dialogs", {}).get(npc_id, ""))
+		if _existing_dialog(pick) != "":
+			return pick
 	var last_done: Dictionary = {}
 	for id in _sorted_ids:
 		var q: Dictionary = quest_db[id]
@@ -226,6 +345,12 @@ func _existing_dialog(dialog_id: String) -> String:
 
 ## Dialog pembuka quest selesai -> kuis dimulai (ditunda satu frame agar kontrol Raka tidak bentrok).
 func _on_dialog_ended(finished_id: String) -> void:
+	# dialog "lapor" sebuah langkah selesai -> flag langkah disetel
+	for id in active_quests.duplicate():
+		var step: Dictionary = get_current_step(id)
+		if not step.is_empty() and String(step.get("talk", {}).get("dialog", "")) == finished_id:
+			GameManager.set_story_flag(String(step.get("flag", "")))
+			return
 	for id in _sorted_ids:
 		var q: Dictionary = quest_db[id]
 		if q.get("type", "") == "quiz" and q.get("dialog", "") == finished_id and is_ready(id):

@@ -1,0 +1,12 @@
+{
+  "lines": [
+    {
+      "speaker": "arman",
+      "text": "Ingat urutannya: obor[0], obor[1], obor[2], obor[3], lalu obor[4]. Papan nomornya ada di kaki tiap obor."
+    },
+    {
+      "speaker": "arman",
+      "text": "Kalau salah, apinya padam dan kamu harus mulai lagi dari indeks 0."
+    }
+  ]
+}
