@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/props/buildings/variants/Pondok_Kecil.png" id="1"]
+
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(52, 46)
+
+[node name="Pondok_Kecil" type="StaticBody2D"]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sombra" type="Polygon2D" parent="."]
+color = Color(0, 0, 0, 0.26)
+polygon = PackedVector2Array(29.4, -9.0, 28.2, -6.5, 24.8, -4.1, 19.3, -2.2, 12.2, -0.8, 4.2, -0.1, -4.2, -0.1, -12.2, -0.8, -19.3, -2.2, -24.8, -4.1, -28.2, -6.5, -29.4, -9.0, -28.2, -11.5, -24.8, -13.9, -19.3, -15.8, -12.2, -17.2, -4.2, -17.9, 4.2, -17.9, 12.2, -17.2, 19.3, -15.8, 24.8, -13.9, 28.2, -11.5)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1")
+offset = Vector2(0, -48.0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -23.0)
+shape = SubResource("1")

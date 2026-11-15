@@ -44,6 +44,8 @@ SHORTCUT_X = (106, 111)                 # celah longsoran di punggung tebing A =
 RIDGES = [([(93, 66), (110, 66), (130, 65), (156, 66)], 3.2),      # A: memisahkan aula tambang dari kantong utara desa
           ([(92, -2), (92, 30), (92, 44), (92, 66)], 3.0),         # C: dinding barat aula tambang (ditembus lorong)
           ([(66, 61), (80, 62), (92, 62)], 2.6)]                   # D: memaksa jalan memutar lewat ngarai barat
+# geser pintu varian rumah dari pusat gambar (px), hasil tools/make_houses.py
+DOOR_DX = json.load(open(os.path.join(ROOT, "assets/props/buildings/variants/_pintu.json"), encoding="utf-8"))
 DUSUN_T = (42, 34)                      # perkiraan pusat Dusun Cadas (dicari ulang supaya kotak dusun seluruhnya daratan)
 DUSUN_BOX = (-14, 14, -11, 11)          # kotak dusun relatif pusat (tile): x0, x1, y0, y1
 DIRS8 = [(0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1)]
@@ -329,8 +331,8 @@ def build():
 
     # ------------------------------------------------------------ KAMPUNG TUMPUK (blueprint)
     prefab("Sumur", "Sumur", tp(0, 1))
-    houses = {"RumahMandor": ("Rumah_Krem", (-11.5, -3.5)), "RumahMirah": ("Rumah_Kayu", (11.5, -3.5)),
-              "RumahWarga": ("Rumah_Papan", (-11.5, 12.5)), "RumahUdin": ("Rumah_Hijau", (11.5, 12.5))}
+    houses = {"RumahMandor": ("Rumah_Loteng_Coklat", (-11.5, -3.5)), "RumahMirah": ("Rumah_Runcing_Coklat", (11.5, -3.5)),
+              "RumahWarga": ("Rumah_Teras_Coklat", (-13.6, 12.5)), "RumahUdin": ("Rumah_Loteng_Hijau", (11.5, 12.5))}
     for name, (pref, (dx, dy)) in houses.items():
         prefab(name, pref, tp(dx, dy))
     # bengkel Lilbah (barat, di luar jalan): landasan besar = Tempa, tungku, meja kerja, peti bahan
@@ -342,7 +344,7 @@ def build():
     prefab("BijihBengkel", "Bijih_Tumpuk_1", tp(-29.2, 3.8), solid=False)
     prefab("KayuBengkel", "Tumpukan_Kayu", tp(-18.8, -7.6))
     # gudang peti (timur laut): lumbung + tumpukan peti yang ditumpuk salah
-    prefab("Gudang", "Lumbung", STORE)
+    prefab("Gudang", "Gudang_Panjang", STORE)
     for k, (pref, (ox, oy)) in enumerate((("Peti_Tumpuk_2", (-58, 30)), ("Peti_Tumpuk_1", (-30, 38)), ("Peti_Tumpuk_3", (58, 30)),
                                           ("Peti_Tong", (84, 40)), ("Tong_Peti", (-86, 34)), ("Peti_Kayu_B", (36, 46)))):
         prefab(f"GudangPeti{k}", pref, (STORE[0] + ox, STORE[1] + oy))
@@ -361,9 +363,11 @@ def build():
     fence_w = PREFAB_SIZE["Pagar_Kayu"][0]
     for name, (pref, (dx, dy)) in houses.items():
         fy = dy + (1.2 if dy < 0 else 1.7)
-        left, right, gap = dx - 4.2, dx + 4.2, 1.7
+        hw = PREFAB_SIZE[pref][0] / (2 * TILE) + 0.2          # pagar selebar rumah
+        ddx = dx + DOOR_DX.get(pref, 0) / TILE                 # celah pagar di depan pintu
+        left, right, gap = dx - hw, dx + hw, 1.7
         n = 0
-        for x0, x1 in ((left, dx - gap), (dx + gap, right)):
+        for x0, x1 in ((left, ddx - gap), (ddx + gap, right)):
             x = x0 * TILE
             while x + fence_w / 2 <= x1 * TILE + 8:
                 prefab(f"Pagar_{name}_{n}", "Pagar_Kayu", (round(CX + x + fence_w / 2), round(CY + fy * TILE)), solid=False)
@@ -397,8 +401,8 @@ def build():
         prefab(f"Kemah{k}", pref, (cx_ + ox, cy_ + oy))
 
     # ---- DUSUN CADAS (ngarai barat laut): rumah, tenda, tugu batu (stasiun puzzle), perabot
-    dusun_houses = {"RumahSesepuh": ("Rumah_Papan", (-8.5, -1.5)), "RumahRaras": ("Rumah_Kayu", (8.5, -1.5)),
-                    "RumahBimo": ("Rumah_Krem", (-9.6, 10.2))}
+    dusun_houses = {"RumahSesepuh": ("Rumah_Runcing_Coklat", (-8.5, -1.5)), "RumahRaras": ("Pondok_Hijau", (8.5, -1.5)),
+                    "RumahBimo": ("Rumah_Teras_Coklat", (-10.5, 10.2))}
     for name, (pref, (dx, dy)) in dusun_houses.items():
         prefab(name, pref, dp(dx, dy))
     prefab("TuguRuntuh", "Puing_Pilar", dp(0, 1.4))
@@ -413,7 +417,8 @@ def build():
     prefab("PapanDusun", "Papan_Tiang", dp(1.8, 9.2), solid=False)
 
     # ------------------------------------------------------------ NPC & penanda
-    door_x, door_y = tp(-11.5, -3.5)
+    _mp, (_mdx, _mdy) = houses["RumahMandor"]
+    door_x, door_y = tp(_mdx + DOOR_DX.get(_mp, 0) / TILE, _mdy)
     npc_positions = []
 
     def npc(name, pos, **props):

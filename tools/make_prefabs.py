@@ -100,6 +100,12 @@ BUILDINGS = {
     "Rumah_Krem": "buildings/house_brown.png", "Rumah_Hijau": "buildings/house_green.png", "Rumah_Kayu": "buildings/house_log.png",
     "Rumah_Papan": "buildings/house_plank.png", "Lumbung": "buildings/house_dark.png",
 }
+# varian rumah rakitan tools/make_houses.py (menara, loteng, runcing, teras, gudang, pondok, toko)
+_VAR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", "props", "buildings", "variants")
+if os.path.isdir(_VAR):
+    for _f in sorted(os.listdir(_VAR)):
+        if _f.endswith(".png"):
+            BUILDINGS[_f[:-4]] = "buildings/variants/" + _f
 WHOLE = {"Sumur": ("well_stone.png", (26, 12))}
 
 NO_SHADOW = ("Mesa_", "Tangga_Kayu", "Lentera_Tiang", "Lampu_Tiang", "Pagar_Kayu", "Tiang_Pagar", "Spanduk_1", "Spanduk_2", "Spanduk_3", "Kutuk_", "Kerang_", "Kapal_Layar", "Perahu_Kecil")   # Kutuk_*: bayangan sudah ada di gambar
@@ -163,7 +169,7 @@ def write_prefab(name, rel, size, col):
     cdx = col[2] if len(col) > 2 else 0
     shadow = ""
     if not name.startswith(NO_SHADOW):
-        sw = w * 0.92 if name.startswith(("Rumah", "Lumbung")) else min(w * 0.95, max(14.0, cw * 1.25))
+        sw = w * 0.92 if name.startswith(("Rumah", "Lumbung", "Gudang", "Pondok", "Toko")) else min(w * 0.95, max(14.0, cw * 1.25))
         sh = max(8.0, min(18.0, h * 0.2))
         pts = ", ".join(
             f"{(sw / 2) * math.cos(2 * math.pi * k / 22) - cdx:.1f}, {-sh / 2 + (sh / 2) * math.sin(2 * math.pi * k / 22):.1f}"

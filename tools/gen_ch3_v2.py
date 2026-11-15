@@ -41,6 +41,8 @@ dist_to, dilate, erode, b64cells, tpx = v2mod.dist_to, v2mod.dilate, v2mod.erode
 LAYOUT = json.load(open(os.path.join(ROOT, "docs/layout/region_layout.json"), encoding="utf-8"))["Ch3_PelabuhanAntre"]
 W, H = LAYOUT["ukuran_tile"]            # 136 x 184
 PX_W, PX_H = LAYOUT["ukuran_px"]        # 2176 x 2944
+# geser pintu varian rumah dari pusat gambar (px), hasil tools/make_houses.py
+DOOR_DX = json.load(open(os.path.join(ROOT, "assets/props/buildings/variants/_pintu.json"), encoding="utf-8"))
 C = (72, 122)                           # pusat Kota Pelabuhan Antre (village_center layout (34,106) digeser ke pesisir timur)
 CX, CY = C[0] * TILE + 8, C[1] * TILE + 8
 GATE_X = (58, 86)                       # rentang kolom tempat celah gerbang kota pada punggung tebing utara
@@ -344,8 +346,8 @@ def build():
 
     # ------------------------------------------------------------ KOTA PELABUHAN ANTRE (blueprint)
     prefab("Sumur", "Sumur", tp(0, 1))
-    houses = {"KedaiDadang": ("Rumah_Hijau", (-11.5, -3.5)), "RumahWulan": ("Rumah_Kayu", (11.5, -3.5)),
-              "RumahWarga": ("Rumah_Krem", (-11.5, 12.5)), "RumahBahar": ("Rumah_Papan", (11.5, 12.5))}
+    houses = {"KedaiDadang": ("Rumah_Loteng_Merah", (-11.5, -3.5)), "RumahWulan": ("Rumah_Runcing_Biru", (11.5, -3.5)),
+              "RumahWarga": ("Rumah_Loteng_Biru", (-11.5, 12.5)), "RumahBahar": ("Rumah_Teras_Biru", (13.8, 12.5))}
     for name, (pref, (dx, dy)) in houses.items():
         prefab(name, pref, tp(dx, dy))
     # halaman kedai: tong minuman, peti, meja masak luar
@@ -370,9 +372,11 @@ def build():
         if name == "KedaiDadang":
             continue
         fy = dy + (1.2 if dy < 0 else 1.7)
-        left, right, gap = dx - 4.2, dx + 4.2, 1.7
+        hw = PREFAB_SIZE[pref][0] / (2 * TILE) + 0.2          # pagar selebar rumah
+        ddx = dx + DOOR_DX.get(pref, 0) / TILE                 # celah pagar di depan pintu
+        left, right, gap = dx - hw, dx + hw, 1.7
         n = 0
-        for x0, x1 in ((left, dx - gap), (dx + gap, right)):
+        for x0, x1 in ((left, ddx - gap), (ddx + gap, right)):
             x = x0 * TILE
             while x + fence_w / 2 <= x1 * TILE + 8:
                 prefab(f"Pagar_{name}_{n}", "Pagar_Kayu", (round(CX + x + fence_w / 2), round(CY + fy * TILE)), solid=False)
@@ -389,7 +393,7 @@ def build():
 
     # ---- pelabuhan: gudang, loket tiket, tali antrean, peti kargo, kapal layar & perahu
     hx, hy = HARBOR
-    prefab("GudangPelabuhan", "Lumbung", (hx - 120, hy - 54))
+    prefab("GudangPelabuhan", "Gudang_Panjang", (hx - 120, hy - 54))
     prefab("LoketTiket", "Lapak_Tenda_Kuning", (hx + 6, hy - 30))
     for k in range(6):   # tiang tali antrean (barisan penumpang menuju loket)
         prefab(f"TaliAntrean{k}", "Tiang_Pagar", (hx - 8 - k * 26, hy + 70), solid=False)
@@ -442,7 +446,8 @@ def build():
         prefab(f"Kebun{k}", pref, (gx0 + ox, gy0 + oy))
 
     # ------------------------------------------------------------ NPC & penanda
-    door_x, door_y = tp(-11.5, -3.5)
+    _kp, (_kdx, _kdy) = houses["KedaiDadang"]
+    door_x, door_y = tp(_kdx + DOOR_DX.get(_kp, 0) / TILE, _kdy)
     npc_positions = []
 
     def npc(name, pos, **props):

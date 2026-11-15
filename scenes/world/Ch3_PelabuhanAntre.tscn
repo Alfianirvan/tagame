@@ -23,10 +23,10 @@
 [ext_resource type="Script" path="res://scripts/world/Atmosphere.gd" id="ext_20"]
 [ext_resource type="Script" path="res://scripts/world/Clue.gd" id="ext_21"]
 [ext_resource type="PackedScene" path="res://scenes/prefabs/Sumur.tscn" id="ext_22"]
-[ext_resource type="PackedScene" path="res://scenes/prefabs/Rumah_Hijau.tscn" id="ext_23"]
-[ext_resource type="PackedScene" path="res://scenes/prefabs/Rumah_Kayu.tscn" id="ext_24"]
-[ext_resource type="PackedScene" path="res://scenes/prefabs/Rumah_Krem.tscn" id="ext_25"]
-[ext_resource type="PackedScene" path="res://scenes/prefabs/Rumah_Papan.tscn" id="ext_26"]
+[ext_resource type="PackedScene" path="res://scenes/prefabs/Rumah_Loteng_Merah.tscn" id="ext_23"]
+[ext_resource type="PackedScene" path="res://scenes/prefabs/Rumah_Runcing_Biru.tscn" id="ext_24"]
+[ext_resource type="PackedScene" path="res://scenes/prefabs/Rumah_Loteng_Biru.tscn" id="ext_25"]
+[ext_resource type="PackedScene" path="res://scenes/prefabs/Rumah_Teras_Biru.tscn" id="ext_26"]
 [ext_resource type="PackedScene" path="res://scenes/prefabs/Barel_Besar.tscn" id="ext_27"]
 [ext_resource type="PackedScene" path="res://scenes/prefabs/Barel_Air.tscn" id="ext_28"]
 [ext_resource type="PackedScene" path="res://scenes/prefabs/Peti_Kayu_B.tscn" id="ext_29"]
@@ -47,7 +47,7 @@
 [ext_resource type="PackedScene" path="res://scenes/prefabs/Papan_Kanan.tscn" id="ext_44"]
 [ext_resource type="PackedScene" path="res://scenes/prefabs/Papan_Tiang.tscn" id="ext_45"]
 [ext_resource type="PackedScene" path="res://scenes/prefabs/Lentera_Tiang.tscn" id="ext_46"]
-[ext_resource type="PackedScene" path="res://scenes/prefabs/Lumbung.tscn" id="ext_47"]
+[ext_resource type="PackedScene" path="res://scenes/prefabs/Gudang_Panjang.tscn" id="ext_47"]
 [ext_resource type="PackedScene" path="res://scenes/prefabs/Peti_Tumpuk_2.tscn" id="ext_48"]
 [ext_resource type="PackedScene" path="res://scenes/prefabs/Peti_Tumpuk_1.tscn" id="ext_49"]
 [ext_resource type="PackedScene" path="res://scenes/prefabs/Peti_Tong.tscn" id="ext_50"]
@@ -141,7 +141,7 @@ position = Vector2(1344, 1904)
 position = Vector2(976, 2160)
 
 [node name="RumahBahar" parent="Objects" instance=ExtResource("ext_26")]
-position = Vector2(1344, 2160)
+position = Vector2(1381, 2160)
 
 [node name="KedaiTong1" parent="Objects" instance=ExtResource("ext_27")]
 position = Vector2(885, 1918)
@@ -204,16 +204,16 @@ position = Vector2(1070, 2046)
 position = Vector2(1250, 2046)
 
 [node name="Pagar_RumahWulan_0" parent="Objects" instance=ExtResource("ext_41")]
-position = Vector2(1306, 1923)
+position = Vector2(1322, 1923)
 
 [node name="Pagar_RumahWulan_1" parent="Objects" instance=ExtResource("ext_41")]
 position = Vector2(1400, 1923)
 
 [node name="Tiang_RumahWulan_L" parent="Objects" instance=ExtResource("ext_42")]
-position = Vector2(1277, 1923)
+position = Vector2(1293, 1923)
 
 [node name="Tiang_RumahWulan_R" parent="Objects" instance=ExtResource("ext_42")]
-position = Vector2(1411, 1923)
+position = Vector2(1395, 1923)
 
 [node name="Pagar_RumahWarga_0" parent="Objects" instance=ExtResource("ext_41")]
 position = Vector2(938, 2187)
@@ -228,16 +228,19 @@ position = Vector2(909, 2187)
 position = Vector2(1043, 2187)
 
 [node name="Pagar_RumahBahar_0" parent="Objects" instance=ExtResource("ext_41")]
-position = Vector2(1306, 2187)
+position = Vector2(1319, 2187)
 
 [node name="Pagar_RumahBahar_1" parent="Objects" instance=ExtResource("ext_41")]
-position = Vector2(1400, 2187)
+position = Vector2(1377, 2187)
+
+[node name="Pagar_RumahBahar_2" parent="Objects" instance=ExtResource("ext_41")]
+position = Vector2(1461, 2187)
 
 [node name="Tiang_RumahBahar_L" parent="Objects" instance=ExtResource("ext_42")]
-position = Vector2(1277, 2187)
+position = Vector2(1290, 2187)
 
 [node name="Tiang_RumahBahar_R" parent="Objects" instance=ExtResource("ext_42")]
-position = Vector2(1411, 2187)
+position = Vector2(1472, 2187)
 
 [node name="PapanBarat" parent="Objects" instance=ExtResource("ext_43")]
 position = Vector2(766, 1915)

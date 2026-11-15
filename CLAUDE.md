@@ -226,6 +226,12 @@ Tahap 2: rute gerbang kota → barat di antara punggung tebing N & L → TONJOLA
 → dermaga keluar di teluk utara (Kapal Dadang, exit dipindah ke (91,12)). ±189 tile kota→arena. Jalan pintas arena→kota = pesisir timur,
 ditutup PERAHU KARAM (`StageBlocker` mode crystal). Musuh: awak bajak laut (Orc) + slime pantai, 25 ekor.
 
+**Varian rumah (keputusan):** `tools/make_houses.py` merakit 17 rumah dari kit Pixel Crawler (Walls/Roofs/Props) →
+`assets/props/buildings/variants/*.png` + `_pintu.json` (geser pintu dari pusat, dipakai pagar & pintu interior) → prefab lewat
+`make_prefabs.py` (Rumah_Menara_*, Rumah_Loteng_*, Rumah_Runcing_*, Rumah_Teras_*, Gudang_Panjang, Pondok_*, Toko_*). Gaya per wilayah:
+Ch1 kayu/hijau (Arman = Rumah_Menara_Hijau), Ch2 papan gelap/coklat, Ch3 krem-bata beratap merah/biru (Kedai Dadang = Rumah_Loteng_Merah).
+Pratinjau: `docs/layout/rumah_varian.png`. Tata letak desa (perempatan) belum diubah.
+
 ## 10. Boss (sprite di `boss_preview/`, sudah diperbesar 2×)
 | Boss | Idle (frame) | Serang (frame) | Mati (frame) | Pola serangan |
 |---|---|---|---|---|

@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/props/buildings/variants/Pondok_Hijau.png" id="1"]
+
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(60, 46)
+
+[node name="Pondok_Hijau" type="StaticBody2D"]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sombra" type="Polygon2D" parent="."]
+color = Color(0, 0, 0, 0.26)
+polygon = PackedVector2Array(33.1, -9.0, 31.8, -6.5, 27.9, -4.1, 21.7, -2.2, 13.8, -0.8, 4.7, -0.1, -4.7, -0.1, -13.8, -0.8, -21.7, -2.2, -27.9, -4.1, -31.8, -6.5, -33.1, -9.0, -31.8, -11.5, -27.9, -13.9, -21.7, -15.8, -13.8, -17.2, -4.7, -17.9, 4.7, -17.9, 13.8, -17.2, 21.7, -15.8, 27.9, -13.9, 31.8, -11.5)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1")
+offset = Vector2(0, -48.0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -23.0)
+shape = SubResource("1")

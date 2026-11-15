@@ -12,6 +12,7 @@ Gerbang desa & gerbang arena = palang MENDATAR (RegionGate.horizontal) pada "leh
 Air = autotile tepi buatan sendiri (tools/make_water_edge.py).
 """
 import base64
+import json
 import math
 import os
 import random
@@ -33,6 +34,8 @@ dist_to, dilate, erode, b64cells, tpx = v2mod.dist_to, v2mod.dilate, v2mod.erode
 
 C = (104, 102)                                       # pusat dusun (tile)
 D2 = (160, 85)                                       # pusat Desa 2 (timur, tercemar)
+# geser pintu varian rumah dari pusat gambar (px), hasil tools/make_houses.py
+DOOR_DX = json.load(open(os.path.join(ROOT, "assets/props/buildings/variants/_pintu.json"), encoding="utf-8"))
 D3 = (43, 87)                                        # pusat Desa 3 (barat, porak-poranda)
 D4 = (136, 22)                                       # pusat Desa 4 (utara, kubah segel) = titik_tile desa4
 D4_RX, D4_RY = 150, 112                              # jari-jari kubah segel (px)
@@ -382,8 +385,8 @@ def build():
 
     # ------------------------------------------------------------ DUSUN LARIK (blueprint)
     prefab("Sumur", "Sumur", tp(0, 1))
-    houses = {"RumahArman": ("Rumah_Krem", (-11.5, -3.5)), "RumahPenebang": ("Rumah_Kayu", (11.5, -3.5)),
-              "RumahWarga": ("Rumah_Hijau", (-11.5, 12.5)), "RumahPenjaga": ("Rumah_Papan", (11.5, 12.5))}
+    houses = {"RumahArman": ("Rumah_Menara_Hijau", (-12.5, -3.5)), "RumahPenebang": ("Rumah_Runcing_Coklat", (11.5, -3.5)),
+              "RumahWarga": ("Rumah_Loteng_Merah", (-11.5, 12.5)), "RumahPenjaga": ("Rumah_Teras_Coklat", (12.8, 12.5))}
     for name, (pref, (dx, dy)) in houses.items():
         prefab(name, pref, tp(dx, dy))
     prefab("Lumbung", "Lumbung", tp(22.5, 12.5))
@@ -409,10 +412,11 @@ def build():
     fence_w = PREFAB_SIZE["Pagar_Kayu"][0]
     for name, (pref, (dx, dy)) in houses.items():
         fy = dy + (1.2 if dy < 0 else 1.7)
-        left, right = dx - 4.2, dx + 4.2
-        gap = 1.7
+        hw = PREFAB_SIZE[pref][0] / (2 * TILE) + 0.2          # pagar selebar rumah
+        ddx = dx + DOOR_DX.get(pref, 0) / TILE                 # celah pagar di depan pintu
+        left, right, gap = dx - hw, dx + hw, 1.7
         n = 0
-        for x0, x1 in ((left, dx - gap), (dx + gap, right)):
+        for x0, x1 in ((left, ddx - gap), (ddx + gap, right)):
             x = x0 * TILE
             while x + fence_w / 2 <= x1 * TILE + 8:
                 prefab(f"Pagar_{name}_{n}", "Pagar_Kayu", tp(0, 0)[0:0] or (round(CX + x + fence_w / 2), round(CY + fy * TILE)), solid=False)
@@ -468,7 +472,8 @@ def build():
             prefab(f"Kemah_{nm}_{bx}", nm, (bx + ox, by + oy))
 
     # ------------------------------------------------------------ NPC
-    door_x, door_y = tp(-11.5, -3.5)
+    _ap, (_adx, _ady) = houses["RumahArman"]
+    door_x, door_y = tp(_adx + DOOR_DX.get(_ap, 0) / TILE, _ady)
     npc_positions = [("Arman", (door_x + 38, door_y + 18)), ("Penjaga", tp(17.0, 6.0)), ("Penebang", tp(22.0, -1.6)),
                      ("Sari", tp(-8.8, -13.2)), ("Pedagang", tp(8.8, 6.4)), ("PedagangAkhir", (bf3[0] + 52, bf3[1] + 18))]
     inst("Arman", npc_scene, (door_x + 38, door_y + 18), npc_id='"arman"')
@@ -490,8 +495,8 @@ def build():
 
     PURPLE = "Color(0.8, 0.6, 1, 1)"
     prefab("D2Sumur", "Sumur", d2(0, 0), modulate=PURPLE)
-    for nm, pref, (dx, dy) in (("D2Rumah1", "Rumah_Papan", (-9.5, -4.5)), ("D2Rumah2", "Rumah_Kayu", (8.5, -4.5)),
-                               ("D2Rumah3", "Rumah_Krem", (-9.5, 10.0)), ("D2Lumbung", "Lumbung", (7.5, 10.2))):
+    for nm, pref, (dx, dy) in (("D2Rumah1", "Rumah_Loteng_Hijau", (-9.5, -4.5)), ("D2Rumah2", "Rumah_Runcing_Merah", (8.5, -4.5)),
+                               ("D2Rumah3", "Toko_Hijau", (-9.5, 10.0)), ("D2Lumbung", "Lumbung", (7.5, 10.2))):
         prefab(nm, pref, d2(dx, dy), modulate="Color(0.85, 0.8, 0.9, 1)")
     prefab("D2Barel", "Barel_Air", d2(-4.0, -6.0), modulate=PURPLE)
     prefab("D2Peti", "Peti_Kayu_A", d2(4.2, -5.5))
@@ -514,8 +519,8 @@ def build():
             target_names=f"PackedStringArray({tint_targets})")
 
     # rumah Desa 3 = prefab rumah yang sama dengan desa lain (api & asap di atap = bekas serangan)
-    for nm, pref, (dx, dy) in (("D3Rumah1", "Rumah_Papan", (-10.0, -4.0)), ("D3Rumah2", "Rumah_Kayu", (10.0, -4.0)),
-                               ("D3Rumah3", "Rumah_Krem", (-11.0, 10.0)), ("D3Rumah4", "Rumah_Hijau", (11.5, 10.0))):
+    for nm, pref, (dx, dy) in (("D3Rumah1", "Rumah_Runcing_Coklat", (-10.0, -4.0)), ("D3Rumah2", "Rumah_Loteng_Hijau", (10.0, -4.0)),
+                               ("D3Rumah3", "Rumah_Teras_Coklat", (-12.0, 10.0)), ("D3Rumah4", "Pondok_Hijau", (11.5, 10.0))):
         prefab(nm, pref, d3(dx, dy))
     prefab("D3Tenda1", "Tenda_1", d3(-5.0, 11.2))
     prefab("D3Tenda2", "Tenda_3", d3(5.2, 11.6))
@@ -596,7 +601,7 @@ def build():
     prefab("D4Altar", "Altar_Segel", d4(0, 0.5))
     sc.node("AltarSegel", "Area2D", "Objects", script=f'ExtResource("{altar_script}")', position=v2(*d4(0, 0.5)))
     # rumah Desa 4 = prefab rumah yang sama dengan desa lain, mengapit altar di dalam kubah segel
-    for nm, pref, (dx, dy) in (("D4Rumah1", "Rumah_Kayu", (-5.6, -1.4)), ("D4Rumah2", "Rumah_Papan", (5.6, -1.4)),
+    for nm, pref, (dx, dy) in (("D4Rumah1", "Rumah_Runcing_Coklat", (-5.2, -1.4)), ("D4Rumah2", "Rumah_Runcing_Biru", (5.2, -1.4)),
                                ("D4Pilar1", "Pilar_Lumut", (-6.4, 4.0)), ("D4Pilar3", "Pilar_Lumut", (6.0, 3.6))):
         prefab(nm, pref, d4(dx, dy))
     for k_, (pref, (dx, dy)) in enumerate((("Kutuk_Reruntuhan_1", (3.6, 4.6)), ("Kutuk_Reruntuhan_2", (-3.4, 5.0)),
@@ -795,11 +800,11 @@ def build():
 
     def find_clear(x, y):
         """Titik bebas terdekat (spiral sampai 140 px) dari (x, y)."""
-        if clear_spot(x, y):
+        if clear_spot(round(x), round(y)):
             return (round(x), round(y))
         for r in range(12, 141, 12):
             for a in range(0, 360, 30):
-                nx, ny = x + math.cos(math.radians(a)) * r, y + math.sin(math.radians(a)) * r
+                nx, ny = round(x + math.cos(math.radians(a)) * r), round(y + math.sin(math.radians(a)) * r)   # bulatkan dulu: cek tile titik akhir
                 if clear_spot(nx, ny):
                     return (round(nx), round(ny))
         return None

@@ -584,6 +584,142 @@
   "cdx": 0
  },
  {
+  "name": "Gudang_Panjang",
+  "w": 200,
+  "h": 138,
+  "cw": 188,
+  "ch": 46,
+  "cdx": 0
+ },
+ {
+  "name": "Pondok_Hijau",
+  "w": 72,
+  "h": 96,
+  "cw": 60,
+  "ch": 46,
+  "cdx": 0
+ },
+ {
+  "name": "Pondok_Kecil",
+  "w": 64,
+  "h": 96,
+  "cw": 52,
+  "ch": 46,
+  "cdx": 0
+ },
+ {
+  "name": "Rumah_Loteng_Biru",
+  "w": 128,
+  "h": 190,
+  "cw": 116,
+  "ch": 46,
+  "cdx": 0
+ },
+ {
+  "name": "Rumah_Loteng_Coklat",
+  "w": 128,
+  "h": 190,
+  "cw": 116,
+  "ch": 46,
+  "cdx": 0
+ },
+ {
+  "name": "Rumah_Loteng_Hijau",
+  "w": 128,
+  "h": 190,
+  "cw": 116,
+  "ch": 46,
+  "cdx": 0
+ },
+ {
+  "name": "Rumah_Loteng_Merah",
+  "w": 128,
+  "h": 190,
+  "cw": 116,
+  "ch": 46,
+  "cdx": 0
+ },
+ {
+  "name": "Rumah_Menara_Hijau",
+  "w": 196,
+  "h": 148,
+  "cw": 184,
+  "ch": 46,
+  "cdx": 0
+ },
+ {
+  "name": "Rumah_Menara_Kayu",
+  "w": 196,
+  "h": 148,
+  "cw": 184,
+  "ch": 46,
+  "cdx": 0
+ },
+ {
+  "name": "Rumah_Menara_Merah",
+  "w": 196,
+  "h": 148,
+  "cw": 184,
+  "ch": 46,
+  "cdx": 0
+ },
+ {
+  "name": "Rumah_Runcing_Biru",
+  "w": 96,
+  "h": 143,
+  "cw": 84,
+  "ch": 46,
+  "cdx": 0
+ },
+ {
+  "name": "Rumah_Runcing_Coklat",
+  "w": 96,
+  "h": 143,
+  "cw": 84,
+  "ch": 46,
+  "cdx": 0
+ },
+ {
+  "name": "Rumah_Runcing_Merah",
+  "w": 96,
+  "h": 143,
+  "cw": 84,
+  "ch": 46,
+  "cdx": 0
+ },
+ {
+  "name": "Rumah_Teras_Biru",
+  "w": 176,
+  "h": 138,
+  "cw": 164,
+  "ch": 46,
+  "cdx": 0
+ },
+ {
+  "name": "Rumah_Teras_Coklat",
+  "w": 176,
+  "h": 138,
+  "cw": 164,
+  "ch": 46,
+  "cdx": 0
+ },
+ {
+  "name": "Toko_Hijau",
+  "w": 128,
+  "h": 138,
+  "cw": 116,
+  "ch": 46,
+  "cdx": 0
+ },
+ {
+  "name": "Toko_Merah",
+  "w": 128,
+  "h": 138,
+  "cw": 116,
+  "ch": 46,
+  "cdx": 0
+ },
+ {
   "name": "Sumur",
   "w": 40,
   "h": 44,

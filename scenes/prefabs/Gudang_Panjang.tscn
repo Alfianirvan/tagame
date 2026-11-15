@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/props/buildings/variants/Gudang_Panjang.png" id="1"]
+
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(188, 46)
+
+[node name="Gudang_Panjang" type="StaticBody2D"]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sombra" type="Polygon2D" parent="."]
+color = Color(0, 0, 0, 0.26)
+polygon = PackedVector2Array(92.0, -9.0, 88.3, -6.5, 77.4, -4.1, 60.2, -2.2, 38.2, -0.8, 13.1, -0.1, -13.1, -0.1, -38.2, -0.8, -60.2, -2.2, -77.4, -4.1, -88.3, -6.5, -92.0, -9.0, -88.3, -11.5, -77.4, -13.9, -60.2, -15.8, -38.2, -17.2, -13.1, -17.9, 13.1, -17.9, 38.2, -17.2, 60.2, -15.8, 77.4, -13.9, 88.3, -11.5)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1")
+offset = Vector2(0, -69.0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -23.0)
+shape = SubResource("1")
