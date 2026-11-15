@@ -38,7 +38,7 @@ D2 = (160, 85)                                       # pusat Desa 2 (timur, terc
 DOOR_DX = json.load(open(os.path.join(ROOT, "assets/props/buildings/variants/_pintu.json"), encoding="utf-8"))
 D3 = (43, 87)                                        # pusat Desa 3 (barat, porak-poranda)
 D4 = (136, 22)                                       # pusat Desa 4 (utara, kubah segel) = titik_tile desa4
-D4_RX, D4_RY = 150, 112                              # jari-jari kubah segel (px)
+D4_RX, D4_RY = 220, 190                              # jari-jari kubah segel (px), cukup untuk 2 rumah + altar berpilar
 ARENA_CURSE = (640, 500)                             # ukuran tekstur tanah terkutuk arena (tools/make_cursed_ground.py)
 CX, CY = C[0] * TILE + 8, C[1] * TILE + 8            # pusat dusun (px)
 DIRS8 = [(0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1)]
@@ -211,11 +211,12 @@ def build():
     no_trees |= np.hypot((gx - ac[0]) / (ARENA_CURSE[0] / 2 + 16), (gy - ac[1]) / (ARENA_CURSE[1] / 2 + 16)) < 1.0
     e4 = np.hypot((gx - (D4[0] * TILE + 8)) / (D4_RX + 70), (gy - (D4[1] * TILE + 8)) / (D4_RY + 60))
     no_trees |= e4 < 1.0
-    pond = np.hypot((gx - (D2[0] * TILE + 8 + 13.5 * TILE)) / (4.4 * TILE), (gy - (D2[1] * TILE + 8 + 3.5 * TILE)) / (3.2 * TILE)) < 1.0
+    # kolam tercemar di TENGAH Desa 2 (desa kolam), jalan tanah melingkarinya
+    pond = np.hypot((gx - (D2[0] * TILE + 8)) / (5.2 * TILE), (gy - (D2[1] * TILE + 8 + 0.5 * TILE)) / (3.6 * TILE)) < 1.0
     nz = organic.smooth_noise(gx, gy, 6)
     tainted = (e2 + 0.10 * nz) < 0.88                               # tanah tercemar Desa 2
     scorched = (e3 + 0.10 * nz) < 0.80                              # tanah hangus Desa 3
-    plaza_d = (np.hypot(gx - (D2[0] * TILE + 8), gy - (D2[1] * TILE + 8)) < 5.5 * TILE) |               (np.hypot(gx - (D3[0] * TILE + 8), gy - (D3[1] * TILE + 8)) < 5.5 * TILE)
+    plaza_d = (np.hypot((gx - (D2[0] * TILE + 8)) / (8.6 * TILE), (gy - (D2[1] * TILE + 8 + 0.5 * TILE)) / (6.6 * TILE)) < 1.0) |               (np.hypot(gx - (D3[0] * TILE + 8), gy - (D3[1] * TILE + 8)) < 5.5 * TILE)
 
     def winding(a, b, amp, seed, n=7):
         r_ = random.Random(seed)
@@ -231,7 +232,7 @@ def build():
         pts_.append(b)
         return organic.polyline_samples(pts_, 12.0)
 
-    road_e = np.vstack([winding(tp(0, 0), tp(27, 0), 22, 51, n=4), winding(tp(27, 0), (D2[0] * TILE + 8, D2[1] * TILE + 8), 90, 41)])
+    road_e = np.vstack([winding(tp(0, 0), tp(27, 0), 22, 51, n=4), winding(tp(27, 0), (D2[0] * TILE + 8 - 10 * TILE, D2[1] * TILE + 8 + 1.5 * TILE), 90, 41)])
     road_w = np.vstack([winding(tp(0, 0), tp(-17, 0), 18, 53, n=3), winding(tp(-17, 0), (D3[0] * TILE + 8, D3[1] * TILE + 8), 80, 43)])
     # jalan setapak Desa 4: dari jalur utama (sesudah arena) naik ke kaki kubah segel
     j4 = route[route_i((127 * TILE + 8, 38 * TILE + 8))]
@@ -513,58 +514,66 @@ def build():
         return (round(D3[0] * TILE + 8 + dx * TILE), round(D3[1] * TILE + 8 + dy * TILE))
 
     PURPLE = "Color(0.8, 0.6, 1, 1)"
-    prefab("D2Sumur", "Sumur", d2(0, 0), modulate=PURPLE)
-    for nm, pref, (dx, dy) in (("D2Rumah1", "Rumah_Loteng_Hijau", (-9.5, -4.5)), ("D2Rumah2", "Rumah_Runcing_Merah", (8.5, -4.5)),
-                               ("D2Rumah3", "Toko_Hijau", (-9.5, 10.0)), ("D2Lumbung", "Lumbung", (7.5, 10.2))):
+    # DESA 2 = desa kolam: kolam tercemar di tengah, kincir air di tepi timur kolam, sumur di tepi barat, rumah & lumbung mengelilingi
+    prefab("D2Sumur", "Sumur", d2(-7.4, -1.0), modulate=PURPLE)
+    for nm, pref, (dx, dy) in (("D2Rumah1", "Rumah_Loteng_Hijau", (-9.0, -5.2)), ("D2Rumah2", "Rumah_Runcing_Merah", (8.0, -5.4)),
+                               ("D2Rumah3", "Toko_Hijau", (-9.5, 12.2)), ("D2Lumbung", "Lumbung", (9.0, 12.4))):
         prefab(nm, pref, d2(dx, dy), modulate="Color(0.85, 0.8, 0.9, 1)")
-    prefab("D2Barel", "Barel_Air", d2(-4.0, -6.0), modulate=PURPLE)
-    prefab("D2Peti", "Peti_Kayu_A", d2(4.2, -5.5))
-    prefab("D2Guci", "Guci", d2(-3.8, 6.0), modulate=PURPLE)
+    prefab("D2Barel", "Barel_Air", d2(-6.2, 5.4), modulate=PURPLE)
+    prefab("D2Peti", "Peti_Kayu_A", d2(3.8, -6.4))
+    prefab("D2Guci", "Guci", d2(6.6, 5.6), modulate=PURPLE)
     prefab("D2PapanMasuk", "Papan_Kanan", d2(-15.8, 2.2), solid=False)
     mill_tex = sc.ext_res("Texture2D", "res://assets/ninja/animated/WaterMill/Watermill_A_34x36.png")
+    mill_p = d2(5.9, 0.6)
     sc.node("D2Kincir", "Node2D", "Objects", script=f'ExtResource("{animprop_script}")', strip=f'ExtResource("{mill_tex}")',
-            position=v2(*d2(13.5, -0.9)), frame_w="34", frame_h="36", fps="4.0", random_phase="false", modulate="Color(0.85, 0.75, 0.95, 1)")
-    buildings.append((d2(13.5, -0.9)[0], d2(13.5, -0.9)[1], 34, 36))
-    inst("BonfireDesa2", bonfire_scene, d2(-2.5, 7.8))
+            position=v2(*mill_p), frame_w="34", frame_h="36", fps="4.0", random_phase="false", modulate="Color(0.85, 0.75, 0.95, 1)")
+    buildings.append((mill_p[0], mill_p[1], 34, 36))
+    inst("BonfireDesa2", bonfire_scene, d2(-2.8, 7.6))
     inst("BenderaDesa2", checkpoint_scene, d2(-14.5, 5.2))
     inst("PetiDesa2", chest_scene, d2(1.5, 13.0), roll_count="2")
     # puzzle rak lumbung (Quest Tengah langkah 1): memurnikan sumur Desa 2
-    inst("StasiunRak", station_scene, d2(7.5, 12.8), puzzle_scene=f'ExtResource("{puzzle_scene}")', chapter="1",
+    inst("StasiunRak", station_scene, d2(9.0, 14.4), puzzle_scene=f'ExtResource("{puzzle_scene}")', chapter="1",
          station_label='"Rak Lumbung"', complete_flag='"ch1_sumur_murni"', required_step='"ch1_tengah:desa2"')
-    npc_positions.append(("Rak", d2(7.5, 12.8)))
+    npc_positions.append(("Rak", d2(9.0, 14.4)))
     tint_targets = ", ".join(f'"{n}"' for n in ("Tercemar", "AirUngu", "D2Sumur", "D2Barel", "D2Guci", "D2Kincir",
                                                   "D2Rumah1", "D2Rumah2", "D2Rumah3", "D2Lumbung"))
     sc.node("Desa2Pulih", "Node", ".", script=f'ExtResource("{tint_script}")', flag='"ch1_sumur_murni"',
             target_names=f"PackedStringArray({tint_targets})")
 
-    # rumah Desa 3 = prefab rumah yang sama dengan desa lain (api & asap di atap = bekas serangan)
-    for nm, pref, (dx, dy) in (("D3Rumah1", "Rumah_Runcing_Coklat", (-10.0, -4.0)), ("D3Rumah2", "Rumah_Loteng_Hijau", (10.0, -4.0)),
-                               ("D3Rumah3", "Rumah_Teras_Coklat", (-12.0, 10.0)), ("D3Rumah4", "Pondok_Hijau", (11.5, 10.0))):
+    # DESA 3 = kemah penyintas: api unggun di tengah, cincin tenda, barikade darurat (celah di timur), rumah terbakar di luar barikade
+    for nm, pref, (dx, dy) in (("D3Rumah1", "Rumah_Runcing_Coklat", (-14.5, -5.0)), ("D3Rumah2", "Toko_Hijau", (14.0, -5.0)),
+                               ("D3Rumah3", "Rumah_Runcing_Merah", (-12.5, 12.5)), ("D3Rumah4", "Pondok_Hijau", (12.5, 12.5))):
         prefab(nm, pref, d3(dx, dy))
-    prefab("D3Tenda1", "Tenda_1", d3(-5.0, 11.2))
-    prefab("D3Tenda2", "Tenda_3", d3(5.2, 11.6))
-    prefab("D3Tenda3", "Tenda_2", d3(0.4, 14.0))
-    for nm, pref, (dx, dy) in (("D3PuingA", "Puing_Batu", (-1.5, -9.0)), ("D3PuingB", "Puing_Pilar", (3.5, -8.4)),
-                               ("D3PuingC", "Puing_Kayu", (-14.0, 0.5)), ("D3Tronk", "Tronk_Kayu", (14.5, -1.8)),
-                               ("D3Kotak", "Kotak_Rusak", (6.8, 3.2)), ("D3Peti", "Peti_Kayu_B", (-7.0, 13.0))):
+    for nm, pref, (dx, dy) in (("D3Tenda1", "Tenda_1", (-6.2, -2.6)), ("D3Tenda2", "Tenda_3", (6.4, -2.8)),
+                               ("D3Tenda3", "Tenda_2", (-5.6, 6.6)), ("D3Tenda4", "Tenda_4", (6.0, 6.8)),
+                               ("D3Tripod", "Dapur_Tripod", (3.4, 0.0)), ("D3Peti", "Peti_Kayu_B", (-3.6, 8.0)),
+                               ("D3Barel", "Barel_Air", (8.6, 1.8))):
+        prefab(nm, pref, d3(dx, dy))
+    barricade = ["Peti_Tumpuk_1", "Tong_Peti", "Kotak_Rusak", "Puing_Kayu", "Peti_Tong", "Barel_Besar", "Peti_Tumpuk_3", "Tronk_Kayu"]
+    for k, ang in enumerate(range(45, 316, 20)):             # barikade darurat, celah 90 derajat di timur (jalan dari Dusun Larik)
+        pref = barricade[k % len(barricade)]
+        dx, dy = 10.4 * math.cos(math.radians(ang)), 8.0 * math.sin(math.radians(ang))
+        prefab(f"D3Barikade{k}", pref, d3(dx, dy), solid=not pref.startswith(("Kotak", "Puing")))
+    for nm, pref, (dx, dy) in (("D3PuingA", "Puing_Batu", (-1.5, -11.4)), ("D3PuingB", "Puing_Pilar", (3.5, -11.0)),
+                               ("D3PuingC", "Puing_Kayu", (-18.0, 2.0)), ("D3Tronk", "Tronk_Kayu", (1.6, 12.0))):
         prefab(nm, pref, d3(dx, dy), solid=False)
     flam_tex = sc.ext_res("Texture2D", "res://assets/ninja/fx/Flam/Flam.png")
     smoke_tex = sc.ext_res("Texture2D", "res://assets/ninja/fx/Smoke/Smoke/SpriteSheet.png")
-    for i, (dx, dy) in enumerate(((-11.6, -8.6), (8.4, -9.0), (-9.6, 5.6), (13.0, 5.2), (0.5, -7.4))):
+    for i, (dx, dy) in enumerate(((-15.5, -10.6), (15.0, -10.0), (-13.5, 7.2), (13.2, 8.8), (-1.2, -12.0))):
         fp = d3(dx, dy)
         sc.node(f"D3Api{i}", "Node2D", "Objects", script=f'ExtResource("{animprop_script}")', strip=f'ExtResource("{flam_tex}")',
                 position=v2(*fp), frame_w="20", frame_h="30", fps="9.0", z_index="5" if i < 4 else "0")
         sc.node(f"D3Asap{i}", "Node2D", "Objects", script=f'ExtResource("{animprop_script}")', strip=f'ExtResource("{smoke_tex}")',
                 position=v2(fp[0], fp[1] - 22), frame_w="32", frame_h="32", fps="5.0", z_index="6", modulate="Color(0.7, 0.7, 0.7, 0.8)")
-    inst("BonfireDesa3", bonfire_scene, d3(0.2, 9.0))
+    inst("BonfireDesa3", bonfire_scene, d3(0.0, 1.4))
     inst("BenderaDesa3", checkpoint_scene, d3(17.5, 5.0))
-    inst("PetiDesa3", chest_scene, d3(-17.0, -6.0), roll_count="2")
+    inst("PetiDesa3", chest_scene, d3(-19.5, 4.0), roll_count="2")
     prefab("D3PapanMasuk", "Papan_Kiri", d3(16.4, 0.4), solid=False)
-    surv = [("Rani", d3(-3.0, 8.4)), ("Darso", d3(3.4, 8.8)), ("Tami", d3(-5.5, -1.6))]
+    surv = [("Rani", d3(-2.6, 3.8)), ("Darso", d3(2.8, 4.0)), ("Tami", d3(-3.4, -1.0))]
     for nm, pos in surv:
         inst(nm, npc_scene, pos, npc_id=f'"{nm.lower()}"', dialog_id=f'"ch1_{nm.lower()}"', villager_chapter="101")
         npc_positions.append((nm, pos))
-    npc_positions += [("Bf2", d2(-2.5, 7.8)), ("Bf3", d3(0.2, 9.0)), ("Fl2", d2(-14.5, 5.2)), ("Fl3", d3(17.5, 5.0))]
+    npc_positions += [("Bf2", d2(-2.8, 7.6)), ("Bf3", d3(0.0, 1.4)), ("Fl2", d2(-14.5, 5.2)), ("Fl3", d3(17.5, 5.0))]
 
     # ------------------------------------------------------------ ARENA GOLEM: tanah terkutuk, obor segel, bendera, Skeleton
     def land_ok_px(x_, y_):
@@ -617,22 +626,24 @@ def build():
 
     d4tex = sc.ext_res("Texture2D", "res://assets/props/generated/cursed_desa4.png")
     sc.node("D4KutukTanah", "Sprite2D", "Decor", texture=f'ExtResource("{d4tex}")', position=v2(*d4(0, 0)))
-    prefab("D4Altar", "Altar_Segel", d4(0, 0.5))
-    sc.node("AltarSegel", "Area2D", "Objects", script=f'ExtResource("{altar_script}")', position=v2(*d4(0, 0.5)))
+    prefab("D4Altar", "Altar_Segel", d4(0, 0.8))
+    sc.node("AltarSegel", "Area2D", "Objects", script=f'ExtResource("{altar_script}")', position=v2(*d4(0, 0.8)))
     # rumah Desa 4 = prefab rumah yang sama dengan desa lain, mengapit altar di dalam kubah segel
-    for nm, pref, (dx, dy) in (("D4Rumah1", "Rumah_Runcing_Coklat", (-5.2, -1.4)), ("D4Rumah2", "Rumah_Runcing_Biru", (5.2, -1.4)),
-                               ("D4Pilar1", "Pilar_Lumut", (-6.4, 4.0)), ("D4Pilar3", "Pilar_Lumut", (6.0, 3.6))):
+    # DESA 4 = desa kuil: altar dikelilingi 4 pilar lumut, 2 rumah mengapit, semua di dalam kubah segel (diperbesar)
+    for nm, pref, (dx, dy) in (("D4Rumah1", "Rumah_Runcing_Coklat", (-7.6, -1.0)), ("D4Rumah2", "Rumah_Runcing_Biru", (7.6, -1.0)),
+                               ("D4Pilar1", "Pilar_Lumut", (-3.6, -1.6)), ("D4Pilar2", "Pilar_Lumut", (3.6, -1.6)),
+                               ("D4Pilar3", "Pilar_Lumut", (-3.6, 3.8)), ("D4Pilar4", "Pilar_Lumut", (3.6, 3.8))):
         prefab(nm, pref, d4(dx, dy))
-    for k_, (pref, (dx, dy)) in enumerate((("Kutuk_Reruntuhan_1", (3.6, 4.6)), ("Kutuk_Reruntuhan_2", (-3.4, 5.0)),
-                                           ("Kutuk_TanamanMata_1", (-7.6, 0.6)), ("Kutuk_BanyakMata", (7.4, 0.2)),
-                                           ("Kutuk_Tulang_1", (-1.8, 3.0)), ("Kutuk_Tulang_3", (2.0, 2.8)),
-                                           ("Kutuk_BatuMata", (0.4, -4.6)), ("Kutuk_Tentakel", (-3.6, 2.4)))):
+    for k_, (pref, (dx, dy)) in enumerate((("Kutuk_Reruntuhan_1", (6.0, 6.8)), ("Kutuk_Reruntuhan_2", (-6.0, 7.0)),
+                                           ("Kutuk_TanamanMata_1", (-11.0, 3.0)), ("Kutuk_BanyakMata", (10.8, 2.8)),
+                                           ("Kutuk_Tulang_1", (-1.6, 5.4)), ("Kutuk_Tulang_3", (2.0, 5.6)),
+                                           ("Kutuk_BatuMata", (0.4, -5.0)), ("Kutuk_Tentakel", (-9.0, 6.4)))):
         prefab(f"D4Kutuk{k_}", pref, d4(dx, dy), solid=False)
-    inst("Tetua", npc_scene, d4(2.6, 1.6), npc_id='"tetua"', hidden_until_flag='"ch1_segel_pudar"')
+    inst("Tetua", npc_scene, d4(1.8, 2.6), npc_id='"tetua"', hidden_until_flag='"ch1_segel_pudar"')
     sc.node("KubahSegel", "Node2D", ".", script=f'ExtResource("{dome_script}")', position=v2(*d4(0, 0)),
             radius_x=str(float(D4_RX)), radius_y=str(float(D4_RY)))
     prefab("PapanDesa4", "Papan_Kanan", (round(j4[0]) + 30, round(j4[1]) - 18), solid=False)
-    npc_positions += [("Tetua", d4(2.6, 1.6)), ("Altar", d4(0, 0.5))]
+    npc_positions += [("Tetua", d4(1.8, 2.6)), ("Altar", d4(0, 0.8))]
     extra_keypts = [torch_c, cp_curse, cp_arena, d4(0, 0)]
 
     # ------------------------------------------------------------ pohon (bersih 4 tile dari bangunan)
@@ -952,7 +963,7 @@ def build():
     open_all = reach(set())
     closed_v = reach({gate_v_y // TILE})
     closed_a = reach(set(), bands["arena"])
-    d2t = (D2[0], D2[1])
+    d2t = (D2[0] - 9, D2[1] + 2)      # tepi barat kolam (pusat Desa 2 = kolam)
     d3t = (D3[0], D3[1])
     r_closed = reach(set(), ring2 | ring3 | cloud_b)
     print("Desa 2/3: terjangkau saat terbuka =", bool(open_all[d2t]), bool(open_all[d3t]), "| terkunci selama kabut =", not r_closed[d2t], not r_closed[d3t])

@@ -243,7 +243,11 @@ Gudang_Panjang) dengan tangga kayu di tebing; JALAN TAMBANG (y 95-97) dari bengk
 **Dusun Larik = DESA PETANI (keputusan):** tanpa lantai batu; lapangan tanah kecil di tengah (pohon desa + sumur) dilalui jalan tanah
 rute utama, jalan setapak melengkung ke timur & barat, rumah tersebar dengan pekarangan, 3 LADANG berpagar (gambar
 `tools/make_fields.py` → `assets/props/fields/Ladang_*.png`, Sprite2D di Decor) + lumbung + orang-orangan sawah.
-Pratinjau `docs/layout/Ch1_dusun_larik_petani.png`. Desa Algoria (desa awal) belum diubah.
+Pratinjau `docs/layout/Ch1_dusun_larik_petani.png`.
+**Desa 2/3/4 Ch1 (keputusan):** Desa 2 = desa kolam (kolam tercemar di tengah, kincir di tepi timur, sumur di tepi barat);
+Desa 3 = kemah penyintas (api unggun di tengah, cincin tenda, barikade darurat celah timur, rumah terbakar di luar);
+Desa 4 = desa kuil (altar + 4 pilar lumut, 2 rumah; kubah segel diperbesar D4_RX/RY 220/190, `cursed_desa4.png` 440x380).
+Desa Algoria (desa awal) belum diubah.
 
 ## 10. Boss (sprite di `boss_preview/`, sudah diperbesar 2×)
 | Boss | Idle (frame) | Serang (frame) | Mati (frame) | Pola serangan |

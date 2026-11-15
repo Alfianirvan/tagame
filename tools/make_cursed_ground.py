@@ -128,4 +128,4 @@ def make(name, w, h, seed, veins=6, edge=0.18):
 
 if __name__ == "__main__":
     make("cursed_arena", 640, 500, 51, veins=8)
-    make("cursed_desa4", 300, 224, 52, veins=4)
+    make("cursed_desa4", 440, 380, 52, veins=5)      # selebar kubah segel Desa 4 (D4_RX/RY 220/190)
