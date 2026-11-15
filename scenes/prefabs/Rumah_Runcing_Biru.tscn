@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/props/buildings/variants/Rumah_Runcing_Biru.png" id="1"]
+
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(84, 46)
+
+[node name="Rumah_Runcing_Biru" type="StaticBody2D"]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Sombra" type="Polygon2D" parent="."]
+color = Color(0, 0, 0, 0.26)
+polygon = PackedVector2Array(44.2, -9.0, 42.4, -6.5, 37.1, -4.1, 28.9, -2.2, 18.3, -0.8, 6.3, -0.1, -6.3, -0.1, -18.3, -0.8, -28.9, -2.2, -37.1, -4.1, -42.4, -6.5, -44.2, -9.0, -42.4, -11.5, -37.1, -13.9, -28.9, -15.8, -18.3, -17.2, -6.3, -17.9, 6.3, -17.9, 18.3, -17.2, 28.9, -15.8, 37.1, -13.9, 42.4, -11.5)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1")
+offset = Vector2(0, -71.5)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -23.0)
+shape = SubResource("1")
