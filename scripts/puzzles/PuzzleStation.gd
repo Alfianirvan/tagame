@@ -74,6 +74,9 @@ func _block_reason() -> String:
 		return ""
 	if GameManager.get_quest_stage(chapter) >= 2:
 		return "Puzzle sudah selesai"      # jawaban tersimpan: tidak perlu mengulang
+	# Quest Tengah berlangkah: puzzle akhirnya baru terbuka setelah semua langkahnya beres
+	if not QuestManager.get_current_step(QuestManager.make_id(chapter, 2)).is_empty():
+		return "Selesaikan langkah quest dulu"
 	return ""
 
 

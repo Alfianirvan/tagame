@@ -1,6 +1,7 @@
 extends Node
-## Uji main otomatis Chapter 3 (headless), Tahap 1: masuk Kota Pelabuhan Antre -> tanya 3 warga -> 3 petunjuk Queue
-## -> kuis Dadang -> kabut laut gerbang kota terbuka (perbatasan & arena masih tertutup). Aksi pemain disimulasikan lewat API game.
+## Uji main otomatis Chapter 3 (headless): masuk Kota Pelabuhan Antre -> tanya 3 warga -> 3 petunjuk Queue -> kuis Dadang
+## -> kabut laut gerbang kota terbuka -> puzzle antrean warung -> barikade bajak laut hilang -> (Kristal) perahu karam jalan pintas hilang.
+## Aksi pemain disimulasikan lewat API yang sama dengan node game.
 ## Jalankan (save asli dicadangkan dulu oleh pemanggil):
 ##   godot --headless --fixed-fps 60 --path . res://tools/test_ch3_flow.tscn
 
@@ -52,7 +53,7 @@ func _ready() -> void:
 	await frames(10)
 	print("== 0 Mulai: ", tracked())
 	check(QuestManager.get_tracked_quest_id() == "ch3_awal", "quest aktif ch3_awal")
-	check(not cloud_open("AwanGerbangKota") and not cloud_open("AwanPerbatasan") and not cloud_open("AwanArena"), "kabut gerbang kota, arena & perbatasan menutup")
+	check(not cloud_open("AwanGerbangKota") and not cloud_open("AwanPerbatasan"), "kabut gerbang kota & perbatasan menutup")
 	check(not (node("Petunjuk1") as CanvasItem).visible, "petunjuk belum tampak sebelum tanya warga")
 	check(QuestManager.get_dialog_for("dadang") == "dadang_ch3_tanya_warga", "Dadang: suruh tanya warga")
 	for n in ["Dadang", "Wulan", "Bahar", "Nina"]:
@@ -79,15 +80,40 @@ func _ready() -> void:
 	await frames(200)
 	print("== 3 Kuis Dadang: hadiah ", lines, " -> ", tracked())
 	check(GameManager.get_quest_stage(3) == 1, "quest_stage Ch3 = 1")
-	check(cloud_open("AwanGerbangKota") and not cloud_open("AwanPerbatasan") and not cloud_open("AwanArena"), "kabut gerbang kota terbuka, arena & perbatasan masih")
+	check(cloud_open("AwanGerbangKota") and not cloud_open("AwanPerbatasan"), "kabut gerbang kota terbuka, perbatasan masih")
 	check(int(GameManager.inventory.get("zirah_kulit", 0)) >= 1 or GameManager.equipment.values().has("zirah_kulit"), "hadiah awal: Zirah Kulit")
 	var st: PuzzleStation = node("StasiunAntrean") as PuzzleStation
 	check(st != null and st._block_reason() == "", "stasiun antrean bisa dibuka")
 
+	# Tahap 2: musuh perjalanan, barikade bajak laut (Quest Tengah), perahu karam (jalan pintas setelah Kristal)
+	var mobs: int = 0
+	for c in region.get_node("Objects").get_children():
+		if c is Enemy:
+			mobs += 1
+	check(mobs >= 20, "musuh perjalanan terpasang (%d)" % mobs)
+	var bar: StageBlocker = node("BarikadeBajakLaut") as StageBlocker
+	var wreck: StageBlocker = node("PerahuKaram") as StageBlocker
+	check(not bar.is_open and not wreck.is_open, "barikade & perahu karam masih menutup")
+	st._open()
+	await frames(2)
+	st._puzzle.complete_puzzle()
+	st._puzzle.close_puzzle()
+	await frames(200)
+	print("== 4 Antrean warung: ", tracked())
+	check(GameManager.get_quest_stage(3) == 2, "quest_stage Ch3 = 2")
+	check(bar.is_open and not (bar.get_node("Block") as TileMapLayer).collision_enabled, "barikade bajak laut hilang (tabrakan mati)")
+	check(not wreck.is_open, "perahu karam masih menutup sebelum Kristal")
+	check(int(GameManager.inventory.get("zirah_rantai", 0)) >= 1 or GameManager.equipment.values().has("zirah_rantai"), "hadiah tengah: Zirah Rantai")
+	check(QuestManager.get_tracked_quest_id() == "ch3_akhir", "quest aktif ch3_akhir")
+	GameManager.add_crystal(3)
+	await frames(120)
+	check(wreck.is_open and not (wreck.get_node("Block") as TileMapLayer).collision_enabled, "perahu karam tersingkir setelah Kristal Queue")
+	check(not cloud_open("AwanPerbatasan"), "awan perbatasan masih ada sebelum kuis akhir")
+
 	var data: Dictionary = GameManager.get_save_data()
 	GameManager.reset_state()
 	GameManager.apply_save_data(data)
-	check(GameManager.has_story_flag("ch3_petunjuk_3") and GameManager.get_quest_stage(3) == 1, "flag & tahap quest ikut tersimpan")
+	check(GameManager.has_story_flag("ch3_petunjuk_3") and GameManager.get_quest_stage(3) == 2 and GameManager.has_crystal(3), "flag, tahap quest & Kristal ikut tersimpan")
 
 	print("HASIL: ", "SEMUA OK" if fails == 0 else "%d GAGAL" % fails)
 	get_tree().quit(1 if fails > 0 else 0)

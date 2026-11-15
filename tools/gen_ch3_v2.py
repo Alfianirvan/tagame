@@ -13,7 +13,12 @@ Blueprint kota (tile, pusat C; X ke timur, Y ke selatan): alun-alun 12x12 batu +
   KEDAI DADANG (barat laut, bisa dimasuki) + 3 rumah, pasar tenda di alun-alun, gudang pelabuhan + loket tiket + tali antrean
   di pangkal dermaga penumpang (kapal layar bersandar), dermaga ikan di tenggara.
   Pinggiran: mercusuar di tanjung selatan, kebun kelapa di barat, pantai timur.
-Perjalanan (Tahap 1 = sementara, dirombak di Tahap 2): jalan layout -> stasiun antrean (puzzle) -> arena Kapten (cincin kabut).
+Perjalanan (Tahap 2): gerbang kota -> barat di antara punggung tebing N & L -> TONJOLAN BARAT (memutar) -> jalan sempit utara
+  punggung L -> KORIDOR BARAT ke utara (di antara tebing batas & punggung M) -> warung pinggir jalan (stasiun antrean = Quest Tengah)
+  -> BARIKADE BAJAK LAUT di celah punggung W/M (StageBlocker, hilang di quest_stage 2) -> Bonfire pra-boss -> DERMAGA BAJAK LAUT
+  (arena Kapten, lantai papan) -> dermaga keluar di teluk utara (Kapal Dadang ke Gua Rantai, awan perbatasan).
+  Jalan pintas arena -> kota = PESISIR TIMUR (di timur punggung M), ditutup PERAHU KARAM di celah sempit (StageBlocker mode crystal).
+  Musuh: awak bajak laut (Orc) + slime pantai; zona aman kota (tidak ada musuh di selatan punggung N).
 """
 import json
 import math
@@ -41,10 +46,20 @@ CX, CY = C[0] * TILE + 8, C[1] * TILE + 8
 GATE_X = (58, 86)                       # rentang kolom tempat celah gerbang kota pada punggung tebing utara
 GATE_ROWS = (100, 104)
 # punggung tebing (dataran tinggi di DALAM wilayah, tile): (polyline, setengah lebar)
-RIDGES = [([(-3, 99), (20, 98), (44, 100), (63, 102)], 4.0),     # N-barat: dari tebing barat sampai celah gerbang
-          ([(81, 102), (92, 100), (106, 97)], 4.0)]               # N-timur: dari celah gerbang sampai laut
+RIDGES = [([(-3, 101), (20, 101), (44, 101), (60, 102)], 4.0),   # N-barat: dinding utara kota, dari tebing barat sampai celah gerbang
+          ([(84, 102), (94, 100), (106, 97)], 4.0),                # N-timur: dari celah gerbang sampai laut
+          ([(72, 93), (70, 86), (72, 80), (69, 72), (66, 56), (63, 40), (60, 35)], 3.5),   # M: koridor barat | pesisir timur
+          ([(70, 87), (52, 87), (36, 87), (26, 87)], 3.0),         # L: memaksa jalan memutar lewat tonjolan barat
+          ([(51, 32), (44, 31), (36, 30)], 3.5)]                   # W: menutup koridor barat di utara (celah = barikade)
+BARRICADE = (52, 59, 29, 36)            # kotak tile celah punggung W/M (barikade bajak laut, Quest Tengah)
+WRECK = (73, 82, 77, 83)                # kotak tile celah sempit pesisir timur (perahu karam, jalan pintas setelah Kristal)
+EXIT_T = (91, 12)                       # ujung dermaga keluar di teluk utara (exit layout (49,56) dipindah)
+ARENA_T = (70, 22)                      # dermaga bajak laut = arena Kapten (boss_arena layout (53,67) dipindah)
+PUZZLE_T = (53, 46)                     # warung pinggir jalan = stasiun antrean (puzzle layout (56,88) dipindah)
+PREBOSS_T = (57, 26)
 PIER_A = (111, 128, C[1] - 2, C[1] + 1)  # dermaga penumpang (x0, x1, y0, y1) tile, inklusif
 PIER_B = (121, 134, 129, 131)           # dermaga ikan
+PIER_X = (82, 92, 11, 13)               # dermaga keluar (teluk utara)
 DIRS8 = [(0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1)]
 PREFAB_SIZE = {}
 
@@ -87,6 +102,7 @@ def build():
     rng = random.Random(3003)
     mask = np.array([[c == "#" for c in row] for row in LAYOUT["mask"]]).T
     P = {k: tpx(v) for k, v in LAYOUT["titik_tile"].items()}
+    P.update(exit=tpx(EXIT_T), boss_arena=tpx(ARENA_T), puzzle=tpx(PUZZLE_T), bonfire_preboss=tpx(PREBOSS_T))
     orig = organic.polyline_samples([tpx(p) for p in LAYOUT["jalan_tile"]], 12.0)
     gx, gy = organic.grid(W, H)
     tcol, trow = np.arange(W)[:, None], np.arange(H)[None, :]
@@ -99,9 +115,13 @@ def build():
     gate_c = tp(0, -19)
     seg_in = winding(P["entry"], tp(-26, 0), 30, 31, n=5)
     seg_vil = organic.polyline_samples([tp(-26, 0), tp(0, 0), gate_c], 12.0)
-    seg_n = winding(gate_c, P["puzzle"], 20, 33, n=4)
-    seg_rest = orig[idx_near(orig, P["puzzle"]):]
-    route = np.vstack([seg_in, seg_vil, seg_n, seg_rest])
+    seg_w = np.vstack([organic.polyline_samples([gate_c, tpx((64, 95))], 12.0), winding(tpx((64, 95)), tpx((24, 93)), 18, 33, n=5),
+                       winding(tpx((24, 93)), tpx((13, 82)), 12, 34, n=3)])
+    seg_c = np.vstack([winding(tpx((13, 82)), tpx((46, 80)), 14, 35, n=4), winding(tpx((46, 80)), tpx((55, 62)), 22, 36, n=4),
+                       winding(tpx((55, 62)), P["puzzle"], 18, 37, n=3)])
+    seg_t = np.vstack([winding(P["puzzle"], tpx((55.5, 33)), 10, 38, n=3),
+                       organic.polyline_samples([tpx((55.5, 33)), P["bonfire_preboss"], P["boss_arena"], tpx((PIER_X[0], 12)), P["exit"]], 12.0)])
+    route = np.vstack([seg_in, seg_vil, seg_w, seg_c, seg_t])
 
     def route_i(pt):
         return idx_near(route, pt)
@@ -120,25 +140,26 @@ def build():
         edge = xs.max() if len(xs) else (84 if ty < 40 else 116)
         sea_img[edge + 1:, ty] = True
     land = dilate(mask, 2) & ~sea_img
-    for key, pts in (("entry", seg_in[:8]), ("exit", orig[-6:])):
-        land |= (dist_to(gx, gy, pts) <= 3.2 * TILE) & ~sea_img
-        land |= (np.hypot(gx - P[key][0], gy - P[key][1]) <= 3.5 * TILE) & ~sea_img
+    land |= (dist_to(gx, gy, seg_in[:8]) <= 3.2 * TILE) & ~sea_img
+    land |= (np.hypot(gx - P["entry"][0], gy - P["entry"][1]) <= 3.5 * TILE) & ~sea_img
     nz_r = organic.smooth_noise(gx, gy, 19)
     ridge = np.zeros_like(mask)
     for pts, hw in RIDGES:
         ridge |= dist_to(gx, gy, organic.polyline_samples([tpx(p_) for p_ in pts], 12.0)) <= hw * TILE + 10 * nz_r
     land &= ~ridge
     land = dilate(erode(land, 1), 1) | (land & dilate(sea_img, 1))
+    for x0, x1, y0, y1 in (BARRICADE, WRECK):      # celah penghalang selalu bisa dilalui (lalu ditutup StageBlocker)
+        land[x0:x1 + 1, y0:y1 + 1] |= ~sea_img[x0:x1 + 1, y0:y1 + 1] & ~ridge[x0:x1 + 1, y0:y1 + 1]
     sea = sea_img & ~land
     plateau = ~land & ~sea
     # dermaga: papan di atas laut / pantai (tetap laut untuk autotile air, tetapi bisa dilalui)
     dock = np.zeros_like(mask)
-    for x0, x1, y0, y1 in (PIER_A, PIER_B):
+    for x0, x1, y0, y1 in (PIER_A, PIER_B, PIER_X):
         dock[x0:x1 + 1, y0:y1 + 1] = True
     dock &= sea | dilate(sea, 3)
     # wajah tebing: 2 tile di bawah tepi selatan dataran tinggi
     face = {}
-    keep_free = [P["entry"], P["exit"]]
+    keep_free = [P["entry"]]
     for tx in range(W):
         for ty in range(H - 1):
             if plateau[tx, ty] and not plateau[tx, ty + 1]:
@@ -172,13 +193,19 @@ def build():
 
     # ------------------------------------------------------------ gerbang & kabut
     band = land & ~face_m & (tcol >= GATE_X[0]) & (tcol <= GATE_X[1]) & (trow >= GATE_ROWS[0]) & (trow <= GATE_ROWS[1])
-    exit_t = (P["exit"][0] / TILE, P["exit"][1] / TILE)
-    plug = (np.hypot(gx / TILE - exit_t[0], gy / TILE - exit_t[1]) <= 4.5) & land & ~face_m
-    bc = (P["boss_arena"][0] / TILE, P["boss_arena"][1] / TILE)
-    dd = np.hypot(gx / TILE - bc[0], gy / TILE - bc[1])
-    arena_ring = (dd >= 8.5) & (dd <= 10.5) & land & ~face_m & ~plug     # (sementara) arena terkunci sampai Quest Tengah
+    # awan perbatasan menutup pangkal dermaga keluar (papan + pantai di sekitarnya)
+    plug = (tcol >= PIER_X[0] - 3) & (tcol <= PIER_X[0] + 6) & (trow >= PIER_X[2] - 3) & (trow <= PIER_X[3] + 3) & ((land & ~face_m) | dock)
     walk_all = (land & ~face_m) | dock
-    corridor = land & ~face_m & ~band & ~plug & ~arena_ring          # dataran yang boleh dihuni objek
+    blk = {}
+    for nm_b, (x0, x1, y0, y1) in (("barricade", BARRICADE), ("wreck", WRECK)):
+        m_ = np.zeros_like(mask)
+        m_[x0:x1 + 1, y0:y1 + 1] = True
+        blk[nm_b] = m_ & land & ~face_m
+    # penghalang = baris-baris tengah celah saja (cukup memotong jalan)
+    bar_block = blk["barricade"] & (trow >= 32) & (trow <= 33)
+    wreck_block = blk["wreck"] & (trow >= 80) & (trow <= 81)
+    arena_ring = np.zeros_like(mask)
+    corridor = land & ~face_m & ~band & ~plug & ~bar_block & ~wreck_block     # dataran yang boleh dihuni objek
 
     # ------------------------------------------------------------ jalan cabang (pasir) di kota & pinggiran
     LIGHT = tpx((110, 174))   # mercusuar (tanjung selatan)
@@ -188,11 +215,14 @@ def build():
     road_l = winding(tp(0, 14), LIGHT, 34, 41, n=6)
     road_g = winding(tp(-14, 6), GROVE, 26, 43, n=4)
     road_f = winding(tp(30, 1), FISH, 16, 45, n=3)
-    roads = np.vstack([route, road_l, road_g, road_f])
+    # pesisir timur = jalan pintas (pasir), dari aula arena turun ke celah perahu karam lalu ke gerbang kota
+    short_route = organic.polyline_samples([P["boss_arena"], tpx((74, 36)), tpx((76, 56)), tpx((77.5, 70)), tpx((77.5, 80)),
+                                            tpx((77, 90)), tpx((72, 97)), gate_c, tp(0, 0), tp(-7.5, -1.2)], 12.0)
+    roads = np.vstack([route, road_l, road_g, road_f, short_route[:-3]])
     vd = dist_to(vx, vy, roads)
     sand_v = beach_v | (vd <= 26 + 6 * vn)
-    pads = [(tp(0, 0), 150), (HARBOR, 90), (FISH, 70), (LIGHT, 80), (GROVE, 50), (P["puzzle"], 60), (P["bonfire_preboss"], 46),
-            (P["boss_arena"], 140), (P["exit"], 44), (P["entry"], 44)]
+    pads = [(tp(0, 0), 150), (HARBOR, 90), (FISH, 70), (LIGHT, 80), (GROVE, 50), (P["puzzle"], 70), (P["bonfire_preboss"], 46),
+            (P["boss_arena"], 150), (P["entry"], 44), (tpx((PIER_X[0] - 2, 12)), 50)]
     for (px_, py_), rr in pads:
         sand_v |= np.hypot(vx - px_, vy - py_) <= rr + 10 * vn
     # titik sudut di sekitar sel laut harus pasir (tile air hanya bertepi pasir, tidak menyentuh rumput)
@@ -206,6 +236,7 @@ def build():
     in_stone[C[0] - 26:C[0] + 1, C[1] - 1:C[1] + 2] = True                 # jalan barat
     in_stone[C[0]:111, C[1] - 1:C[1] + 2] = True                           # jalan ke dermaga
     in_stone[102:111, C[1] - 4:C[1] + 5] = True                            # lapangan pangkal dermaga
+    deck = (np.abs(tcol - ARENA_T[0]) <= 9) & (np.abs(trow - ARENA_T[1]) <= 6) & land & ~face_m
     ground, stonec, cliffc, dockc, blockc = [], [], [], [], []
     for tx in range(W):
         for ty in range(H):
@@ -248,6 +279,9 @@ def build():
             if in_stone[tx, ty] and corridor[tx, ty]:
                 s_ = stone[(tx * 7 + ty * 3) % 3]
                 stonec.append((tx, ty, 0, s_[0], s_[1]))
+            elif deck[tx, ty] and not dock[tx, ty]:      # geladak papan dermaga bajak laut (arena)
+                p_ = PLANK[(tx * 3 + ty) % 3]
+                dockc.append((tx, ty, 2, p_[0], p_[1]))
 
     # ------------------------------------------------------------ scene
     sc = Scene()
@@ -274,6 +308,7 @@ def build():
     sc.node("Ch3_PelabuhanAntre", "Node2D", script=f'ExtResource("{script}")', chapter="3", music_name='"ch3_pelabuhan_antre"',
             boss_music_name='"boss"',
             guide_route="PackedVector2Array(" + ", ".join(f"{int(x)}, {int(y)}" for x, y in route[::5]) + ")",
+            shortcut_route="PackedVector2Array(" + ", ".join(f"{int(x)}, {int(y)}" for x, y in short_route[::4]) + ")",
             map_size=f"Vector2i({PX_W}, {PX_H})", boss_scene=f'ExtResource("{boss_scene}")')
     sc.node("Ground", "TileMapLayer", ".", tile_map_data=b64cells(ground), tile_set=f'ExtResource("{ts_coast}")')
     sc.node("Path", "TileMapLayer", ".", tile_map_data=b64cells(stonec), tile_set=f'ExtResource("{ts_world}")')
@@ -379,7 +414,8 @@ def build():
 
     ax0, ax1, ay0, ay1 = PIER_A
     bx0, bx1, by0, by1 = PIER_B
-    for nm, pref, tgt in (("KapalLayar", "Kapal_Layar", (ax1 - 2, ay1 + 4)), ("PerahuIkan1", "Perahu_Kecil", (bx0 + 7, by0 - 2)),
+    for nm, pref, tgt in (("KapalLayar", "Kapal_Layar", (ax1 - 2, ay1 + 4)), ("KapalBajakLaut", "Kapal_Layar", (92, 24)),
+                          ("KapalDadang", "Kapal_Layar", (PIER_X[1] - 3, PIER_X[2] - 4)), ("PerahuIkan1", "Perahu_Kecil", (bx0 + 7, by0 - 2)),
                           ("PerahuIkan2", "Perahu_Kecil", (bx0 + 9, by1 + 3)), ("PerahuPantai", "Perahu_Kecil", (112, 108))):
         q_ = on_water(pref, tgt)
         if q_:
@@ -438,15 +474,66 @@ def build():
         recorded.append(pos)
         npc_positions.append(pos)
 
-    # ---- perjalanan (sementara, Tahap 2 dirombak): stasiun antrean, Bonfire pra-boss
+    # ---- perjalanan: warung pinggir jalan (stasiun antrean), Bonfire, bendera, dermaga bajak laut, dermaga keluar
     mx, my = P["puzzle"]
     inst("StasiunAntrean", station_scene, (int(mx), int(my) + 36), puzzle_scene=f'ExtResource("{puzzle_scene}")', chapter="3",
          station_label='"Antrean Pelanggan"')
-    bf_pre = (int(P["bonfire_preboss"][0]) + 40, int(P["bonfire_preboss"][1]) + 30)
+    for k, (pref, (ox, oy), sol) in enumerate((("Lapak_Tenda_Merah", (-54, -14), True), ("Lapak_Tenda_Kuning", (50, -16), True),
+                                               ("Barel_Besar", (-80, 8), True), ("Keranjang_Buah_1", (74, 10), True),
+                                               ("Dapur_Panggangan_Kecil", (-10, -40), True), ("Peti_Kayu_A", (84, -30), True))):
+        prefab(f"Warung{k}", pref, (int(mx) + ox, int(my) + oy), solid=sol)
+    for k in range(5):   # tali antrean pelanggan warung
+        prefab(f"TaliWarung{k}", "Tiang_Pagar", (int(mx) - 52 + k * 26, int(my) + 70), solid=False)
+    bf_pre = (int(P["bonfire_preboss"][0]) - 30, int(P["bonfire_preboss"][1]) + 20)
+    bf_mid = tpx((40, 80.5))
     inst("Bonfire2", bonfire_scene, bf_pre)
+    inst("Bonfire3", bonfire_scene, bf_mid)
+    flags = {"BenderaLobus": tpx((18, 90)), "BenderaKoridor": tpx((50, 64)), "BenderaUtara": tpx((52, 24))}
+    for nm_f, pos in flags.items():
+        inst(nm_f, checkpoint_scene, pos)
     inst("PulangTambang", exit_scene, tuple(int(v) for v in P["entry"]), to_chapter="2", sign_text='"Kembali ke Tambang Tumpuk"')
-    inst("KeGua", exit_scene, tuple(int(v) for v in P["exit"]), to_chapter="4", sign_text='"Ke Gua Rantai"')
-    npc_positions += [bf1, bf_pre, start, (int(mx), int(my) + 36), P["boss_arena"], HARBOR, FISH]
+    inst("KeGua", exit_scene, tuple(int(v) for v in P["exit"]), to_chapter="4", sign_text='"Kapal Dadang: ke Gua Rantai"')
+    npc_positions += [bf1, bf_pre, bf_mid, start, (int(mx), int(my) + 36), P["boss_arena"], HARBOR, FISH] + list(flags.values())
+    # dermaga bajak laut: tong & peti rampasan di tepi geladak, obor, kapal bajak laut bersandar
+    ax_, ay_ = (int(v) for v in P["boss_arena"])
+    for k, (pref, (ox, oy)) in enumerate((("Peti_Tumpuk_2", (-150, -70)), ("Tong_Peti", (-120, -84)), ("Peti_Tong", (150, -74)),
+                                          ("Barel_Besar", (126, -86)), ("Peti_Tumpuk_1", (-156, 84)), ("Barel_Air", (154, 86)))):
+        prefab(f"Rampasan{k}", pref, (ax_ + ox, ay_ + oy))
+    flam_arena = sc.ext_res("Texture2D", "res://assets/ninja/fx/Flam/Flam.png")
+    animprop_script = sc.ext_res("Script", "res://scripts/world/AnimProp.gd")
+    for k in range(6):
+        ang = math.pi * 0.15 + k * math.tau / 6
+        fx_, fy_ = round(ax_ + math.cos(ang) * 130), round(ay_ + math.sin(ang) * 80)
+        prefab(f"TiangObor{k}", "Lentera_Tiang", (fx_, fy_ + 4), solid=False)
+        sc.node(f"OborArena{k}", "Node2D", "Objects", script=f'ExtResource("{animprop_script}")', strip=f'ExtResource("{flam_arena}")',
+                position=v2(fx_, fy_ - 26), frame_w="20", frame_h="30", fps="9.0")
+
+    # penghalang tumpukan objek (scripts/world/StageBlocker.gd)
+    blocker_script = sc.ext_res("Script", "res://scripts/world/StageBlocker.gd")
+
+    def blocker(name, cells, mode, stage, text, pieces, opened=""):
+        xs, ys = np.nonzero(cells)
+        c0 = (int(xs.mean()) * TILE + 8, int(ys.max() + 1) * TILE)
+        sc.node(name, "Node2D", "Objects", script=f'ExtResource("{blocker_script}")', position=v2(*c0), y_sort_enabled="true",
+                mode=f'"{mode}"', chapter="3", required_stage=str(stage), locked_text=f'"{text}"', opened_text=f'"{opened}"',
+                hint_size=f"Vector2({(xs.max() - xs.min() + 9) * TILE}, {(ys.max() - ys.min() + 9) * TILE})")
+        for k, (pref, (ox, oy)) in enumerate(pieces):
+            pid = sc.ext_res("PackedScene", f"res://scenes/prefabs/{pref}.tscn")
+            sc.node(f"{name}{k}", None, f"Objects/{name}", instance=pid, position=v2(ox, oy))
+        cells_l = [(int(x) - (c0[0] - 8) // TILE, int(y) - c0[1] // TILE, 0, 0, 0) for x, y in zip(xs, ys)]
+        sc.node("Block", "TileMapLayer", f"Objects/{name}", position=v2(-8, 0), tile_map_data=b64cells(cells_l),
+                tile_set=f'ExtResource("{block_ts}")')
+        recorded.append(c0)
+        return c0
+
+    bar_c = blocker("BarikadeBajakLaut", bar_block, "stage", 2, "Barikade bajak laut menutup jalan ke dermaga.\nBantu warung antrean dulu.",
+                    [("Peti_Tumpuk_2", (-30, -18)), ("Tong_Peti", (-6, -8)), ("Peti_Tumpuk_3", (18, -16)), ("Peti_Tong", (36, 0)),
+                     ("Barel_Besar", (-44, 2))],
+                    "Para pelanggan membantu menyingkirkan barikade.\nJalan ke dermaga bajak laut terbuka.")
+    wreck_c = blocker("PerahuKaram", wreck_block, "crystal", 3, "Perahu karam & jaring menutup pesisir.\nMungkin terbuka setelah Kapten kalah.",
+                      [("Perahu_Kecil", (-14, -6)), ("Peti_Tumpuk_1", (16, -2)), ("Tong_Peti", (-34, 4)), ("Batu_Sedang_1", (30, 6))],
+                      "Ombak menyeret perahu karam.\nJalan pintas pesisir ke Kota Pelabuhan Antre terbuka.")
+    npc_positions += [bar_c, wreck_c]
 
     def cloud_barrier(name, cells_mask, mode, dist, text="", **props):
         pts = thin_cells(cells_mask, dist)
@@ -461,8 +548,6 @@ def build():
     cloud_barrier("AwanPerbatasan", plug, "chapter", 26, tint=MIST, scale_min="1.2", scale_max="1.6")
     cloud_barrier("AwanGerbangKota", band, "stage", 40, "Kabut laut tebal menutup jalan pesisir.\nBantu Dadang dulu.",
                   required_stage="1", tint=MIST, scale_min="1.3", scale_max="1.9")
-    cloud_barrier("AwanArena", arena_ring, "stage", 34, "Kabut sihir Kapten menutup dermaga.\nSelesaikan antrean pelanggan dulu.",
-                  required_stage="2", tint=MIST, scale_min="1.1", scale_max="1.5")
 
     # ------------------------------------------------------------ dekorasi: rumpun palem, semak, batu
     d_route = dist_to(gx, gy, roads)
@@ -472,8 +557,10 @@ def build():
         return float(d_route[tx_, ty_]) if 0 <= tx_ < W and 0 <= ty_ < H else 0.0
 
     village_zone = np.hypot((gx - CX - 6 * TILE) / (40 * TILE), (gy - (CY + 2 * TILE)) / (21 * TILE)) < 1.0
-    keypts = list(P.values()) + [bf1, bf_pre, start, LIGHT, GROVE, FISH, HARBOR] + npc_positions
-    no_deco = dilate(dock | band | arena_ring | plug, 3) | (np.hypot(gx - P["boss_arena"][0], gy - P["boss_arena"][1]) < 10 * TILE) \
+    keypts = [P[k] for k in ("entry", "puzzle", "bonfire_preboss", "boss_arena", "exit")] + [bf1, bf_pre, start, LIGHT, GROVE, FISH, HARBOR] \
+        + npc_positions
+    no_deco = dilate(dock | band | plug | blk["barricade"] | blk["wreck"] | deck, 3) \
+        | (np.hypot(gx - P["boss_arena"][0], gy - P["boss_arena"][1]) < 12 * TILE) \
         | (np.hypot(gx - GROVE[0], gy - GROVE[1]) < 9 * TILE) | (np.hypot(gx - LIGHT[0], gy - LIGHT[1]) < 7 * TILE)
 
     def fits(pref, x, y, margin=10):
@@ -549,9 +636,72 @@ def build():
             nl += 1
             inst(f"Pinggir{nm}{nl}", collect[nm], (bx_, by_))
 
+    # ------------------------------------------------------------ musuh, peti, collectible (perjalanan)
+    enemy_scene = sc.ext_res("PackedScene", "res://scenes/entities/Enemy.tscn")
+    taken = []
+
+    def spot(pt, r_min=20):
+        """Titik bebas terdekat (spiral sampai 140 px) dari pt (px)."""
+        for r in [0] + list(range(12, 141, 12)):
+            for a_ in range(0, 360, 30):
+                x, y = round(pt[0] + math.cos(math.radians(a_)) * r), round(pt[1] + math.sin(math.radians(a_)) * r)
+                tx_, ty_ = int(x // TILE), int(y // TILE)
+                if not (0 <= tx_ < W and 0 <= ty_ < H) or not corridor[tx_, ty_] or deck[tx_, ty_] or road_dist(x, y) < r_min:
+                    continue
+                if near_building(x, y, 14) or any(math.hypot(x - qx2, y - qy2) < 26 for qx2, qy2 in taken):
+                    continue
+                taken.append((x, y))
+                return (round(x), round(y))
+        return None
+
+    # awak bajak laut (Orc) & slime pantai. Zona aman: semua kelompok di utara punggung tebing kota.
+    groups = {"Lobus1": ((13, 84), ["orc_rogue", "orc", "orc_rogue"]),
+              "Lobus2": ((32, 80), ["orc", "orc_shaman", "slime2"]),
+              "Koridor1": ((52, 71), ["orc_warrior", "orc_rogue", "orc"]),
+              "Koridor2": ((57, 57), ["orc_rogue", "orc_shaman", "orc_warrior"]),
+              "Koridor3": ((48, 52), ["slime3", "orc_rogue"]),
+              "Utara1": ((56, 14), ["orc_warrior", "orc_shaman", "orc_rogue"]),
+              "Utara2": ((96, 28), ["orc", "orc_rogue", "orc_warrior"]),
+              "Pesisir1": ((78, 62), ["slime2", "slime3", "slime2"]),
+              "Pesisir2": ((80, 44), ["orc_rogue", "orc"])}
+    n_mob = 0
+    for gname, ((gx_t, gy_t), ids) in groups.items():
+        for k, eid in enumerate(ids):
+            ang = k * math.tau / len(ids) + 0.5
+            q = spot((gx_t * TILE + 8 + math.cos(ang) * 34, gy_t * TILE + 8 + math.sin(ang) * 26))
+            if q:
+                inst(f"Musuh{gname}_{k + 1}", enemy_scene, q, enemy_id=f'"{eid}"')
+                n_mob += 1
+    chests = {"PetiLobus": (6, 92), "PetiKoridor": (45, 62), "PetiPesisirSelatan": (82, 90), "PetiUtara": (52, 9), "PetiTanjungUtara": (108, 22)}
+    for nm, (cx2, cy2) in chests.items():
+        q = spot(tpx((cx2, cy2)))
+        if not q:
+            print("PERINGATAN: peti", nm, "tidak dapat tempat")
+            continue
+        inst(nm, chest_scene, q, roll_count="2")
+        for kind, (ox, oy) in (("Herb", (30, 14)), ("GoldCoin", (-28, 16)), ("Herb" if cy2 > 40 else "Ore", (2, 34))):
+            q2 = spot((q[0] + ox, q[1] + oy), 0)
+            if q2:
+                nl += 1
+                inst(f"{kind}{nl}", collect[kind], q2)
+    i_gate, i_boss2 = route_i(gate_c), route_i(P["boss_arena"])
+    for k in range(26):
+        i_ = rng.randint(i_gate + 10, i_boss2)
+        th = rng.random() * math.tau
+        pt = (route[i_][0] + math.cos(th) * rng.randint(50, 130), route[i_][1] + math.sin(th) * rng.randint(40, 100))
+        q = spot(pt, 30)
+        if q:
+            kind = ("Herb", "GoldCoin", "Herb", "Ore")[k % 4]
+            nl += 1
+            inst(f"{kind}{nl}", collect[kind], q)
+    for k, pt in enumerate((tpx((30, 82)), tpx((58, 30)))):
+        q = spot(pt, 24)
+        if q:
+            inst(f"Potion{k + 1}", collect["Potion"], q)
+
     # ------------------------------------------------------------ marker, pemain, batas
     sc.node("PlayerStart", "Marker2D", ".", position=v2(*start))
-    fn = route[max(0, i_exit - 8)]
+    fn = tpx((PIER_X[0] - 3, 12))
     sc.node("FromNext", "Marker2D", ".", position=v2(int(fn[0]), int(fn[1])))
     sc.node("BossSpawn", "Marker2D", ".", position=v2(*[int(v) for v in P["boss_arena"]]))
     sc.node("NPCSpawns", "Node2D", ".")
@@ -589,16 +739,21 @@ def build():
         return seen
 
     t_ = {k: (int(v[0] // TILE), int(v[1] // TILE)) for k, v in P.items()}
-    r_gate = reach(band | plug | arena_ring)
-    r_open = reach(plug | arena_ring)
-    r_all = reach(plug)
+    r_gate = reach(band | plug | bar_block | wreck_block)
+    r_open = reach(plug | bar_block | wreck_block)
+    r_all = reach(plug | wreck_block)
+    r_short = reach(bar_block | plug)
     clue_ok = all(r_gate[int(px_ // TILE), int(py_ // TILE)] for px_, py_ in clue_pts)
     npc_ok = all(r_gate[int(px_ // TILE), int(py_ // TILE)] for px_, py_ in (dadang_pos, (hx + 6, hy - 4), (hx - 70, hy + 46), (fxp + 10, fyp + 12)))
     print("start di daratan =", bool(walk[int(start[0] // TILE), int(start[1] // TILE)]),
           "| kota, 4 NPC & 3 petunjuk terjangkau saat gerbang tertutup =", bool(r_gate[C]) and clue_ok and npc_ok)
     print("gerbang kota mengunci puzzle =", not r_gate[t_["puzzle"]], "| puzzle terjangkau saat terbuka =", bool(r_open[t_["puzzle"]]))
-    print("kabut arena mengunci boss =", not r_open[t_["boss_arena"]], "| boss terjangkau saat terbuka =", bool(r_all[t_["boss_arena"]]))
-    print("awan perbatasan mengunci exit =", not r_all[t_["exit"]])
+    print("barikade mengunci boss =", not r_open[t_["boss_arena"]], "| boss terjangkau saat terbuka =", bool(r_all[t_["boss_arena"]]),
+          "| jalan pintas pesisir (perahu karam dibuka) menembus ke arena =", bool(r_short[t_["boss_arena"]]))
+    print("awan perbatasan mengunci exit =", not reach(wreck_block | plug)[t_["exit"]], "| exit terjangkau saat terbuka =",
+          bool(reach(np.zeros_like(walk))[t_["exit"]]))
+    length = float(np.sum(np.hypot(*np.diff(route[route_i(tp(0, 0)):route_i(P["boss_arena"])], axis=0).T))) / TILE
+    print("musuh:", n_mob, "| jalan kota->arena %.0f tile" % length)
     bad = [p for p in recorded if not (0 <= p[0] < PX_W and 0 <= p[1] < PX_H and walk_all[int(p[0] // TILE), int(p[1] // TILE)])]
     print("Ch3_PelabuhanAntre.tscn:", nm_, "palem/semak/batu, objek di luar daratan:", len(bad), bad[:6],
           "| koridor", int(corridor.sum()), "tile | dermaga", int(dock.sum()), "tile | collectible", nl)

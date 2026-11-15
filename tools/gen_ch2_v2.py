@@ -10,6 +10,8 @@ Tahap 1 (bagian ini): peta 161x161 tile, batas ngarai, Kampung Tumpuk + pinggira
 Blueprint desa (tile, pusat C; X ke timur, Y ke selatan): alun-alun 12x12 batu + sumur, jalan batu 3 tile ke U/S/T/B,
   4 rumah di 4 kuadran, BENGKEL LILBAH di barat (landasan + tungku + meja kerja), GUDANG PETI di timur (lumbung + tumpukan peti),
   pinggiran: galian batu (barat), perkemahan penambang (selatan).
+DUSUN CADAS (ngarai barat laut, cabang jalan dari ngarai barat): 3 rumah + tenda, tugu batu = stasiun puzzle StackTower
+  (langkah Quest Tengah: temui Sesepuh Cadas -> susun ulang tugu), warga Raras & Bimo, bendera checkpoint.
 """
 import json
 import math
@@ -42,6 +44,8 @@ SHORTCUT_X = (106, 111)                 # celah longsoran di punggung tebing A =
 RIDGES = [([(93, 66), (110, 66), (130, 65), (156, 66)], 3.2),      # A: memisahkan aula tambang dari kantong utara desa
           ([(92, -2), (92, 30), (92, 44), (92, 66)], 3.0),         # C: dinding barat aula tambang (ditembus lorong)
           ([(66, 61), (80, 62), (92, 62)], 2.6)]                   # D: memaksa jalan memutar lewat ngarai barat
+DUSUN_T = (42, 34)                      # perkiraan pusat Dusun Cadas (dicari ulang supaya kotak dusun seluruhnya daratan)
+DUSUN_BOX = (-14, 14, -11, 11)          # kotak dusun relatif pusat (tile): x0, x1, y0, y1
 DIRS8 = [(0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1)]
 PREFAB_SIZE = {}
 
@@ -171,6 +175,31 @@ def build():
     rock_block = shortcut & land & (trow >= 65) & (trow <= 66) & ~face_m
     corridor = land & ~face_m & ~band & ~plug & ~arena_ring & ~crate_block & ~rock_block   # dataran yang boleh dihuni objek
 
+    # ------------------------------------------------------------ DUSUN CADAS: pusat terdekat DUSUN_T yang kotaknya daratan bebas
+    bx0, bx1, by0, by1 = DUSUN_BOX
+    best = None
+    for r_ in range(0, 15):
+        for ox in range(-r_, r_ + 1):
+            for oy in range(-r_, r_ + 1):
+                if max(abs(ox), abs(oy)) != r_:
+                    continue
+                cx_t, cy_t = DUSUN_T[0] + ox, DUSUN_T[1] + oy
+                if cx_t + bx0 < 0 or cx_t + bx1 >= W or cy_t + by0 < 0 or cy_t + by1 >= H:
+                    continue
+                frac = float(corridor[cx_t + bx0:cx_t + bx1 + 1, cy_t + by0:cy_t + by1 + 1].mean())
+                if best is None or frac > best[0] + 1e-9:
+                    best = (frac, (cx_t, cy_t))
+        if best and best[0] >= 0.999:
+            break
+    DT = best[1]
+    DUSUN = tpx(DT)
+    print("Dusun Cadas di tile", DT, "| kotak daratan %.1f%%" % (best[0] * 100))
+    dusun_zone = (tcol >= DT[0] + bx0) & (tcol <= DT[0] + bx1) & (trow >= DT[1] + by0) & (trow <= DT[1] + by1)
+
+    def dp(dx, dy):
+        """Titik (px) pada offset tile (dx, dy) dari pusat Dusun Cadas."""
+        return (round(DUSUN[0] + dx * TILE), round(DUSUN[1] + dy * TILE))
+
     # ------------------------------------------------------------ jalan cabang (tanah terang) di dalam kampung & pinggiran
     QUARRY = tp(-33, 5)       # galian batu (barat)
     CAMP = tp(-3, 24)         # perkemahan penambang (selatan)
@@ -178,7 +207,9 @@ def build():
     road_q = winding(tp(-18, 0), QUARRY, 30, 21, n=5)
     road_c = winding(tp(0, 14), CAMP, 24, 23, n=4)
     road_s = winding(tp(18, 0), (STORE[0] - 10, STORE[1] + 46), 12, 25, n=3)
-    roads = np.vstack([route, road_q, road_c, road_s])
+    road_d = winding(tuple(route[route_i(dp(0, 10))]), dp(0, 10), 16, 27, n=4)   # cabang jalan ke Dusun Cadas
+    road_d = np.vstack([road_d, organic.polyline_samples([dp(0, 10), dp(0, 3)], 12.0)])
+    roads = np.vstack([route, road_q, road_c, road_s, road_d])
     # titik sudut (vertex) jalan terang: jarak dari titik sudut tile ke jalan, dengan tepi berombak
     vx = (np.arange(W + 1) * TILE)[:, None] * np.ones((1, H + 1))
     vy = (np.arange(H + 1) * TILE)[None, :] * np.ones((W + 1, 1))
@@ -186,7 +217,8 @@ def build():
     vd = dist_to(vx, vy, roads)
     light_v = vd <= 26 + 6 * vn
     pads = [(tp(0, 0), 150), (QUARRY, 70), (CAMP, 70), (STORE, 60), (P["puzzle"], 60), (P["bonfire_preboss"], 46),
-            (P["boss_arena"], 140), (P["exit"], 44), (P["entry"], 44)]
+            (P["boss_arena"], 140), (P["exit"], 44), (P["entry"], 44),
+            (dp(0, 3), 92), (dp(0, 7), 70)]
     for (px_, py_), rr in pads:
         light_v |= np.hypot(vx - px_, vy - py_) <= rr + 10 * vn
 
@@ -364,6 +396,22 @@ def build():
                                           ("Peti_Kayu_A", (-26, 34)), ("Barel_Air", (30, 36)))):
         prefab(f"Kemah{k}", pref, (cx_ + ox, cy_ + oy))
 
+    # ---- DUSUN CADAS (ngarai barat laut): rumah, tenda, tugu batu (stasiun puzzle), perabot
+    dusun_houses = {"RumahSesepuh": ("Rumah_Papan", (-8.5, -1.5)), "RumahRaras": ("Rumah_Kayu", (8.5, -1.5)),
+                    "RumahBimo": ("Rumah_Krem", (-9.6, 10.2))}
+    for name, (pref, (dx, dy)) in dusun_houses.items():
+        prefab(name, pref, dp(dx, dy))
+    prefab("TuguRuntuh", "Puing_Pilar", dp(0, 1.4))
+    for k, (pref, (dx, dy)) in enumerate((("Batu_Sedang_1", (-1.8, 2.0)), ("Batu_Abu_1", (1.9, 1.8)), ("Batu_Sedang_2", (-1.2, 3.9)))):
+        prefab(f"BatuTugu{k}", pref, dp(dx, dy), solid=False)
+    for i, (dx, dy) in enumerate(((-3.8, -0.4), (3.8, -0.4), (-3.8, 6.4), (3.8, 6.4))):
+        prefab(f"LampuDusun{i}", "Lampu_Tiang", dp(dx, dy))
+    for k, (pref, (dx, dy)) in enumerate((("Tenda_4", (8.0, 8.4)), ("Tenda_2", (11.8, 6.4)), ("Tong_Peti", (-6.0, 1.4)),
+                                          ("Tumpukan_Kayu", (12.2, 2.2)), ("Barel_Air", (-4.6, -2.4)), ("Dapur_Tripod", (4.4, 9.6)),
+                                          ("Peti_Kayu_A", (-12.6, -0.2)), ("Guci_Tambang", (12.6, -2.4)))):
+        prefab(f"Dusun{k}", pref, dp(dx, dy))
+    prefab("PapanDusun", "Papan_Tiang", dp(1.8, 9.2), solid=False)
+
     # ------------------------------------------------------------ NPC & penanda
     door_x, door_y = tp(-11.5, -3.5)
     npc_positions = []
@@ -377,6 +425,14 @@ def build():
     npc("Mirah", tp(15.2, 1.8), npc_id='"mirah"', dialog_id='"ch2_mirah"', villager_chapter="2")
     npc("Udin", (STORE[0] - 4, STORE[1] + 64), npc_id='"udin"', dialog_id='"ch2_udin"', villager_chapter="2")
     npc("Pedagang", tp(8.8, 7.0), npc_id='"pedagang"', opens_shop="true")
+    # warga Dusun Cadas: Sesepuh memakai dialog dari langkah quest (tanpa dialog_id tetap)
+    npc("Sesepuh", dp(2.4, 3.8), npc_id='"sesepuh"')
+    npc("Raras", dp(-2.6, 6.0), npc_id='"raras"', dialog_id='"ch2_raras"')
+    npc("Bimo", dp(5.4, 5.4), npc_id='"bimo"', dialog_id='"ch2_bimo"')
+    tower_scene = sc.ext_res("PackedScene", "res://scenes/puzzles/StackTower.tscn")
+    inst("StasiunTugu", station_scene, dp(0, 3.6), puzzle_scene=f'ExtResource("{tower_scene}")', chapter="2",
+         station_label='"Tugu Batu"', complete_flag='"ch2_tugu_cadas"', required_step='"ch2_tengah:tugu"')
+    npc_positions.append(dp(0, 3.6))
     sc.node("PintuMandor", "Area2D", "Objects", position=v2(door_x, door_y + 14), script=f'ExtResource("{door_script}")',
             interior_scene='"res://scenes/world/Interior_RumahMandor.tscn"', hint_text='"E: Masuk rumah Mandor"')
     sc.node("CollisionShape2D", "CollisionShape2D", "Objects/PintuMandor", shape=f'SubResource("{sc.rect_shape(46, 26)}")')
@@ -387,6 +443,8 @@ def build():
     inst("BenderaMasuk", checkpoint_scene, (int(route[14][0]) + 40, int(route[14][1])))
     inst("BenderaGerbang", checkpoint_scene, tp(4.2, -13.5))
     inst("BenderaGalian", checkpoint_scene, (qx + 70, qy + 44))
+    inst("BenderaDusun", checkpoint_scene, dp(-3.4, 8.6))
+    npc_positions.append(dp(-3.4, 8.6))
     inst("PetiKampung", chest_scene, (cx_ + 80, cy_ - 30), roll_count="2")
     inst("PetiGalian", chest_scene, (qx - 70, qy + 52), roll_count="2")
     for k_, (ck, pos) in enumerate((("barang", (STORE[0] + 4, STORE[1] + 44)), ("jejak", (qx + 4, qy - 14)),
@@ -478,7 +536,7 @@ def build():
         tx_, ty_ = int(x // TILE), int(y // TILE)
         return float(d_route[tx_, ty_]) if 0 <= tx_ < W and 0 <= ty_ < H else 0.0
 
-    village_zone = np.hypot((gx - CX) / (32 * TILE), (gy - (CY + 2 * TILE)) / (20 * TILE)) < 1.0
+    village_zone = (np.hypot((gx - CX) / (32 * TILE), (gy - (CY + 2 * TILE)) / (20 * TILE)) < 1.0) | dilate(dusun_zone, 2)
     keypts = list(P.values()) + [bf1, bf_pre, start, QUARRY, CAMP, STORE] + npc_positions
     no_deco = dilate(tunnel | crate_block | rock_block | shortcut, 3) | (np.hypot(gx - P["boss_arena"][0], gy - P["boss_arena"][1]) < 12 * TILE)
 
@@ -578,10 +636,19 @@ def build():
 
     # kelompok musuh (tile): perampok tambang (Orc) di ngarai, kerangka penambang (Skeleton) di dalam tambang.
     # Zona aman: kelompok pertama >= 45 tile dari tepi kampung (PANDUAN 2b).
+    # kemah perampok Orc: dataran bebas terdekat di utara/timur laut Dusun Cadas, >= 16 tile dari pusatnya
+    camp_t = None
+    for ox, oy in ((2, -17), (8, -16), (14, -14), (17, -8), (-6, -17), (18, -2)):
+        cx_t, cy_t = DT[0] + ox, DT[1] + oy
+        if 2 <= cx_t < W - 2 and 2 <= cy_t < H - 2 and corridor[cx_t - 2:cx_t + 3, cy_t - 2:cy_t + 3].all():
+            camp_t = (cx_t, cy_t)
+            break
+    camp_t = camp_t or (DT[0] + 16, DT[1])
+    print("kemah perampok (Ngarai4) di tile", camp_t)
     groups = {"Ngarai1": ((59, 63), ["orc", "orc_rogue", "orc_rogue"]),
               "Ngarai2": ((53, 50), ["orc", "orc_shaman", "orc_warrior"]),
               "Ngarai3": ((70, 40), ["orc_warrior", "orc_shaman", "orc_rogue"]),
-              "Ngarai4": ((36, 30), ["orc", "orc_rogue", "orc_shaman"]),
+              "Ngarai4": (camp_t, ["orc", "orc_rogue", "orc_shaman"]),
               "Ngarai5": ((40, 68), ["orc_rogue", "orc"]),
               "Tambang1": ((99, 30), ["skeleton", "skeleton_rogue", "skeleton"]),
               "Tambang2": ((105, 24), ["skeleton_mage", "skeleton_warrior", "skeleton"]),
@@ -632,6 +699,11 @@ def build():
         if corridor[tx_, ty_] and not near_building(pos[0], pos[1], 6):
             inst(f"Pinggir{nm}{k + 1}", collect[nm], pos)
 
+    for k, (nm, dx, dy) in enumerate((("Herb", -11.5, 8.6), ("Herb", 11.0, -4.6), ("GoldCoin", -6.0, 10.8))):
+        pos = dp(dx, dy)
+        if corridor[int(pos[0] // TILE), int(pos[1] // TILE)] and not near_building(pos[0], pos[1], 6):
+            inst(f"Dusun{nm}{k + 1}", collect[nm], pos)
+
     # ------------------------------------------------------------ marker, pemain, batas
     sc.node("PlayerStart", "Marker2D", ".", position=v2(*start))
     fn = route[max(0, i_exit - 8)]
@@ -679,6 +751,8 @@ def build():
     print("gerbang desa mengunci puzzle =", not r_gate[t_["puzzle"]], "| puzzle terjangkau saat terbuka =", bool(r_open[t_["puzzle"]]))
     print("peti lorong mengunci boss =", not r_arena[t_["boss_arena"]], "| boss terjangkau lewat lorong =", bool(r_open[t_["boss_arena"]]),
           "| jalan pintas (longsoran dibuka) menembus ke aula =", bool(r_short[t_["boss_arena"]]))
+    print("Dusun Cadas di balik gerbang desa =", not r_gate[DT], "| terjangkau saat gerbang terbuka =", bool(r_open[DT]),
+          "| sebelum peti lorong dibuka =", bool(r_arena[DT]))
     print("awan perbatasan mengunci exit =", not r_plug[t_["exit"]], "| exit terjangkau saat terbuka =", bool(r_open[t_["exit"]]))
     bad = [p for p in recorded if not (0 <= p[0] < PX_W and 0 <= p[1] < PX_H and corridor[int(p[0] // TILE), int(p[1] // TILE)])]
     length = float(np.sum(np.hypot(*np.diff(route[route_i(tp(0, 0)):i_boss], axis=0).T))) / TILE

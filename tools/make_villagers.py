@@ -32,6 +32,10 @@ VILLAGERS = {
     "Wulan": ("Citizen_F/Tavern_A/Idle/Idle_Side-Sheet.png", 0.55, 1.0),
     "Bahar": ("Rogue/Idle/Idle-Sheet.png", 0.5, 0.95),
     "Nina": ("Citizen_F/Peasant_A/Idle/Idle-Sheet.png", 0.25, 1.0),
+    # warga Dusun Cadas (Ch2, ngarai barat laut): sesepuh berjubah cokelat, penjaga piring, anak pengantar gerobak
+    "Sesepuh": ("Wizzard/Idle/Idle-Sheet.png", 0.75, 0.8),
+    "Raras": ("Citizen_F/Tavern_B/Idle/Idle_Side-Sheet.png", 0.6, 0.95),
+    "Bimo": ("Rogue/Idle/Idle-Sheet.png", 0.3, 0.9),
 }
 
 

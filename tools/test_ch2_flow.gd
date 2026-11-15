@@ -76,6 +76,30 @@ func _ready() -> void:
 	check(GameManager.get_quest_stage(2) == 1, "quest_stage Ch2 = 1")
 	check(cloud_open("AwanGerbangDesa") and not cloud_open("AwanPerbatasan"), "kabut debu gerbang desa terbuka, perbatasan masih")
 	var st: PuzzleStation = node("StasiunPeti") as PuzzleStation
+	check(st._block_reason() != "", "stasiun tumpukan peti terkunci sebelum misi Dusun Cadas")
+
+	# Dusun Cadas: temui Sesepuh -> susun ulang tugu batu (StackTower) -> baru mulut tambang
+	var tugu: PuzzleStation = node("StasiunTugu") as PuzzleStation
+	check(node("Sesepuh") != null and tugu != null, "Dusun Cadas: Sesepuh & tugu batu terpasang")
+	check(QuestManager.get_current_step("ch2_tengah").get("id", "") == "dusun", "langkah aktif: temui Sesepuh")
+	check(QuestManager.get_dialog_for("sesepuh") == "sesepuh_ch2_minta", "Sesepuh: dialog minta tolong")
+	check(tugu._block_reason() != "", "tugu belum bisa dibuka sebelum bicara dengan Sesepuh")
+	await end_dialog("sesepuh_ch2_minta")
+	check(GameManager.has_story_flag("ch2_temui_sesepuh"), "flag temui Sesepuh")
+	check(tugu._block_reason() == "", "tugu batu bisa dibuka")
+	tugu._open()
+	await frames(2)
+	var tw: StackTower = tugu._puzzle as StackTower
+	while tw.tower.size() > 0 and not tw.is_solved:     # POP semua lalu PUSH sesuai pola
+		tw._pop_top()
+	for s: String in StackTower.TARGET:
+		tw._push_stone(tw.ground.find(s))
+	check(tw.is_solved, "tugu tersusun sesuai pola (POP/PUSH)")
+	tw.close_puzzle()
+	await frames(60)
+	print("== 3b Dusun Cadas: ", tracked())
+	check(GameManager.has_story_flag("ch2_tugu_cadas") and GameManager.get_quest_stage(2) == 1, "langkah tugu selesai, quest tengah belum")
+	check(QuestManager.get_dialog_for("sesepuh") == "sesepuh", "Sesepuh: dialog terima kasih")
 	check(st._block_reason() == "", "stasiun tumpukan peti bisa dibuka")
 
 	# Tahap 2: musuh perjalanan, peti penutup lorong tambang, longsoran jalan pintas

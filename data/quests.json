@@ -253,7 +253,7 @@
     "stage": 2,
     "type": "puzzle",
     "npc": "",
-    "title": "Pedang di Dasar Tumpukan",
+    "title": "Tugu Dusun Cadas & Pedang di Dasar Tumpukan",
     "objective": "Di mulut tambang (ujung ngarai barat): ambil pedang di dasar tumpukan peti dengan POP peti dari atas.",
     "reward": {
       "gold": 70,
@@ -262,7 +262,42 @@
         "pedang_besi": 1
       }
     },
-    "final_target": "StasiunPeti"
+    "final_target": "StasiunPeti",
+    "steps": [
+      {
+        "id": "dusun",
+        "text": "Ke Dusun Cadas di barat laut ngarai: temui Sesepuh Cadas",
+        "flag": "ch2_temui_sesepuh",
+        "target": "Sesepuh",
+        "talk": {
+          "npc": "sesepuh",
+          "dialog": "sesepuh_ch2_minta"
+        },
+        "npc_dialogs": {
+          "lilbah": "lilbah_ch2_tunggu_dusun"
+        }
+      },
+      {
+        "id": "tugu",
+        "text": "Susun ulang Tugu Batu Dusun Cadas (POP/PUSH dari puncak)",
+        "flag": "ch2_tugu_cadas",
+        "target": "StasiunTugu",
+        "npc_dialogs": {
+          "sesepuh": "sesepuh_ch2_tunggu",
+          "lilbah": "lilbah_ch2_tunggu_dusun"
+        },
+        "reward": {
+          "gold": 40,
+          "xp": 30,
+          "items": {
+            "potion": 1
+          }
+        }
+      }
+    ],
+    "final_npc_dialogs": {
+      "sesepuh": "sesepuh"
+    }
   },
   "ch2_akhir": {
     "chapter": 2,
@@ -354,12 +389,17 @@
     "stage": 2,
     "type": "puzzle",
     "npc": "",
-    "title": "Layani Pelanggan",
-    "objective": "Di Pelabuhan Antre: layani pelanggan sesuai urutan datang.",
+    "title": "Antrean Warung Pinggir Jalan",
+    "objective": "Di warung koridor barat (lewat tonjolan barat): layani pelanggan sesuai urutan datang (FIFO).",
     "reward": {
       "gold": 90,
-      "xp": 50
-    }
+      "xp": 50,
+      "items": {
+        "zirah_rantai": 1,
+        "potion": 1
+      }
+    },
+    "final_target": "StasiunAntrean"
   },
   "ch3_akhir": {
     "chapter": 3,

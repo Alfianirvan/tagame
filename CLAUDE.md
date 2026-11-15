@@ -208,6 +208,10 @@ mode crystal). Musuh: Orc (perampok) di ngarai, Skeleton di aula tambang.
 Tahap 3: Quest Tengah = puzzle tumpukan peti di mulut tambang → hadiah **Pedang Besi** (pedang di dasar tumpukan) + peti lorong hilang.
 Quest Akhir berlangkah: kalahkan Penyihir Menara (Kristal) → longsoran jalan pintas terbuka → **Lilbah tetap di Kampung Tumpuk**
 (2 soal) → Data Fragment + Gold → awan perbatasan ke Pelabuhan Antre hilang. Panah memakai `Region.shortcut_route` setelah Kristal.
+Tambahan (permintaan Alfian): **DUSUN CADAS** di ngarai barat laut (pusat tile (42,34), cabang jalan dari ngarai barat; Sesepuh
+Cadas, Raras, Bimo; kemah perampok Orc di utaranya). Quest Tengah Ch2 kini berlangkah: temui Sesepuh → susun ulang **Tugu Batu**
+(puzzle `StackTower`: POP/PUSH dari puncak sesuai pola, flag `ch2_tugu_cadas`) → baru stasiun tumpukan peti di mulut tambang
+terbuka (`PuzzleStation` menolak puzzle akhir Quest Tengah selama masih ada langkah yang belum beres).
 
 **Ch3 (keputusan, dikerjakan 3 tahap):** peta dibangun ulang 136×184 sesuai region_layout (generator `tools/gen_ch3_v2.py`, tileset
 `tools/gen_coast_tileset.py` → `coast_tileset.tres`; prototipe lama dicadangkan di `..\_backup_scenes_organik\`). **Kota Pelabuhan Antre
@@ -216,7 +220,11 @@ rumput tua; punggung tebing di utara kota dengan satu celah = gerbang kota (kabu
 **Kedai Dadang** (bisa dimasuki, `Interior_KedaiDadang.tscn`), pasar tenda, gudang + loket tiket + tali antrean di pangkal dermaga penumpang
 (kapal layar), dermaga ikan. Pinggiran: mercusuar (tanjung selatan), kebun kelapa (barat). Quest Awal: tanya 3 warga (Wulan penjual tiket,
 Pak Bahar nelayan, Nina penumpang) → 3 petunjuk Queue → kuis Dadang. Uji alur: `tools/test_ch3_flow.tscn` (headless).
-Tahap 1: perjalanan utara masih sementara (jalan layout → stasiun antrean → arena Kapten dalam cincin kabut stage 2); dirombak di Tahap 2.
+Tahap 2: rute gerbang kota → barat di antara punggung tebing N & L → TONJOLAN BARAT → jalan sempit utara punggung L → KORIDOR BARAT
+(di antara tebing batas & punggung M) → warung pinggir jalan (stasiun antrean, puzzle dipindah ke tile (53,46)) → BARIKADE BAJAK LAUT
+(`StageBlocker`, hilang di quest_stage 2) → Bonfire pra-boss → DERMAGA BAJAK LAUT (arena Kapten berlantai papan, dipindah ke (70,22))
+→ dermaga keluar di teluk utara (Kapal Dadang, exit dipindah ke (91,12)). ±189 tile kota→arena. Jalan pintas arena→kota = pesisir timur,
+ditutup PERAHU KARAM (`StageBlocker` mode crystal). Musuh: awak bajak laut (Orc) + slime pantai, 25 ekor.
 
 ## 10. Boss (sprite di `boss_preview/`, sudah diperbesar 2×)
 | Boss | Idle (frame) | Serang (frame) | Mati (frame) | Pola serangan |
