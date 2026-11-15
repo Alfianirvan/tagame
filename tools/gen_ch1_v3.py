@@ -231,8 +231,8 @@ def build():
         pts_.append(b)
         return organic.polyline_samples(pts_, 12.0)
 
-    road_e = winding(tp(27, 0), (D2[0] * TILE + 8, D2[1] * TILE + 8), 90, 41)
-    road_w = winding(tp(-17, 0), (D3[0] * TILE + 8, D3[1] * TILE + 8), 80, 43)
+    road_e = np.vstack([winding(tp(0, 0), tp(27, 0), 22, 51, n=4), winding(tp(27, 0), (D2[0] * TILE + 8, D2[1] * TILE + 8), 90, 41)])
+    road_w = np.vstack([winding(tp(0, 0), tp(-17, 0), 18, 53, n=3), winding(tp(-17, 0), (D3[0] * TILE + 8, D3[1] * TILE + 8), 80, 43)])
     # jalan setapak Desa 4: dari jalur utama (sesudah arena) naik ke kaki kubah segel
     j4 = route[route_i((127 * TILE + 8, 38 * TILE + 8))]
     road_4 = winding((float(j4[0]), float(j4[1])), (D4[0] * TILE + 8, D4[1] * TILE + 8 + D4_RY + 20), 40, 47, n=5)
@@ -273,12 +273,10 @@ def build():
     dirt = [(11, 10), (12, 10), (13, 10)]
     d_route = dist_to(gx, gy, route)
     in_village_stone = np.zeros_like(mask)
-    in_village_stone[C[0] - 6:C[0] + 6, C[1] - 6:C[1] + 6] = True                 # alun-alun 12x12
-    in_village_stone[C[0] - 1:C[0] + 2, C[1] - 17:C[1] + 17] = True               # jalan utara-selatan, 3 tile
-    in_village_stone[C[0] - 18:C[0] + 28, C[1] - 1:C[1] + 2] = True               # jalan barat-timur, 3 tile
-    in_village_stone &= mask_d
+    # (Dusun Larik = desa petani: tanpa lantai batu; jalan tanah + lapangan tanah di tengah desa)
     is_dirt = (d_route <= 30 + 5 * organic.smooth_noise(gx, gy, 5)) | causeway
     is_dirt |= (dist_to(gx, gy, roads_all) <= 22 + 4 * organic.smooth_noise(gx, gy, 4)) | plaza_d
+    is_dirt |= np.hypot(gx - CX, gy - CY) <= 4.6 * TILE + 8 * organic.smooth_noise(gx, gy, 7)    # lapangan tanah tengah desa
     for pt, rr in ((P["puzzle"], 52), (P["bonfire_preboss"], 40), (P["boss_arena"], 150), (P["exit"], 40), (P["entry"], 40)):
         is_dirt |= np.hypot(gx - pt[0], gy - pt[1]) <= rr
     ground, pathc, watc, rivc, brc, forest, pondc = [], [], [], [], [], [], []
@@ -383,13 +381,15 @@ def build():
         recorded.append(pos)
         sc.node(name, None, "Objects", instance=scene_id, position=v2(*pos), **props)
 
-    # ------------------------------------------------------------ DUSUN LARIK (blueprint)
-    prefab("Sumur", "Sumur", tp(0, 1))
-    houses = {"RumahArman": ("Rumah_Menara_Hijau", (-12.5, -3.5)), "RumahPenebang": ("Rumah_Runcing_Coklat", (11.5, -3.5)),
-              "RumahWarga": ("Rumah_Loteng_Merah", (-11.5, 12.5)), "RumahPenjaga": ("Rumah_Teras_Coklat", (12.8, 12.5))}
+    # ------------------------------------------------------------ DUSUN LARIK (desa petani)
+    # Tanpa alun-alun batu: lapangan tanah kecil di tengah (pohon desa + sumur) dilalui jalan tanah rute utama; jalan setapak
+    # melengkung ke timur & barat; rumah tersebar tidak simetris dengan pekarangan; 3 LADANG berpagar + lumbung + orang-orangan sawah.
+    prefab("Sumur", "Sumur", tp(3.2, 1.6))
+    houses = {"RumahArman": ("Rumah_Menara_Hijau", (-12.5, -3.5)), "RumahPenebang": ("Rumah_Runcing_Coklat", (14.0, -5.0)),
+              "RumahWarga": ("Rumah_Loteng_Merah", (-10.0, 12.5)), "RumahPenjaga": ("Rumah_Teras_Coklat", (10.5, 13.5))}
     for name, (pref, (dx, dy)) in houses.items():
         prefab(name, pref, tp(dx, dy))
-    prefab("Lumbung", "Lumbung", tp(22.5, 12.5))
+    prefab("Lumbung", "Lumbung", tp(31.0, 8.0))
     # bengkel kayu di tepi timur (di luar jalan): Sawmill, Meja Kerja, Tunggul, Landasan tempa, Tungku
     prefab("Penggergajian", "Sawmill_Besar", tp(26, -9.4))
     prefab("MejaKerja", "MejaKerja_Kayu_2", tp(19.6, -3.1))
@@ -400,16 +400,33 @@ def build():
     prefab("DapurGrill", "Dapur_Panggangan_Besar", tp(-11, -14.5))
     prefab("DapurKompor", "Dapur_Kompor", tp(-16.5, -14.3))
     prefab("DapurBarel", "Barel_Air", tp(-6.5, -14.2))
-    # alun-alun: lampu di keempat sudut + perabot
-    for i, (dx, dy) in enumerate(((-7.2, -6.8), (7.2, -6.8), (-7.2, 7.2), (7.2, 7.2), (2.6, -12), (-2.6, 12))):
-        prefab(f"Lampu{i}", "Lampu_Tiang", tp(dx, dy))
-    prefab("AlunPeti1", "Peti_Kayu_A", tp(-4.5, -4.2))
-    prefab("AlunPeti2", "Peti_Kayu_B", tp(4.4, -4.2))
-    prefab("AlunBarel", "Barel_Besar", tp(-4.4, 5.2))
-    prefab("AlunGuci", "Guci", tp(4.5, 5.2))
-    prefab("OrangOrang", "OrangOrangSawah", tp(30, 14.5))
-    # pagar pekarangan depan tiap rumah (celah 3 tile di pintu)
+    # perabot lapangan tengah
+    prefab("AlunPeti1", "Peti_Kayu_A", tp(-4.6, 3.4))
+    prefab("AlunBarel", "Barel_Besar", tp(5.6, 3.2))
+    prefab("AlunGuci", "Guci", tp(-4.2, -3.0))
+    # LADANG berpagar (gambar tools/make_fields.py di lapisan Decor, tanpa tabrakan) + pagar keliling dengan celah masuk
     fence_w = PREFAB_SIZE["Pagar_Kayu"][0]
+    fields = {"LadangTimur": ("Ladang_A", (17.0, 4.6)), "LadangBarat": ("Ladang_B", (-24.0, 2.6)), "LadangUtara": ("Ladang_C", (4.4, -13.4))}
+    for fname, (img_name, (fx0, fy0)) in fields.items():
+        tex = sc.ext_res("Texture2D", f"res://assets/props/fields/{img_name}.png")
+        fw, fh = Image.open(os.path.join(A, "props/fields", img_name + ".png")).size
+        px0, py0 = round(CX + fx0 * TILE - 8), round(CY + fy0 * TILE - 8)
+        sc.node(fname, "Sprite2D", "Decor", texture=f'ExtResource("{tex}")', position=v2(px0, py0), centered="false")
+        buildings.append((px0 + fw / 2, py0 + fh, fw, fh))          # bebas pohon/semak
+        n = 0
+        for yy in (py0 - 4, py0 + fh + 6):                           # pagar atas & bawah (celah 2 papan di tengah bawah)
+            x = px0
+            while x + fence_w <= px0 + fw + 2:
+                if not (yy > py0 and abs(x + fence_w / 2 - (px0 + fw / 2)) < fence_w):
+                    prefab(f"Pagar_{fname}_{n}", "Pagar_Kayu", (round(x + fence_w / 2), yy), solid=False)
+                    n += 1
+                x += fence_w
+        for xx in (px0 - 2, px0 + fw + 2):
+            prefab(f"Tiang_{fname}_{xx}", "Tiang_Pagar", (xx, py0 + fh + 6), solid=False)
+            prefab(f"TiangAtas_{fname}_{xx}", "Tiang_Pagar", (xx, py0 - 4), solid=False)
+    prefab("OrangOrang", "OrangOrangSawah", tp(22.0, 8.6))
+    prefab("OrangOrang2", "OrangOrangSawah", tp(-20.0, 5.4))
+    # pagar pekarangan depan tiap rumah (celah di pintu)
     for name, (pref, (dx, dy)) in houses.items():
         fy = dy + (1.2 if dy < 0 else 1.7)
         hw = PREFAB_SIZE[pref][0] / (2 * TILE) + 0.2          # pagar selebar rumah
@@ -419,11 +436,13 @@ def build():
         for x0, x1 in ((left, ddx - gap), (ddx + gap, right)):
             x = x0 * TILE
             while x + fence_w / 2 <= x1 * TILE + 8:
-                prefab(f"Pagar_{name}_{n}", "Pagar_Kayu", tp(0, 0)[0:0] or (round(CX + x + fence_w / 2), round(CY + fy * TILE)), solid=False)
+                prefab(f"Pagar_{name}_{n}", "Pagar_Kayu", (round(CX + x + fence_w / 2), round(CY + fy * TILE)), solid=False)
                 x += fence_w
                 n += 1
         prefab(f"Tiang_{name}_L", "Tiang_Pagar", (round(CX + left * TILE), round(CY + fy * TILE)), solid=False)
         prefab(f"Tiang_{name}_R", "Tiang_Pagar", (round(CX + right * TILE), round(CY + fy * TILE)), solid=False)
+    for i, (dx, dy) in enumerate(((-2.4, -6.2), (2.4, 6.8), (13.6, 1.8), (-14.2, 1.4))):
+        prefab(f"Lentera{i}", "Lentera_Tiang", tp(dx, dy), solid=False)
 
     # ------------------------------------------------------------ penanda perjalanan
     bf1 = tp(-5, 8.5)
@@ -474,13 +493,13 @@ def build():
     # ------------------------------------------------------------ NPC
     _ap, (_adx, _ady) = houses["RumahArman"]
     door_x, door_y = tp(_adx + DOOR_DX.get(_ap, 0) / TILE, _ady)
-    npc_positions = [("Arman", (door_x + 38, door_y + 18)), ("Penjaga", tp(17.0, 6.0)), ("Penebang", tp(22.0, -1.6)),
-                     ("Sari", tp(-8.8, -13.2)), ("Pedagang", tp(8.8, 6.4)), ("PedagangAkhir", (bf3[0] + 52, bf3[1] + 18))]
+    npc_positions = [("Arman", (door_x + 38, door_y + 18)), ("Penjaga", tp(17.2, 12.6)), ("Penebang", tp(22.0, -1.6)),
+                     ("Sari", tp(-8.8, -13.2)), ("Pedagang", tp(3.0, 4.8)), ("PedagangAkhir", (bf3[0] + 52, bf3[1] + 18))]
     inst("Arman", npc_scene, (door_x + 38, door_y + 18), npc_id='"arman"')
-    inst("Penjaga", npc_scene, tp(17.0, 6.0), npc_id='"penjaga"', dialog_id='"ch1_penjaga"', villager_chapter="1")
+    inst("Penjaga", npc_scene, tp(17.2, 12.6), npc_id='"penjaga"', dialog_id='"ch1_penjaga"', villager_chapter="1")
     inst("Penebang", npc_scene, tp(22.0, -1.6), npc_id='"penebang"', dialog_id='"ch1_penebang"', villager_chapter="1")
     inst("Sari", npc_scene, tp(-8.8, -13.2), npc_id='"sari"', dialog_id='"ch1_sari"', villager_chapter="1")
-    inst("Pedagang", npc_scene, tp(8.8, 6.4), npc_id='"pedagang"', opens_shop="true")
+    inst("Pedagang", npc_scene, tp(3.0, 4.8), npc_id='"pedagang"', opens_shop="true")
     inst("PedagangAkhir", npc_scene, (bf3[0] + 52, bf3[1] + 18), npc_id='"pedagang"', opens_shop="true")
     sc.node("PintuArman", "Area2D", "Objects", position=v2(door_x, door_y + 14), script=f'ExtResource("{door_script}")',
             interior_scene='"res://scenes/world/Interior_RumahArman.tscn"', hint_text='"E: Masuk rumah Arman"')
@@ -730,10 +749,15 @@ def build():
                     bn += 1
 
     # ------------------------------------------------------------ Dusun Larik: lapak pasar, spanduk, papan penunjuk, hewan, bunga, bendera, Goblin
-    prefab("LapakSayur", "Lapak_Sayur", tp(-8.8, 4.2))
-    prefab("LapakKain", "Lapak_Kain", tp(8.8, 4.2))
-    for i, (dx, dy, k) in enumerate(((-5.6, -6.6, 1), (5.6, -6.6, 2), (-5.6, 5.4, 3), (5.6, 5.4, 1))):
-        prefab(f"Spanduk{i}", f"Spanduk_{k}", tp(dx, dy), solid=False)
+    prefab("LapakSayur", "Lapak_Sayur", tp(-6.6, 5.0))
+    prefab("LapakKain", "Lapak_Kain", tp(5.0, -4.4))
+    # POHON DESA di tengah lapangan tanah (dua batang rindang, batang bertabrakan)
+    for k_, (dx, dy) in enumerate(((-3.4, -0.6), (-1.6, 0.4))):
+        x_, y_ = tp(dx, dy)
+        f_, region_ = trees["m1a" if k_ == 0 else "m1b"]
+        sc.node(f"PohonDesa{k_}", "StaticBody2D", "Objects", position=v2(x_, y_), collision_layer=1, collision_mask=0)
+        sprite_node(f"Objects/PohonDesa{k_}", f"res://assets/props/{f_}", region_)
+        sc.node("CollisionShape2D", "CollisionShape2D", f"Objects/PohonDesa{k_}", position=v2(0, -3), shape=f'SubResource("{sc.rect_shape(12, 8)}")')
     prefab("PapanBarat", "Papan_Kiri", tp(-17.4, -2.7), solid=False)
     prefab("PapanTimur", "Papan_Kanan", tp(27.4, -2.7), solid=False)
     prefab("PapanUtara", "Papan_Tiang", tp(2.8, -16.4), solid=False)
@@ -746,8 +770,8 @@ def build():
 
     animals = [("Chicken/SpriteSheetWhite", tp(-9.6, 15.8)), ("Chicken/SpriteSheetBrown", tp(-14.0, 15.6)),
                ("Chicken/SpriteSheetWhite", tp(-3.5, -9.8)), ("Chicken/SpriteSheetBrown", tp(14.0, -0.2)),
-               ("Cow/SpriteSheetWhite", tp(17.5, 16.2)), ("Cow/SpriteSheetWhite", tp(26.0, 16.4)),
-               ("Pig/SpriteSheetPink", tp(13.5, 17.0)), ("Pig/SpriteSheetBlack", tp(-16.0, 5.0)),
+               ("Cow/SpriteSheetWhite", tp(20.0, 14.6)), ("Cow/SpriteSheetWhite", tp(26.0, 15.4)),
+               ("Pig/SpriteSheetPink", tp(17.0, 16.6)), ("Pig/SpriteSheetBlack", tp(-19.0, 10.0)),
                ("Dog/SpriteSheet", tp(3.8, -9.6)), ("Cat/SpriteSheet", tp(-14.8, -1.6))]
     na = 0
     for sheet_, pos in animals:
@@ -772,7 +796,7 @@ def build():
         sc.node(f"Bunga{nb}", "Node2D", "Decor", script=f'ExtResource("{animprop_script}")', strip=f'ExtResource("{plant_tex}")',
                 position=v2(x, y), fps="3.0")
         nb += 1
-    for nm, (dx, dy) in (("BenderaMasuk", (3.8, 15.4)), ("BenderaBarat", (-19.6, 2.8)), ("BenderaTimur", (28.6, 2.8))):
+    for nm, (dx, dy) in (("BenderaMasuk", (3.8, 15.4)), ("BenderaBarat", (-20.5, -1.2)), ("BenderaTimur", (25.5, 2.4))):
         inst(nm, checkpoint_scene, tp(dx, dy))
     for i, (dx, dy) in enumerate(((-5, 17.6), (5.2, 18.4), (-2.5, 19.6), (3.0, 16.8))):
         inst(f"GoblinEvent{i + 1}", enemy_scene, tp(dx, dy), enemy_id='"orc"', damage_scale="0.6")

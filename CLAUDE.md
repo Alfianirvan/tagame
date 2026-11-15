@@ -240,7 +240,10 @@ Pratinjau `docs/layout/Ch3_kota_tepilaut*.png`.
 gerbang = celah x 99-105 berkabut debu (GATE_ROW 83). Rumah berjajar menempel di kaki tebing (Mandor, Mirah, pondok | Udin, warga,
 Gudang_Panjang) dengan tangga kayu di tebing; JALAN TAMBANG (y 95-97) dari bengkel Lilbah (barat) ke gudang (timur); lapangan bijih
 (sumur, lapak, Pedagang) + tumpukan bijih/peti di selatan jalan. Pratinjau `docs/layout/Ch2_kampung_kaki_tebing.png`.
-Desa Ch1 (Dusun Larik dst.) masih bertata letak perempatan.
+**Dusun Larik = DESA PETANI (keputusan):** tanpa lantai batu; lapangan tanah kecil di tengah (pohon desa + sumur) dilalui jalan tanah
+rute utama, jalan setapak melengkung ke timur & barat, rumah tersebar dengan pekarangan, 3 LADANG berpagar (gambar
+`tools/make_fields.py` → `assets/props/fields/Ladang_*.png`, Sprite2D di Decor) + lumbung + orang-orangan sawah.
+Pratinjau `docs/layout/Ch1_dusun_larik_petani.png`. Desa Algoria (desa awal) belum diubah.
 
 ## 10. Boss (sprite di `boss_preview/`, sudah diperbesar 2×)
 | Boss | Idle (frame) | Serang (frame) | Mati (frame) | Pola serangan |
