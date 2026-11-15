@@ -235,7 +235,12 @@ Pratinjau: `docs/layout/rumah_varian.png`.
 teluk kecil di selatannya); JALAN DERMAGA (x 99-101) di sepanjang pantai dengan dermaga penumpang (loket + tali antrean, Wulan, Nina)
 dan dermaga ikan (Bahar) menjorok ke laut; Jalan Pasar (y 121-123) dari gerbang barat ke jalan dermaga dengan Rumah_Loteng_Biru,
 Toko (Pedagang), Kedai Dadang (Rumah_Menara_Merah); alun-alun pasar + gudang pelabuhan di selatannya; jalan selatan dengan 3 rumah.
-Pratinjau `docs/layout/Ch3_kota_tepilaut*.png`. Desa Ch1/Ch2 masih bertata letak perempatan.
+Pratinjau `docs/layout/Ch3_kota_tepilaut*.png`.
+**Kampung Tumpuk = KAMPUNG KAKI TEBING (keputusan):** TEBING KAMPUNG (punggung tebing baris 81-85) menggantikan pita kabut selebar peta;
+gerbang = celah x 99-105 berkabut debu (GATE_ROW 83). Rumah berjajar menempel di kaki tebing (Mandor, Mirah, pondok | Udin, warga,
+Gudang_Panjang) dengan tangga kayu di tebing; JALAN TAMBANG (y 95-97) dari bengkel Lilbah (barat) ke gudang (timur); lapangan bijih
+(sumur, lapak, Pedagang) + tumpukan bijih/peti di selatan jalan. Pratinjau `docs/layout/Ch2_kampung_kaki_tebing.png`.
+Desa Ch1 (Dusun Larik dst.) masih bertata letak perempatan.
 
 ## 10. Boss (sprite di `boss_preview/`, sudah diperbesar 2×)
 | Boss | Idle (frame) | Serang (frame) | Mati (frame) | Pola serangan |

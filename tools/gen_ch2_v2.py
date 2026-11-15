@@ -35,7 +35,8 @@ W, H = LAYOUT["ukuran_tile"]            # 161 x 161
 PX_W, PX_H = LAYOUT["ukuran_px"]        # 2576 x 2576
 C = tuple(LAYOUT["titik_tile"]["village_center"])   # (102, 96) pusat Kampung Tumpuk
 CX, CY = C[0] * TILE + 8, C[1] * TILE + 8
-GATE_ROW = C[1] - 17                    # baris tengah pita kabut debu gerbang desa (79)
+GATE_ROW = 83                           # baris tengah celah gerbang di TEBING KAMPUNG (kabut debu di celah saja)
+LILBAH_T = (69.0, 96.2)                 # Lilbah di depan bengkelnya (ujung barat Jalan Tambang)
 MINE_MOUTH = (80, 48)                   # mulut tambang = stasiun puzzle tumpukan peti (titik_tile puzzle asli (84,67) dipindah)
 TUNNEL_Y = 47.5                         # baris tengah lorong tambang (baris 45-50, 4 baris bisa dilalui di bawah wajah tebing)
 TUNNEL_X = (86, 98)                     # lorong menembus punggung tebing C
@@ -43,7 +44,9 @@ SHORTCUT_X = (106, 111)                 # celah longsoran di punggung tebing A =
 # punggung tebing (dataran tinggi di DALAM wilayah, tile): (polyline, setengah lebar)
 RIDGES = [([(93, 66), (110, 66), (130, 65), (156, 66)], 3.2),      # A: memisahkan aula tambang dari kantong utara desa
           ([(92, -2), (92, 30), (92, 44), (92, 66)], 3.0),         # C: dinding barat aula tambang (ditembus lorong)
-          ([(66, 61), (80, 62), (92, 62)], 2.6)]                   # D: memaksa jalan memutar lewat ngarai barat
+          ([(66, 61), (80, 62), (92, 62)], 2.6),                   # D: memaksa jalan memutar lewat ngarai barat
+          ([(-3, 83), (40, 83), (96, 83)], 2.4),                   # TEBING KAMPUNG barat: rumah berjajar di kakinya
+          ([(108, 83), (140, 83), (163, 83)], 2.4)]                # TEBING KAMPUNG timur (celah x 99-105 = gerbang kampung)
 # geser pintu varian rumah dari pusat gambar (px), hasil tools/make_houses.py
 DOOR_DX = json.load(open(os.path.join(ROOT, "assets/props/buildings/variants/_pintu.json"), encoding="utf-8"))
 DUSUN_T = (42, 34)                      # perkiraan pusat Dusun Cadas (dicari ulang supaya kotak dusun seluruhnya daratan)
@@ -203,12 +206,12 @@ def build():
         return (round(DUSUN[0] + dx * TILE), round(DUSUN[1] + dy * TILE))
 
     # ------------------------------------------------------------ jalan cabang (tanah terang) di dalam kampung & pinggiran
-    QUARRY = tp(-33, 5)       # galian batu (barat)
+    QUARRY = tp(-33, 8)       # galian batu (barat daya, di selatan bengkel)
     CAMP = tp(-3, 24)         # perkemahan penambang (selatan)
-    STORE = tp(26, -7)        # gudang peti (timur laut)
+    STORE = tp(31, -2.4)      # gudang peti (ujung timur Jalan Tambang, di kaki tebing)
     road_q = winding(tp(-18, 0), QUARRY, 30, 21, n=5)
     road_c = winding(tp(0, 14), CAMP, 24, 23, n=4)
-    road_s = winding(tp(18, 0), (STORE[0] - 10, STORE[1] + 46), 12, 25, n=3)
+    road_s = organic.polyline_samples([tp(26, 0), (STORE[0], STORE[1] + 30)], 12.0)
     road_d = winding(tuple(route[route_i(dp(0, 10))]), dp(0, 10), 16, 27, n=4)   # cabang jalan ke Dusun Cadas
     road_d = np.vstack([road_d, organic.polyline_samples([dp(0, 10), dp(0, 3)], 12.0)])
     roads = np.vstack([route, road_q, road_c, road_s, road_d])
@@ -218,7 +221,7 @@ def build():
     vn = organic.smooth_noise(vx, vy, 4)
     vd = dist_to(vx, vy, roads)
     light_v = vd <= 26 + 6 * vn
-    pads = [(tp(0, 0), 150), (QUARRY, 70), (CAMP, 70), (STORE, 60), (P["puzzle"], 60), (P["bonfire_preboss"], 46),
+    pads = [(tp(0, 6), 120), (QUARRY, 70), (CAMP, 70), (STORE, 60), (P["puzzle"], 60), (P["bonfire_preboss"], 46),
             (P["boss_arena"], 140), (P["exit"], 44), (P["entry"], 44),
             (dp(0, 3), 92), (dp(0, 7), 70)]
     for (px_, py_), rr in pads:
@@ -227,9 +230,9 @@ def build():
     # ------------------------------------------------------------ peta tile
     stone = [(6, 10), (7, 10), (8, 10)]
     in_stone = np.zeros_like(mask)
-    in_stone[C[0] - 6:C[0] + 6, C[1] - 6:C[1] + 6] = True                  # alun-alun 12x12
-    in_stone[C[0] - 1:C[0] + 2, C[1] - 15:C[1] + 14] = True                # jalan utara-selatan
-    in_stone[C[0] - 18:C[0] + 25, C[1] - 1:C[1] + 2] = True                # jalan barat-timur
+    in_stone[64:128, 95:98] = True         # JALAN TAMBANG (barat-timur) di depan deretan rumah kaki tebing
+    in_stone[101:104, 84:95] = True        # jalan ke celah gerbang di tebing kampung
+    in_stone[96:109, 98:107] = True        # lapangan bijih (sumur, lapak)
     ground, stonec, cliffc, watc = [], [], [], []
     for tx in range(W):
         for ty in range(H):
@@ -269,7 +272,7 @@ def build():
     # ------------------------------------------------------------ scene
     # jalur pintas (panah setelah Kristal): arena -> celah longsoran -> kantong utara -> gerbang desa -> alun-alun -> Lilbah
     sxm = (SHORTCUT_X[0] + SHORTCUT_X[1]) / 2
-    short_route = organic.polyline_samples([P["boss_arena"], tpx((sxm, 57)), tpx((sxm, 72)), tp(0, -16), tp(0, 0), tp(-21, 1.6)], 12.0)
+    short_route = organic.polyline_samples([P["boss_arena"], tpx((sxm, 57)), tpx((sxm, 72)), tp(0, -16), tp(0, 0), tpx(LILBAH_T)], 12.0)
     sc = Scene()
     ts_canyon = sc.ext_res("TileSet", "res://assets/tilesets/canyon_tileset.tres")
     ts_world = sc.ext_res("TileSet", "res://assets/tilesets/world_tileset.tres")
@@ -329,37 +332,48 @@ def build():
                 return True
         return False
 
-    # ------------------------------------------------------------ KAMPUNG TUMPUK (blueprint)
-    prefab("Sumur", "Sumur", tp(0, 1))
-    houses = {"RumahMandor": ("Rumah_Loteng_Coklat", (-11.5, -3.5)), "RumahMirah": ("Rumah_Runcing_Coklat", (11.5, -3.5)),
-              "RumahWarga": ("Rumah_Teras_Coklat", (-13.6, 12.5)), "RumahUdin": ("Rumah_Loteng_Hijau", (11.5, 12.5))}
+    # ------------------------------------------------------------ KAMPUNG TUMPUK (kampung kaki tebing)
+    # Rumah berjajar menempel di kaki TEBING KAMPUNG (punggung rumah ke dinding tebing), JALAN TAMBANG di depannya dari bengkel
+    # Lilbah (barat) ke gudang peti (timur); celah gerbang di tebing; lapangan bijih + tumpukan bijih/peti di selatan jalan.
+    def at(x, y):
+        """Titik (px) pada tile absolut (x, y), pecahan boleh."""
+        return (round(x * TILE + 8), round(y * TILE + 8))
+
+    houses = {"RumahMandor": ("Rumah_Loteng_Coklat", (-21, -2.4)), "RumahMirah": ("Rumah_Runcing_Coklat", (-12, -2.4)),
+              "RumahPondok": ("Pondok_Kecil", (-5.4, -2.4)), "RumahUdin": ("Rumah_Loteng_Hijau", (7.4, -2.4)),
+              "RumahWarga": ("Rumah_Teras_Coklat", (18.4, -2.4)), "RumahSelatan": ("Pondok_Hijau", (16, 10))}
     for name, (pref, (dx, dy)) in houses.items():
         prefab(name, pref, tp(dx, dy))
-    # bengkel Lilbah (barat, di luar jalan): landasan besar = Tempa, tungku, meja kerja, peti bahan
-    prefab("LandasanLilbah", "Landasan_3", tp(-22.5, -3.2), script=f'ExtResource("{anvil_script}")')
-    prefab("TungkuBesi", "Tungku_Besi_2", tp(-27.6, -3.4))
-    prefab("TungkuBatu", "Tungku_Batu_2", tp(-17.6, -3.6))
-    prefab("MejaKerjaLilbah", "MejaKerja_Besi_2", tp(-25.0, 4.6))
-    prefab("PetiBahan", "Peti_Kayu_A", tp(-20.6, 4.4))
-    prefab("BijihBengkel", "Bijih_Tumpuk_1", tp(-29.2, 3.8), solid=False)
-    prefab("KayuBengkel", "Tumpukan_Kayu", tp(-18.8, -7.6))
-    # gudang peti (timur laut): lumbung + tumpukan peti yang ditumpuk salah
+    # bengkel Lilbah (ujung barat Jalan Tambang): landasan besar = Tempa, tungku, meja kerja, peti bahan
+    prefab("LandasanLilbah", "Landasan_3", at(70.0, 94.4), script=f'ExtResource("{anvil_script}")')
+    prefab("TungkuBesi", "Tungku_Besi_2", at(65.2, 94.2))
+    prefab("TungkuBatu", "Tungku_Batu_2", at(74.0, 93.8))
+    prefab("MejaKerjaLilbah", "MejaKerja_Besi_2", at(67.4, 91.0))
+    prefab("PetiBahan", "Peti_Kayu_A", at(62.4, 94.4))
+    prefab("BijihBengkel", "Bijih_Tumpuk_1", at(63.6, 91.4), solid=False)
+    prefab("KayuBengkel", "Tumpukan_Kayu", at(72.4, 90.6))
+    # gudang peti (ujung timur): lumbung panjang + tumpukan peti yang ditumpuk salah (di samping, tidak menutup jalan)
     prefab("Gudang", "Gudang_Panjang", STORE)
-    for k, (pref, (ox, oy)) in enumerate((("Peti_Tumpuk_2", (-58, 30)), ("Peti_Tumpuk_1", (-30, 38)), ("Peti_Tumpuk_3", (58, 30)),
-                                          ("Peti_Tong", (84, 40)), ("Tong_Peti", (-86, 34)), ("Peti_Kayu_B", (36, 46)))):
-        prefab(f"GudangPeti{k}", pref, (STORE[0] + ox, STORE[1] + oy))
-    # alun-alun: lampu di keempat sudut + perabot
-    for i, (dx, dy) in enumerate(((-7.2, -6.8), (7.2, -6.8), (-7.2, 7.2), (7.2, 7.2), (2.6, -13), (-2.6, 12.5))):
-        prefab(f"Lampu{i}", "Lampu_Tiang", tp(dx, dy))
-    prefab("AlunPeti1", "Peti_Kayu_A", tp(-4.5, -4.2))
-    prefab("AlunPeti2", "Peti_Kayu_B", tp(4.4, -4.2))
-    prefab("AlunTong", "Barel_Besar", tp(-4.4, 5.2))
-    prefab("AlunGuci", "Guci_Tambang", tp(4.5, 5.2))
-    prefab("LapakBijih", "Lapak_Kain", tp(-8.8, 4.2))
-    prefab("LapakSayur", "Lapak_Sayur", tp(8.8, 4.2))
-    for i, (dx, dy, k) in enumerate(((-5.6, -6.6, 1), (5.6, -6.6, 2), (-5.6, 5.4, 3), (5.6, 5.4, 1))):
-        prefab(f"Spanduk{i}", f"Spanduk_{k}", tp(dx, dy), solid=False)
-    # pagar pekarangan depan tiap rumah (celah di pintu)
+    for k, (pref, (x, y)) in enumerate((("Peti_Tumpuk_2", (140.6, 93.4)), ("Peti_Tumpuk_1", (143.2, 93.8)), ("Peti_Tumpuk_3", (141.8, 91.0)),
+                                        ("Peti_Tong", (145.4, 94.2)), ("Tong_Peti", (139.8, 98.6)), ("Peti_Kayu_B", (143.0, 99.0)))):
+        prefab(f"GudangPeti{k}", pref, at(x, y))
+    # lapangan bijih: sumur, lapak, tong; lampu di sudut; spanduk
+    prefab("Sumur", "Sumur", at(102.0, 102.2))
+    for nm, pref, (x, y) in (("LapakBijih", "Lapak_Kain", (97.4, 100.0)), ("LapakSayur", "Lapak_Sayur", (106.6, 100.0)),
+                             ("AlunTong", "Barel_Besar", (97.8, 105.2)), ("AlunGuci", "Guci_Tambang", (106.2, 105.2))):
+        prefab(nm, pref, at(x, y))
+    for i, (x, y) in enumerate(((95.4, 98.6), (108.6, 98.6), (95.4, 106.8), (108.6, 106.8))):
+        prefab(f"Lampu{i}", "Lampu_Tiang", at(x, y))
+    for i, (x, y, k) in enumerate(((96.4, 98.8, 1), (107.6, 98.8, 2))):
+        prefab(f"Spanduk{i}", f"Spanduk_{k}", at(x, y), solid=False)
+    # tumpukan bijih & peti tambang di selatan Jalan Tambang (barat lapangan)
+    for k, (pref, (x, y)) in enumerate((("Bijih_Tumpuk_2", (80.6, 99.6)), ("Peti_Tumpuk_3", (84.4, 100.2)), ("Tong_Peti", (88.2, 99.8)),
+                                        ("Bijih_Tumpuk_1", (86.0, 102.4)), ("Peti_Kayu_A", (81.8, 102.6)))):
+        prefab(f"Tumpukan{k}", pref, at(x, y), solid=not pref.startswith("Bijih"))
+    # tangga kayu bersandar di dinding tebing di antara rumah (kesan kampung tambang)
+    for k, x in enumerate((75.6, 85.8, 99.2, 113.9, 126.4)):
+        prefab(f"TanggaTebing{k}", "Tangga_Kayu", at(x, 88.4), solid=False)
+    # pagar pekarangan depan rumah (celah di pintu)
     fence_w = PREFAB_SIZE["Pagar_Kayu"][0]
     for name, (pref, (dx, dy)) in houses.items():
         fy = dy + (1.2 if dy < 0 else 1.7)
@@ -375,12 +389,12 @@ def build():
                 n += 1
         prefab(f"Tiang_{name}_L", "Tiang_Pagar", (round(CX + left * TILE), round(CY + fy * TILE)), solid=False)
         prefab(f"Tiang_{name}_R", "Tiang_Pagar", (round(CX + right * TILE), round(CY + fy * TILE)), solid=False)
-    # lentera di sepanjang jalan masuk & jalan utara
-    for i, (dx, dy) in enumerate(((16.0, -2.4), (21.5, 2.6), (-2.4, -10.0), (-15.0, 2.6))):
-        prefab(f"Lentera{i}", "Lentera_Tiang", tp(dx, dy), solid=False)
-    prefab("PapanBarat", "Papan_Kiri", tp(-17.6, -2.8), solid=False)
-    prefab("PapanTimur", "Papan_Kanan", tp(24.6, -2.8), solid=False)
-    prefab("PapanUtara", "Papan_Tiang", tp(-2.8, -14.2), solid=False)
+    # lentera di sepanjang Jalan Tambang & jalan gerbang, papan penunjuk
+    for i, (x, y) in enumerate(((75.0, 98.6), (91.6, 98.6), (112.0, 98.6), (126.8, 98.6), (104.4, 89.0))):
+        prefab(f"Lentera{i}", "Lentera_Tiang", at(x, y), solid=False)
+    prefab("PapanBarat", "Papan_Kiri", at(62.6, 98.0), solid=False)
+    prefab("PapanTimur", "Papan_Kanan", at(128.4, 98.6), solid=False)
+    prefab("PapanUtara", "Papan_Tiang", at(99.4, 89.0), solid=False)
     prefab("PapanSelatan", "Papan_Tiang", tp(2.8, 14.6), solid=False)
 
     # ---- pinggiran 1: GALIAN BATU (barat) - mesa dipahat, tangga, tumpukan bijih, batu
@@ -425,11 +439,11 @@ def build():
         inst(name, npc_scene, pos, **props)
         npc_positions.append(pos)
 
-    npc("Lilbah", tp(-21.0, 1.6), npc_id='"lilbah"')
+    npc("Lilbah", tpx(LILBAH_T), npc_id='"lilbah"')
     npc("Mandor", (door_x + 38, door_y + 18), npc_id='"mandor"', dialog_id='"ch2_mandor"', villager_chapter="2")
-    npc("Mirah", tp(15.2, 1.8), npc_id='"mirah"', dialog_id='"ch2_mirah"', villager_chapter="2")
+    npc("Mirah", at(92.6, 97.0), npc_id='"mirah"', dialog_id='"ch2_mirah"', villager_chapter="2")
     npc("Udin", (STORE[0] - 4, STORE[1] + 64), npc_id='"udin"', dialog_id='"ch2_udin"', villager_chapter="2")
-    npc("Pedagang", tp(8.8, 7.0), npc_id='"pedagang"', opens_shop="true")
+    npc("Pedagang", at(99.2, 103.4), npc_id='"pedagang"', opens_shop="true")
     # warga Dusun Cadas: Sesepuh memakai dialog dari langkah quest (tanpa dialog_id tetap)
     npc("Sesepuh", dp(2.4, 3.8), npc_id='"sesepuh"')
     npc("Raras", dp(-2.6, 6.0), npc_id='"raras"', dialog_id='"ch2_raras"')
@@ -443,10 +457,10 @@ def build():
     sc.node("CollisionShape2D", "CollisionShape2D", "Objects/PintuMandor", shape=f'SubResource("{sc.rect_shape(46, 26)}")')
 
     start = tuple(int(v) for v in route[6])
-    bf1 = tp(-5, 8.5)
+    bf1 = at(92.4, 101.6)
     inst("Bonfire1", bonfire_scene, bf1)
     inst("BenderaMasuk", checkpoint_scene, (int(route[14][0]) + 40, int(route[14][1])))
-    inst("BenderaGerbang", checkpoint_scene, tp(4.2, -13.5))
+    inst("BenderaGerbang", checkpoint_scene, at(100.0, 91.4))
     inst("BenderaGalian", checkpoint_scene, (qx + 70, qy + 44))
     inst("BenderaDusun", checkpoint_scene, dp(-3.4, 8.6))
     npc_positions.append(dp(-3.4, 8.6))
@@ -541,7 +555,7 @@ def build():
         tx_, ty_ = int(x // TILE), int(y // TILE)
         return float(d_route[tx_, ty_]) if 0 <= tx_ < W and 0 <= ty_ < H else 0.0
 
-    village_zone = (np.hypot((gx - CX) / (32 * TILE), (gy - (CY + 2 * TILE)) / (20 * TILE)) < 1.0) | dilate(dusun_zone, 2)
+    village_zone = ((tcol >= 58) & (tcol <= 148) & (trow >= 84) & (trow <= 118)) | dilate(dusun_zone, 2)   # kampung bebas mesa
     keypts = list(P.values()) + [bf1, bf_pre, start, QUARRY, CAMP, STORE] + npc_positions
     no_deco = dilate(tunnel | crate_block | rock_block | shortcut, 3) | (np.hypot(gx - P["boss_arena"][0], gy - P["boss_arena"][1]) < 12 * TILE)
 
@@ -600,8 +614,8 @@ def build():
 
     # hewan kampung (ayam, kuda di perkemahan, anjing, kucing)
     animals = [("Chicken/SpriteSheetWhite", tp(-8.0, 15.6)), ("Chicken/SpriteSheetBrown", tp(-14.0, 15.2)),
-               ("Chicken/SpriteSheetWhite", tp(14.5, -9.8)), ("Chicken/SpriteSheetBrown", (cx_ - 90, cy_ + 4)),
-               ("Dog/SpriteSheet", tp(3.8, -9.6)), ("Cat/SpriteSheet", tp(-14.8, -0.6))]
+               ("Chicken/SpriteSheetWhite", at(113.0, 100.0)), ("Chicken/SpriteSheetBrown", (cx_ - 90, cy_ + 4)),
+               ("Dog/SpriteSheet", at(99.4, 92.2)), ("Cat/SpriteSheet", at(87.2, 96.4))]
     na = 0
     for sheet_, pos in animals:
         tex_path = os.path.join(ROOT, "assets/ninja/animals", sheet_ + ".png")
@@ -715,7 +729,7 @@ def build():
     sc.node("FromNext", "Marker2D", ".", position=v2(int(fn[0]), int(fn[1])))
     sc.node("BossSpawn", "Marker2D", ".", position=v2(*[int(v) for v in P["boss_arena"]]))
     sc.node("NPCSpawns", "Node2D", ".")
-    sc.node("Lilbah", "Marker2D", "NPCSpawns", position=v2(*tp(-21.0, 1.6)), **{"metadata/npc_id": '"lilbah"'})
+    sc.node("Lilbah", "Marker2D", "NPCSpawns", position=v2(*tpx(LILBAH_T)), **{"metadata/npc_id": '"lilbah"'})
     sc.nodes.append(f'[node name="Player" parent="Objects" instance=ExtResource("{player_scene}")]\nposition = {v2(*start)}\n')
     sc.node("Bounds", "StaticBody2D", ".", collision_layer=1, collision_mask=0)
     t = 32
