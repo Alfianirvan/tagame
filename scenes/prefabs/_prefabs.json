@@ -432,6 +432,118 @@
   "cdx": 0
  },
  {
+  "name": "Palem_1",
+  "w": 32,
+  "h": 31,
+  "cw": 10,
+  "ch": 6,
+  "cdx": 0
+ },
+ {
+  "name": "Palem_2",
+  "w": 32,
+  "h": 31,
+  "cw": 10,
+  "ch": 6,
+  "cdx": 0
+ },
+ {
+  "name": "Palem_Rumpun_1",
+  "w": 64,
+  "h": 46,
+  "cw": 40,
+  "ch": 8,
+  "cdx": 0
+ },
+ {
+  "name": "Palem_Rumpun_2",
+  "w": 64,
+  "h": 46,
+  "cw": 40,
+  "ch": 8,
+  "cdx": 0
+ },
+ {
+  "name": "Palem_Kecil",
+  "w": 14,
+  "h": 13,
+  "cw": 8,
+  "ch": 4,
+  "cdx": 0
+ },
+ {
+  "name": "Semak_Pantai",
+  "w": 32,
+  "h": 31,
+  "cw": 20,
+  "ch": 6,
+  "cdx": 0
+ },
+ {
+  "name": "Lapak_Tenda_Merah",
+  "w": 32,
+  "h": 31,
+  "cw": 29,
+  "ch": 31,
+  "cdx": 0
+ },
+ {
+  "name": "Lapak_Tenda_Kuning",
+  "w": 32,
+  "h": 31,
+  "cw": 29,
+  "ch": 31,
+  "cdx": 0
+ },
+ {
+  "name": "Keranjang_Buah_1",
+  "w": 14,
+  "h": 13,
+  "cw": 12,
+  "ch": 6,
+  "cdx": 0
+ },
+ {
+  "name": "Keranjang_Buah_2",
+  "w": 14,
+  "h": 13,
+  "cw": 12,
+  "ch": 6,
+  "cdx": 0
+ },
+ {
+  "name": "Kerang_1",
+  "w": 12,
+  "h": 11,
+  "cw": 4,
+  "ch": 4,
+  "cdx": 0
+ },
+ {
+  "name": "Kerang_2",
+  "w": 14,
+  "h": 12,
+  "cw": 4,
+  "ch": 4,
+  "cdx": 0
+ },
+ {
+  "name": "Menara_Kubah",
+  "w": 46,
+  "h": 80,
+  "cw": 40,
+  "ch": 24,
+  "cdx": 0
+ },
+ {
+  "name": "Perahu_Kecil",
+  "w": 32,
+  "h": 16,
+  "cw": 28,
+  "ch": 10,
+  "cdx": 0
+ },
+ {
   "name": "Rumah_Krem",
   "w": 128,
   "h": 138,
@@ -797,6 +909,14 @@
   "h": 80,
   "cw": 44,
   "ch": 74,
+  "cdx": 0
+ },
+ {
+  "name": "Kapal_Layar",
+  "w": 77,
+  "h": 65,
+  "cw": 74,
+  "ch": 20,
   "cdx": 0
  },
  {

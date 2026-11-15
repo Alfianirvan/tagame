@@ -17,6 +17,8 @@
 | Dungeon CraftPix (peti, tuas, obor; Ch2: tumpukan peti, tumpukan bijih, tong, guci, tangga kayu) | **CraftPix.net** – Free 2D Top-Down Pixel Dungeon Asset Pack | Free: boleh di gim, tidak boleh disebarkan ulang |
 | Ch2 Tambang Tumpuk: pasir & jalan pasir (TilesetFloor), dataran tinggi & tebing ngarai serta prefab Mesa_* (TilesetRelief, digabung oleh `tools/make_prefabs.py`), lentera/kayu/tunggul (tileset_camp) | **Ninja Adventure – Asset Pack** oleh pixel-boy & AAA | CC0 |
 | Ch2: batu ngarai (Rocks), bengkel Lilbah (Anvil, Furnace, Workbench), sprite warga Kampung Tumpuk (Mandor, Bu Mirah, Udin; diwarnai ulang dari Knight, Peasant_A, Rogue) | **Pixel Crawler – Free Pack 2.11** oleh Anokolisa | Free / turunan Pixel Crawler |
+| Ch3 Pelabuhan Antre: rumput & pantai (TilesetFloor, tanah diwarnai ulang jadi pasir oleh `tools/gen_coast_tileset.py`), laut bertepi pasir & papan dermaga (TilesetWater), tebing berpuncak rumput (TilesetRelief diwarnai ulang), palem, lapak tenda, keranjang, kerang, menara kubah/mercusuar (TilesetDesert), kapal layar (Boat + Sail), perahu kecil | **Ninja Adventure – Asset Pack** oleh pixel-boy & AAA | CC0 |
+| Ch3: interior Kedai Dadang (Interior_Walls/Props), sprite warga Kota Pelabuhan Antre (Wulan, Pak Bahar, Nina; diwarnai ulang dari Tavern_A, Rogue, Peasant_A) | **Pixel Crawler – Free Pack 2.11** oleh Anokolisa | Free / turunan Pixel Crawler |
 
 Lisensi Ninja Adventure: `assets/ui/LICENSE_NinjaAdventure_CC0.txt`.
 

@@ -28,6 +28,10 @@ VILLAGERS = {
     "Mandor": ("Knight/Idle/Idle-Sheet.png", 0.08, 0.85),
     "Mirah": ("Citizen_F/Peasant_A/Idle/Idle-Sheet.png", 0.92, 0.95),
     "Udin": ("Rogue/Idle/Idle-Sheet.png", 0.12, 0.9),
+    # warga Kota Pelabuhan Antre (Ch3): penjual tiket, nelayan, penumpang
+    "Wulan": ("Citizen_F/Tavern_A/Idle/Idle_Side-Sheet.png", 0.55, 1.0),
+    "Bahar": ("Rogue/Idle/Idle-Sheet.png", 0.5, 0.95),
+    "Nina": ("Citizen_F/Peasant_A/Idle/Idle-Sheet.png", 0.25, 1.0),
 }
 
 

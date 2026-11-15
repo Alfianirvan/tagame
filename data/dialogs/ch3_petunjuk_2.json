@@ -1,0 +1,12 @@
+{
+  "lines": [
+    {
+      "speaker": "narator",
+      "text": "Buku catatan dermaga: \"Perahu A merapat pagi, Perahu B siang, Perahu C sore. Bongkar muatan: A, lalu B, lalu C.\""
+    },
+    {
+      "speaker": "raka",
+      "text": "Urutan keluar sama dengan urutan masuk. First In, First Out: FIFO."
+    }
+  ]
+}

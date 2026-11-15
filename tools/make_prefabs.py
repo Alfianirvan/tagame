@@ -80,6 +80,21 @@ SHEET = {
     "Lentera_Tiang": ("../ninja/tilesets/tileset_camp.png", (96, 82, 109, 112), (8, 6)),
     "Tumpukan_Kayu": ("../ninja/tilesets/tileset_camp.png", (2, 113, 46, 127), (42, 10)),
     "Tunggul_Besar": ("../ninja/tilesets/tileset_camp.png", (18, 82, 46, 110), (24, 12)),
+    # ---- Ch3 Pelabuhan Antre: palem, lapak tenda pasar, keranjang buah, kerang (Ninja TilesetDesert), perahu (Ninja TilesetWater)
+    "Palem_1": ("../tilesets_biome/TilesetDesert.png", (160, 160, 192, 192), (10, 6)),
+    "Palem_2": ("../tilesets_biome/TilesetDesert.png", (192, 160, 224, 192), (10, 6)),
+    "Palem_Rumpun_1": ("../tilesets_biome/TilesetDesert.png", (160, 112, 224, 160), (40, 8)),
+    "Palem_Rumpun_2": ("../tilesets_biome/TilesetDesert.png", (160, 64, 224, 112), (40, 8)),
+    "Palem_Kecil": ("../tilesets_biome/TilesetDesert.png", (224, 160, 240, 176), (8, 4)),
+    "Semak_Pantai": ("../tilesets_biome/TilesetDesert.png", (128, 160, 160, 192), (20, 6)),
+    "Lapak_Tenda_Merah": ("../tilesets_biome/TilesetDesert.png", (32, 160, 64, 192), None),
+    "Lapak_Tenda_Kuning": ("../tilesets_biome/TilesetDesert.png", (64, 160, 96, 192), None),
+    "Keranjang_Buah_1": ("../tilesets_biome/TilesetDesert.png", (97, 177, 111, 190), (12, 6)),
+    "Keranjang_Buah_2": ("../tilesets_biome/TilesetDesert.png", (113, 177, 127, 190), (12, 6)),
+    "Kerang_1": ("../tilesets_biome/TilesetDesert.png", (306, 179, 318, 190), (4, 4)),
+    "Kerang_2": ("../tilesets_biome/TilesetDesert.png", (289, 178, 303, 190), (4, 4)),
+    "Menara_Kubah": ("../tilesets_biome/TilesetDesert.png", (49, 0, 95, 80), (40, 24)),
+    "Perahu_Kecil": ("../tilesets_biome/TilesetWater.png", (416, 0, 448, 16), (28, 10)),
 }
 BUILDINGS = {
     "Rumah_Krem": "buildings/house_brown.png", "Rumah_Hijau": "buildings/house_green.png", "Rumah_Kayu": "buildings/house_log.png",
@@ -87,8 +102,8 @@ BUILDINGS = {
 }
 WHOLE = {"Sumur": ("well_stone.png", (26, 12))}
 
-NO_SHADOW = ("Mesa_", "Tangga_Kayu", "Lentera_Tiang", "Lampu_Tiang", "Pagar_Kayu", "Tiang_Pagar", "Spanduk_1", "Spanduk_2", "Spanduk_3", "Kutuk_")   # Kutuk_*: bayangan sudah ada di gambar
-SOLID_BODY = ("Sawmill", "Landasan", "MejaKerja", "Tungku", "Dapur", "Peti", "Barel", "Sumur", "Lapak")
+NO_SHADOW = ("Mesa_", "Tangga_Kayu", "Lentera_Tiang", "Lampu_Tiang", "Pagar_Kayu", "Tiang_Pagar", "Spanduk_1", "Spanduk_2", "Spanduk_3", "Kutuk_", "Kerang_", "Kapal_Layar", "Perahu_Kecil")   # Kutuk_*: bayangan sudah ada di gambar
+SOLID_BODY = ("Sawmill", "Landasan", "MejaKerja", "Tungku", "Dapur", "Peti", "Barel", "Sumur", "Lapak", "Keranjang")
 
 
 def clean_crop(rel, box):
@@ -229,6 +244,13 @@ def composite_sprites():
                 cy = 5 if j == 0 else (7 if j == hf - 1 else 6)
                 im.alpha_composite(rt(cx, cy), (i * 16, (ht + j) * 16))
         out[name] = (im, (w * 16 - 4, (ht + hf) * 16 - 6))
+    # Ch3: kapal layar = lambung (Boat.png) + layar (Sail.png) di lubang tiang, file baru
+    boat = Image.open(os.path.join(ROOT, "assets", "tilesets_biome", "Boat.png")).convert("RGBA")
+    sail = Image.open(os.path.join(ROOT, "assets", "tilesets_biome", "Sail.png")).convert("RGBA")
+    ship = Image.new("RGBA", (boat.width, boat.height + 35), (0, 0, 0, 0))
+    ship.alpha_composite(boat, (0, 35))
+    ship.alpha_composite(sail, (13, 0))
+    out["Kapal_Layar"] = (ship, (boat.width - 6, 20))
     out["Kotak_Rusak"] = (Image.open(os.path.join(FIELDS, "7 Decor", "Box1.png")).convert("RGBA"), (12, 8))
     return out
 

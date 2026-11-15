@@ -1,0 +1,12 @@
+{
+  "lines": [
+    {
+      "speaker": "narator",
+      "text": "Jejak kaki memotong barisan tali antrean. Papan kecil berbunyi: \"MASUK DI BELAKANG, KELUAR DI DEPAN.\""
+    },
+    {
+      "speaker": "raka",
+      "text": "Para penyerobot masuk di tengah barisan. Antrean jadi kacau karena aturan Queue dilanggar."
+    }
+  ]
+}
