@@ -230,7 +230,12 @@ ditutup PERAHU KARAM (`StageBlocker` mode crystal). Musuh: awak bajak laut (Orc)
 `assets/props/buildings/variants/*.png` + `_pintu.json` (geser pintu dari pusat, dipakai pagar & pintu interior) → prefab lewat
 `make_prefabs.py` (Rumah_Menara_*, Rumah_Loteng_*, Rumah_Runcing_*, Rumah_Teras_*, Gudang_Panjang, Pondok_*, Toko_*). Gaya per wilayah:
 Ch1 kayu/hijau (Arman = Rumah_Menara_Hijau), Ch2 papan gelap/coklat, Ch3 krem-bata beratap merah/biru (Kedai Dadang = Rumah_Loteng_Merah).
-Pratinjau: `docs/layout/rumah_varian.png`. Tata letak desa (perempatan) belum diubah.
+Pratinjau: `docs/layout/rumah_varian.png`.
+**Kota Pelabuhan Antre = KOTA TEPI LAUT (keputusan, menggantikan alun-alun perempatan):** pantai di sisi kota diluruskan (x = 106,
+teluk kecil di selatannya); JALAN DERMAGA (x 99-101) di sepanjang pantai dengan dermaga penumpang (loket + tali antrean, Wulan, Nina)
+dan dermaga ikan (Bahar) menjorok ke laut; Jalan Pasar (y 121-123) dari gerbang barat ke jalan dermaga dengan Rumah_Loteng_Biru,
+Toko (Pedagang), Kedai Dadang (Rumah_Menara_Merah); alun-alun pasar + gudang pelabuhan di selatannya; jalan selatan dengan 3 rumah.
+Pratinjau `docs/layout/Ch3_kota_tepilaut*.png`. Desa Ch1/Ch2 masih bertata letak perempatan.
 
 ## 10. Boss (sprite di `boss_preview/`, sudah diperbesar 2×)
 | Boss | Idle (frame) | Serang (frame) | Mati (frame) | Pola serangan |
