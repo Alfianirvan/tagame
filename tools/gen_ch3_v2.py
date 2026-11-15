@@ -59,8 +59,10 @@ EXIT_T = (91, 12)                       # ujung dermaga keluar di teluk utara (e
 ARENA_T = (70, 22)                      # dermaga bajak laut = arena Kapten (boss_arena layout (53,67) dipindah)
 PUZZLE_T = (53, 46)                     # warung pinggir jalan = stasiun antrean (puzzle layout (56,88) dipindah)
 PREBOSS_T = (57, 26)
-PIER_A = (111, 128, C[1] - 2, C[1] + 1)  # dermaga penumpang (x0, x1, y0, y1) tile, inklusif
-PIER_B = (121, 134, 129, 131)           # dermaga ikan
+COAST_X = 106                           # garis pantai kota diluruskan: laut di timur x = 106 (baris 105-148), teluk kecil di selatannya
+PIER_A = (102, 122, 115, 117)           # dermaga penumpang (x0, x1, y0, y1) tile, inklusif, menjorok dari jalan dermaga
+PIER_B = (102, 118, 138, 140)           # dermaga ikan
+DADANG_T = (93.1, 121.4)                # posisi Dadang di depan Kedai (ujung panah jalan pintas)
 PIER_X = (82, 92, 11, 13)               # dermaga keluar (teluk utara)
 DIRS8 = [(0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1)]
 PREFAB_SIZE = {}
@@ -141,7 +143,14 @@ def build():
         xs = np.nonzero(mask[:, ty])[0]
         edge = xs.max() if len(xs) else (84 if ty < 40 else 116)
         sea_img[edge + 1:, ty] = True
-    land = dilate(mask, 2) & ~sea_img
+    # pesisir kota diluruskan (kota tepi laut): pantai lurus di x = COAST_X, lalu teluk kecil melandai ke tanjung mercusuar
+    force_land = np.zeros_like(mask)
+    for ty in range(105, 161):
+        cx_ = COAST_X if ty <= 148 else min(133, COAST_X + (ty - 148) * 2.3)
+        for tx in range(95, W):
+            sea_img[tx, ty] = tx > cx_
+            force_land[tx, ty] = tx <= cx_
+    land = (dilate(mask, 2) | force_land) & ~sea_img
     land |= (dist_to(gx, gy, seg_in[:8]) <= 3.2 * TILE) & ~sea_img
     land |= (np.hypot(gx - P["entry"][0], gy - P["entry"][1]) <= 3.5 * TILE) & ~sea_img
     nz_r = organic.smooth_noise(gx, gy, 19)
@@ -212,18 +221,21 @@ def build():
     # ------------------------------------------------------------ jalan cabang (pasir) di kota & pinggiran
     LIGHT = tpx((110, 174))   # mercusuar (tanjung selatan)
     GROVE = tpx((52, 141))    # kebun kelapa (barat)
-    FISH = tpx((119, 133))    # pasar ikan di pangkal dermaga ikan
-    HARBOR = tpx((106, 121))  # pangkal dermaga penumpang (loket tiket)
-    road_l = winding(tp(0, 14), LIGHT, 34, 41, n=6)
-    road_g = winding(tp(-14, 6), GROVE, 26, 43, n=4)
-    road_f = winding(tp(30, 1), FISH, 16, 45, n=3)
+    FISH = tpx((103.5, 141))  # pasar ikan di pangkal dermaga ikan (sisi laut jalan dermaga)
+    HARBOR = tpx((103, 112))  # loket tiket di pangkal dermaga penumpang
+    road_l = winding(tpx((100, 150)), LIGHT, 20, 41, n=5)
+    road_g = winding(tpx((58, 122)), GROVE, 20, 43, n=4)
+    road_f = organic.polyline_samples([tpx((100, 141)), FISH], 12.0)
+    # jalan kota: Jalan Pasar (barat-timur), jalan gerbang (utara), JALAN DERMAGA di tepi pantai, jalan selatan
+    streets = np.vstack([organic.polyline_samples([tpx(a), tpx(b)], 12.0) for a, b in
+                         (((50, 122), (101, 122)), ((72, 104), (72, 122)), ((100, 106), (100, 150)), ((60, 147), (100, 147)))])
     # pesisir timur = jalan pintas (pasir), dari aula arena turun ke celah perahu karam lalu ke gerbang kota
     short_route = organic.polyline_samples([P["boss_arena"], tpx((74, 36)), tpx((76, 56)), tpx((77.5, 70)), tpx((77.5, 80)),
-                                            tpx((77, 90)), tpx((72, 97)), gate_c, tp(0, 0), tp(-7.5, -1.2)], 12.0)
-    roads = np.vstack([route, road_l, road_g, road_f, short_route[:-3]])
+                                            tpx((77, 90)), tpx((72, 97)), gate_c, tp(0, 0), tpx(DADANG_T)], 12.0)
+    roads = np.vstack([route, road_l, road_g, road_f, streets, short_route[:-3]])
     vd = dist_to(vx, vy, roads)
     sand_v = beach_v | (vd <= 26 + 6 * vn)
-    pads = [(tp(0, 0), 150), (HARBOR, 90), (FISH, 70), (LIGHT, 80), (GROVE, 50), (P["puzzle"], 70), (P["bonfire_preboss"], 46),
+    pads = [(tpx((79.5, 129)), 120), (HARBOR, 70), (FISH, 50), (LIGHT, 80), (GROVE, 50), (P["puzzle"], 70), (P["bonfire_preboss"], 46),
             (P["boss_arena"], 150), (P["entry"], 44), (tpx((PIER_X[0] - 2, 12)), 50)]
     for (px_, py_), rr in pads:
         sand_v |= np.hypot(vx - px_, vy - py_) <= rr + 10 * vn
@@ -233,11 +245,13 @@ def build():
     # ------------------------------------------------------------ peta tile
     stone = [(6, 10), (7, 10), (8, 10)]
     in_stone = np.zeros_like(mask)
-    in_stone[C[0] - 6:C[0] + 6, C[1] - 6:C[1] + 6] = True                  # alun-alun 12x12
-    in_stone[C[0] - 1:C[0] + 2, C[1] - 18:C[1] + 14] = True                # jalan utara-selatan
-    in_stone[C[0] - 26:C[0] + 1, C[1] - 1:C[1] + 2] = True                 # jalan barat
-    in_stone[C[0]:111, C[1] - 1:C[1] + 2] = True                           # jalan ke dermaga
-    in_stone[102:111, C[1] - 4:C[1] + 5] = True                            # lapangan pangkal dermaga
+    in_stone[50:102, 121:124] = True       # Jalan Pasar (barat-timur, dari jalan masuk barat ke jalan dermaga)
+    in_stone[71:74, 103:124] = True        # jalan gerbang (ke celah punggung tebing utara)
+    in_stone[99:102, 106:151] = True       # JALAN DERMAGA di sepanjang pantai
+    in_stone[60:102, 146:149] = True       # jalan selatan (deretan rumah nelayan)
+    in_stone[74:86, 125:134] = True        # alun-alun pasar (sumur, lapak)
+    in_stone[102:105, 114:119] = True      # pangkal dermaga penumpang
+    in_stone[102:105, 137:142] = True      # pangkal dermaga ikan
     deck = (np.abs(tcol - ARENA_T[0]) <= 9) & (np.abs(trow - ARENA_T[1]) <= 6) & land & ~face_m
     ground, stonec, cliffc, dockc, blockc = [], [], [], [], []
     for tx in range(W):
@@ -344,34 +358,39 @@ def build():
                 return True
         return False
 
-    # ------------------------------------------------------------ KOTA PELABUHAN ANTRE (blueprint)
-    prefab("Sumur", "Sumur", tp(0, 1))
-    houses = {"KedaiDadang": ("Rumah_Loteng_Merah", (-11.5, -3.5)), "RumahWulan": ("Rumah_Runcing_Biru", (11.5, -3.5)),
-              "RumahWarga": ("Rumah_Loteng_Biru", (-11.5, 12.5)), "RumahBahar": ("Rumah_Teras_Biru", (13.8, 12.5))}
+    # ------------------------------------------------------------ KOTA PELABUHAN ANTRE (kota tepi laut)
+    # Jalan Pasar (y 121-123) dari gerbang barat ke JALAN DERMAGA (x 99-101) di tepi pantai; dermaga penumpang & dermaga ikan
+    # menjorok ke laut dari jalan dermaga. Deretan rumah menghadap jalan (pintu di selatan), alun-alun pasar di selatan Jalan Pasar,
+    # gudang pelabuhan di antara alun-alun & jalan dermaga, jalan selatan dengan rumah nelayan.
+    def at(x, y):
+        """Titik (px) pada tile absolut (x, y), pecahan boleh."""
+        return (round(x * TILE + 8), round(y * TILE + 8))
+
+    houses = {"RumahWarga": ("Rumah_Loteng_Biru", (-10, -2.5)), "TokoPelabuhan": ("Toko_Merah", (7.5, -2.5)),
+              "KedaiDadang": ("Rumah_Menara_Merah", (19, -2.5)), "RumahWulan": ("Rumah_Runcing_Biru", (-8, 10)),
+              "RumahBahar": ("Rumah_Teras_Biru", (18, 22.5)), "RumahNelayan": ("Rumah_Runcing_Merah", (4, 22.5)),
+              "RumahPelaut": ("Toko_Hijau", (-9, 22.5))}
     for name, (pref, (dx, dy)) in houses.items():
         prefab(name, pref, tp(dx, dy))
-    # halaman kedai: tong minuman, peti, meja masak luar
-    prefab("KedaiTong1", "Barel_Besar", tp(-17.2, -2.6))
-    prefab("KedaiTong2", "Barel_Air", tp(-18.3, -1.2))
-    prefab("KedaiPeti", "Peti_Kayu_B", tp(-5.8, -2.4))
-    prefab("KedaiPanggangan", "Dapur_Panggangan_Kecil", tp(-19.5, 3.6))
-    # alun-alun: lampu, pasar tenda, perabot
-    for i, (dx, dy) in enumerate(((-7.2, -6.8), (7.2, -6.8), (-7.2, 7.2), (7.2, 7.2), (2.6, -13), (-2.6, 12.5))):
-        prefab(f"Lampu{i}", "Lampu_Tiang", tp(dx, dy))
-    prefab("LapakTendaMerah", "Lapak_Tenda_Merah", tp(-4.2, -3.6))
-    prefab("LapakTendaKuning", "Lapak_Tenda_Kuning", tp(4.2, -3.6))
-    prefab("LapakIkan", "Lapak_Kain", tp(-8.8, 4.2))
-    prefab("LapakSayur", "Lapak_Sayur", tp(8.8, 4.2))
-    prefab("AlunKeranjang1", "Keranjang_Buah_1", tp(-4.4, 5.2))
-    prefab("AlunKeranjang2", "Keranjang_Buah_2", tp(4.5, 5.2))
-    for i, (dx, dy, k) in enumerate(((-5.6, -6.6, 1), (5.6, -6.6, 2), (-5.6, 5.4, 3), (5.6, 5.4, 1))):
-        prefab(f"Spanduk{i}", f"Spanduk_{k}", tp(dx, dy), solid=False)
-    # pagar pekarangan depan rumah (bukan kedai: halaman kedai terbuka)
+    prefab("GudangPelabuhan", "Gudang_Panjang", tp(20.5, 11))
+    # alun-alun pasar: sumur, lapak tenda, keranjang, lampu, spanduk
+    prefab("Sumur", "Sumur", at(79.5, 129))
+    for nm, pref, (x, y) in (("LapakTendaMerah", "Lapak_Tenda_Merah", (75.8, 126.8)), ("LapakTendaKuning", "Lapak_Tenda_Kuning", (83.2, 126.8)),
+                             ("LapakIkan", "Lapak_Kain", (75.8, 131.8)), ("LapakSayur", "Lapak_Sayur", (83.2, 131.8)),
+                             ("AlunKeranjang1", "Keranjang_Buah_1", (77.6, 133.0)), ("AlunKeranjang2", "Keranjang_Buah_2", (81.4, 133.0))):
+        prefab(nm, pref, at(x, y))
+    for i, (x, y) in enumerate(((73.4, 124.6), (85.6, 124.6), (73.4, 134.2), (85.0, 134.6), (69.6, 112.0),
+                                (102.4, 110.0), (102.4, 124.0), (102.4, 132.0), (102.4, 146.0))):
+        prefab(f"Lampu{i}", "Lampu_Tiang", at(x, y))
+    for i, (x, y, k) in enumerate(((74.6, 124.8, 1), (84.6, 124.8, 2))):
+        prefab(f"Spanduk{i}", f"Spanduk_{k}", at(x, y), solid=False)
+    prefab("KedaiTong1", "Barel_Besar", at(98.0, 117.4))
+    # pagar pekarangan rumah warga (kedai & toko terbuka)
     fence_w = PREFAB_SIZE["Pagar_Kayu"][0]
     for name, (pref, (dx, dy)) in houses.items():
-        if name == "KedaiDadang":
+        if name in ("KedaiDadang", "TokoPelabuhan"):
             continue
-        fy = dy + (1.2 if dy < 0 else 1.7)
+        fy = dy + 1.1
         hw = PREFAB_SIZE[pref][0] / (2 * TILE) + 0.2          # pagar selebar rumah
         ddx = dx + DOOR_DX.get(pref, 0) / TILE                 # celah pagar di depan pintu
         left, right, gap = dx - hw, dx + hw, 1.7
@@ -384,22 +403,21 @@ def build():
                 n += 1
         prefab(f"Tiang_{name}_L", "Tiang_Pagar", (round(CX + left * TILE), round(CY + fy * TILE)), solid=False)
         prefab(f"Tiang_{name}_R", "Tiang_Pagar", (round(CX + right * TILE), round(CY + fy * TILE)), solid=False)
-    prefab("PapanBarat", "Papan_Kiri", tp(-24.6, -2.8), solid=False)
-    prefab("PapanTimur", "Papan_Kanan", tp(24.6, -2.8), solid=False)
-    prefab("PapanUtara", "Papan_Tiang", tp(-2.8, -14.2), solid=False)
-    prefab("PapanSelatan", "Papan_Tiang", tp(2.8, 14.6), solid=False)
-    for i, (dx, dy) in enumerate(((-20.0, 2.6), (16.0, 2.6), (-2.4, -10.0), (2.4, 10.4))):
-        prefab(f"Lentera{i}", "Lentera_Tiang", tp(dx, dy), solid=False)
+    prefab("PapanBarat", "Papan_Kiri", at(47.4, 119.2), solid=False)
+    prefab("PapanTimur", "Papan_Kanan", at(98.2, 120.4), solid=False)
+    prefab("PapanUtara", "Papan_Tiang", at(69.2, 107.8), solid=False)
+    prefab("PapanSelatan", "Papan_Tiang", at(70.4, 144.8), solid=False)
+    for i, (x, y) in enumerate(((52.0, 124.6), (70.0, 124.6), (69.6, 118.0), (73.0, 135.4))):
+        prefab(f"Lentera{i}", "Lentera_Tiang", at(x, y), solid=False)
 
-    # ---- pelabuhan: gudang, loket tiket, tali antrean, peti kargo, kapal layar & perahu
+    # ---- pelabuhan: loket tiket & tali antrean di pangkal dermaga penumpang, peti kargo, kapal layar & perahu
     hx, hy = HARBOR
-    prefab("GudangPelabuhan", "Gudang_Panjang", (hx - 120, hy - 54))
-    prefab("LoketTiket", "Lapak_Tenda_Kuning", (hx + 6, hy - 30))
-    for k in range(6):   # tiang tali antrean (barisan penumpang menuju loket)
-        prefab(f"TaliAntrean{k}", "Tiang_Pagar", (hx - 8 - k * 26, hy + 70), solid=False)
-    for k, (pref, (ox, oy)) in enumerate((("Peti_Tumpuk_2", (-30, -40)), ("Peti_Tumpuk_1", (44, -44)), ("Peti_Tong", (52, 54)),
-                                          ("Barel_Besar", (-40, 66)), ("Peti_Kayu_A", (30, 64)), ("Tong_Peti", (-150, 6)))):
-        prefab(f"Kargo{k}", pref, (hx + ox, hy + oy))
+    prefab("LoketTiket", "Lapak_Tenda_Kuning", at(103.6, 112.4))
+    for k in range(4):   # tiang tali antrean (barisan penumpang menuju loket)
+        prefab(f"TaliAntrean{k}", "Tiang_Pagar", at(105.3, 106.8 + k * 1.4), solid=False)
+    for k, (pref, (x, y)) in enumerate((("Peti_Tumpuk_2", (102.6, 120.2)), ("Peti_Tumpuk_1", (105.0, 120.6)), ("Peti_Tong", (103.4, 122.6)),
+                                        ("Peti_Kayu_A", (105.2, 123.4)), ("Tong_Peti", (102.8, 127.6)), ("Barel_Besar", (105.0, 128.4)))):
+        prefab(f"Kargo{k}", pref, at(x, y))
     def on_water(pref, target):
         """Titik kaki terdekat dari target (tile) yang seluruh tapak sprite-nya di atas air terbuka (bukan dermaga)."""
         w, h = PREFAB_SIZE[pref]
@@ -427,9 +445,9 @@ def build():
         else:
             print("PERINGATAN: tidak ada air untuk", nm)
     fxp, fyp = FISH
-    for k, (pref, (ox, oy)) in enumerate((("Lapak_Tenda_Merah", (-40, -26)), ("Barel_Air", (-70, -10)), ("Keranjang_Buah_1", (-18, 30)),
-                                          ("Peti_Kayu_A", (-62, 30)), ("Tong_Peti", (10, -40)))):
-        prefab(f"PasarIkan{k}", pref, (fxp + ox, fyp + oy))
+    for k, (pref, (x, y)) in enumerate((("Lapak_Tenda_Merah", (104.2, 136.4)), ("Barel_Air", (102.4, 135.8)),
+                                        ("Keranjang_Buah_1", (104.8, 143.6)), ("Peti_Kayu_A", (102.6, 144.0)))):
+        prefab(f"PasarIkan{k}", pref, at(x, y))
 
     # ---- pinggiran 1: MERCUSUAR (tanjung selatan)
     lx, ly = LIGHT
@@ -456,20 +474,21 @@ def build():
 
     dadang_pos = (door_x + 40, door_y + 22)
     npc("Dadang", dadang_pos, npc_id='"dadang"')
-    npc("Wulan", (hx + 6, hy - 4), npc_id='"wulan"', dialog_id='"ch3_wulan"', villager_chapter="3")
-    npc("Nina", (hx - 70, hy + 46), npc_id='"nina"', dialog_id='"ch3_nina"', villager_chapter="3")
-    npc("Bahar", (fxp + 10, fyp + 12), npc_id='"bahar"', dialog_id='"ch3_bahar"', villager_chapter="3")
-    npc("Pedagang", tp(8.8, 7.0), npc_id='"pedagang"', opens_shop="true")
+    wulan_pos, nina_pos, bahar_pos = at(103.6, 113.8), at(104.4, 108.6), at(104.0, 141.8)
+    npc("Wulan", wulan_pos, npc_id='"wulan"', dialog_id='"ch3_wulan"', villager_chapter="3")
+    npc("Nina", nina_pos, npc_id='"nina"', dialog_id='"ch3_nina"', villager_chapter="3")
+    npc("Bahar", bahar_pos, npc_id='"bahar"', dialog_id='"ch3_bahar"', villager_chapter="3")
+    npc("Pedagang", at(78.0, 120.3), npc_id='"pedagang"', opens_shop="true")
     sc.node("PintuKedai", "Area2D", "Objects", position=v2(door_x, door_y + 14), script=f'ExtResource("{door_script}")',
             interior_scene='"res://scenes/world/Interior_KedaiDadang.tscn"', hint_text='"E: Masuk Kedai Dadang"')
     sc.node("CollisionShape2D", "CollisionShape2D", "Objects/PintuKedai", shape=f'SubResource("{sc.rect_shape(46, 26)}")')
 
     start = tuple(int(v) for v in route[6])
-    bf1 = tp(-5, 8.5)
+    bf1 = at(71.0, 129.5)
     inst("Bonfire1", bonfire_scene, bf1)
     inst("BenderaMasuk", checkpoint_scene, (int(route[14][0]), int(route[14][1]) + 36))
     inst("BenderaGerbang", checkpoint_scene, tp(4.2, -14.5))
-    inst("BenderaDermaga", checkpoint_scene, (hx - 40, hy - 20))
+    inst("BenderaDermaga", checkpoint_scene, at(102.6, 107.0))
     inst("PetiMercusuar", chest_scene, (lx - 80, ly - 50), roll_count="2")
     inst("PetiKebun", chest_scene, (gx0 + 10, gy0 - 60), roll_count="2")
     clue_pts = [(lx - 28, ly + 8), ((bx1 - 1) * TILE + 8, (by0 + 1) * TILE + 8), (gx0, gy0 + 18)]
@@ -561,7 +580,7 @@ def build():
         tx_, ty_ = int(x // TILE), int(y // TILE)
         return float(d_route[tx_, ty_]) if 0 <= tx_ < W and 0 <= ty_ < H else 0.0
 
-    village_zone = np.hypot((gx - CX - 6 * TILE) / (40 * TILE), (gy - (CY + 2 * TILE)) / (21 * TILE)) < 1.0
+    village_zone = (tcol >= 47) & (tcol <= COAST_X + 1) & (trow >= 104) & (trow <= 151)     # kota: bebas dekorasi acak
     keypts = [P[k] for k in ("entry", "puzzle", "bonfire_preboss", "boss_arena", "exit")] + [bf1, bf_pre, start, LIGHT, GROVE, FISH, HARBOR] \
         + npc_positions
     no_deco = dilate(dock | band | plug | blk["barricade"] | blk["wreck"] | deck, 3) \
@@ -579,6 +598,88 @@ def build():
         if any(math.hypot(x - kx, y - ky) < 90 for kx, ky in keypts):
             return False
         return not near_building(x, y, 18)
+
+    # ------------------------------------------------------------ DAERAH BARAT (tonjolan barat, jalan sempit selatan, koridor barat):
+    # landmark kecil supaya perjalanan tidak kosong + dekorasi rapat. Titik dicari dekat target (spiral 80 px), tapak di daratan bebas.
+    def fits_lm(pref, x, y, road_min):
+        w, h = PREFAB_SIZE[pref]
+        for ox, oy in ((-w / 2, 0), (w / 2, 0), (-w / 2, -h * 0.7), (w / 2, -h * 0.7), (0, 4), (0, -h / 2)):
+            tx_, ty_ = int((x + ox) // TILE), int((y + oy) // TILE)
+            if not (0 <= tx_ < W and 0 <= ty_ < H) or not corridor[tx_, ty_] or village_zone[tx_, ty_] or no_deco[tx_, ty_]:
+                return False
+        return road_dist(x, y) >= road_min + w / 2 and not near_building(x, y, 4) \
+            and all(math.hypot(x - kx, y - ky) >= 44 for kx, ky in keypts)
+
+    def lm(name, pref, tile, solid=True, road_min=14):
+        bx_, by_ = at(*tile)
+        for r in [0] + list(range(8, 81, 8)):
+            for a_ in range(0, 360, 30):
+                x, y = round(bx_ + math.cos(math.radians(a_)) * r), round(by_ + math.sin(math.radians(a_)) * r)
+                if fits_lm(pref, x, y, road_min):
+                    prefab(name, pref, (x, y), solid=solid)
+                    if not solid:
+                        buildings.append((x, y, PREFAB_SIZE[pref][0], 10))
+                    return (x, y)
+        return None
+
+    n_lm = 0
+    landmarks = {
+        # kemah bajak laut di tonjolan barat (kelompok Lobus1 berjaga di dekatnya)
+        "KemahBajak": [("Tenda_1", (5.5, 86.5)), ("Tenda_3", (10.5, 85.6)), ("Peti_Tumpuk_2", (3.6, 90.4)), ("Tong_Peti", (11.8, 90.6)),
+                       ("Barel_Besar", (4.0, 93.2)), ("Peti_Kayu_B", (8.8, 93.6)), ("Tumpukan_Kayu", (13.6, 88.2))],
+        # reruntuhan pos jaga di ujung barat laut tonjolan
+        "PosJaga": [("Ruina_3", (6.0, 79.5)), ("Puing_Pilar", (10.4, 78.6)), ("Puing_Batu", (2.8, 80.8)), ("Batu_Besar_1", (13.2, 80.2))],
+        # reruntuhan rumah & sumur tua di bagian lebar koridor barat (sisi timur jalan)
+        "RumahTua": [("Ruina_4", (60.5, 69.5)), ("Puing_Kayu", (57.6, 72.6)), ("Ruina_2", (61.0, 63.0)), ("Kotak_Rusak", (58.4, 66.2))],
+        # kemah penebang di sisi barat koridor
+        "KemahPenebang": [("Tunggul_Kapak", (44.2, 69.0)), ("Tronk_Kayu", (46.0, 72.6)), ("Tumpukan_Kayu", (42.6, 73.8)),
+                          ("Tunggul_Besar", (43.6, 65.4)), ("Tenda_2", (47.0, 63.4))],
+        # gerobak rusak & tumpukan barang di jalan sempit selatan (di tepi, tidak menutup jalan)
+        "Gerobak": [("Kotak_Rusak", (31.0, 96.2)), ("Barel_Air", (33.2, 96.4)), ("Peti_Kayu_A", (35.0, 96.0)),
+                    ("Tunggul_Besar", (52.0, 92.2)), ("Batu_Besar_2", (14.6, 95.6))],
+    }
+    for grp, items in landmarks.items():
+        for k, (pref, tile) in enumerate(items):
+            if lm(f"{grp}{k}", pref, tile, solid=not pref.startswith(("Puing_Batu", "Kotak_Rusak"))):
+                n_lm += 1
+    for nm_f, tile, w_ in (("ApiKemahBajak", (8.0, 89.4), 20), ("ApiKemahPenebang", (45.6, 68.0), 20)):
+        q_ = lm(f"Tripod{nm_f}", "Dapur_Tripod", tile, road_min=10)
+        if q_:
+            sc.node(nm_f, "Node2D", "Objects", script=f'ExtResource("{animprop_script}")', strip=f'ExtResource("{flam_arena}")',
+                    position=v2(q_[0], q_[1] - 2), frame_w="20", frame_h="30", fps="9.0", modulate="Color(1, 1, 1, 0.9)")
+    # lentera & papan di tepi jalan daerah barat (tiap ~14 tile)
+    west = [(x, y) for x, y in route if x < 70 * TILE and 36 * TILE < y < 99 * TILE]
+    for k in range(0, len(west), 19):
+        x, y = west[k]
+        for side in (1, -1):
+            if lm(f"LenteraBarat{k}", "Lentera_Tiang", (x / TILE - 0.5 + side * 1.6, y / TILE - 0.5), solid=False, road_min=-6):
+                break
+    lm("PapanLobus", "Papan_Kiri", (22.0, 80.0), solid=False, road_min=-4)
+    lm("PapanKoridor", "Papan_Tiang", (47.5, 78.6), solid=False, road_min=-4)
+    # vegetasi rapat daerah barat: rumpun palem + semak/batu kecil (jarak antar-rumpun lebih rapat dari dekorasi umum)
+    west_big = ["Palem_Rumpun_1", "Palem_Rumpun_2", "Palem_1", "Palem_2", "Semak_Pantai"]
+    west_small = ["Semak_Pantai", "Palem_Kecil", "Batu_Sedang_1", "Batu_Sedang_2", "Palem_Kecil", "Batu_Besar_2"]
+    wcl = []
+    for _try in range(6000):
+        if len(wcl) >= 70:
+            break
+        x, y = rng.randint(24, 72 * TILE), rng.randint(28 * TILE, 99 * TILE)
+        if any(math.hypot(x - cx2, y - cy2) < 96 for cx2, cy2 in wcl):
+            continue
+        pref = rng.choice(west_big)
+        if not fits_lm(pref, x, y, 22):
+            continue
+        wcl.append((x, y))
+        prefab(f"Barat{n_lm}", pref, (x, y))
+        n_lm += 1
+        for _k in range(rng.randint(1, 3)):
+            p3 = rng.choice(west_small)
+            ang = rng.random() * math.tau
+            x3, y3 = round(x + math.cos(ang) * rng.randint(30, 64)), round(y + math.sin(ang) * rng.randint(18, 40))
+            if fits_lm(p3, x3, y3, 12):
+                prefab(f"Barat{n_lm}", p3, (x3, y3), solid=not p3.startswith(("Palem_Kecil", "Batu_Sedang")))
+                n_lm += 1
+    print("daerah barat: landmark + dekorasi", n_lm)
 
     big = ["Palem_Rumpun_1", "Palem_Rumpun_2", "Palem_Rumpun_1", "Palem_1", "Palem_2"]
     small = ["Palem_1", "Palem_2", "Semak_Pantai", "Batu_Sedang_1", "Batu_Besar_2", "Palem_Kecil"]
@@ -613,9 +714,9 @@ def build():
         buildings.append((x, y, 16, 12))
 
     # hewan kota (ayam, anjing, kucing)
-    animals = [("Chicken/SpriteSheetWhite", tp(-8.0, 15.6)), ("Chicken/SpriteSheetBrown", tp(-14.0, 15.2)),
-               ("Chicken/SpriteSheetWhite", tp(14.5, -9.8)), ("Dog/SpriteSheet", tp(3.8, -9.6)), ("Cat/SpriteSheet", tp(-15.5, -0.6)),
-               ("Cat/SpriteSheet", (hx - 60, hy - 10))]
+    animals = [("Chicken/SpriteSheetWhite", at(70.5, 138.0)), ("Chicken/SpriteSheetBrown", at(68.0, 140.5)),
+               ("Chicken/SpriteSheetWhite", at(56.0, 126.5)), ("Dog/SpriteSheet", at(70.0, 115.0)), ("Cat/SpriteSheet", at(56.5, 121.4)),
+               ("Cat/SpriteSheet", at(99.2, 111.4))]
     na = 0
     for sheet_, pos in animals:
         tex_path = os.path.join(ROOT, "assets/ninja/animals", sheet_ + ".png")
@@ -635,7 +736,7 @@ def build():
     nl = 0
     for nm, (bx_, by_) in (("Herb", (GROVE[0] - 40, GROVE[1] + 50)), ("Herb", (GROVE[0] + 56, GROVE[1] - 10)),
                            ("GoldCoin", (LIGHT[0] + 30, LIGHT[1] - 40)), ("GoldCoin", (FISH[0] - 30, FISH[1] + 60)),
-                           ("Herb", (LIGHT[0] - 90, LIGHT[1] + 10)), ("Potion", (hx - 60, hy - 60))):
+                           ("Herb", (LIGHT[0] - 90, LIGHT[1] + 10)), ("Potion", at(98.0, 108.5))):
         tx_, ty_ = int(bx_ // TILE), int(by_ // TILE)
         if corridor[tx_, ty_] and not near_building(bx_, by_, 6):
             nl += 1
@@ -749,7 +850,7 @@ def build():
     r_all = reach(plug | wreck_block)
     r_short = reach(bar_block | plug)
     clue_ok = all(r_gate[int(px_ // TILE), int(py_ // TILE)] for px_, py_ in clue_pts)
-    npc_ok = all(r_gate[int(px_ // TILE), int(py_ // TILE)] for px_, py_ in (dadang_pos, (hx + 6, hy - 4), (hx - 70, hy + 46), (fxp + 10, fyp + 12)))
+    npc_ok = all(r_gate[int(px_ // TILE), int(py_ // TILE)] for px_, py_ in (dadang_pos, wulan_pos, nina_pos, bahar_pos))
     print("start di daratan =", bool(walk[int(start[0] // TILE), int(start[1] // TILE)]),
           "| kota, 4 NPC & 3 petunjuk terjangkau saat gerbang tertutup =", bool(r_gate[C]) and clue_ok and npc_ok)
     print("gerbang kota mengunci puzzle =", not r_gate[t_["puzzle"]], "| puzzle terjangkau saat terbuka =", bool(r_open[t_["puzzle"]]))
