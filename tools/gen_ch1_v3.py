@@ -513,10 +513,10 @@ def build():
     sc.node("Desa2Pulih", "Node", ".", script=f'ExtResource("{tint_script}")', flag='"ch1_sumur_murni"',
             target_names=f"PackedStringArray({tint_targets})")
 
-    prefab("D3Ruina1", "Ruina_1", d3(-9.5, -5.5))
-    prefab("D3Ruina2", "Ruina_3", d3(9.5, -6.5))
-    prefab("D3Ruina3", "Ruina_4", d3(-11.5, 7.0))
-    prefab("D3Ruina4", "Ruina_5", d3(12.0, 7.5))
+    # rumah Desa 3 = prefab rumah yang sama dengan desa lain (api & asap di atap = bekas serangan)
+    for nm, pref, (dx, dy) in (("D3Rumah1", "Rumah_Papan", (-10.0, -4.0)), ("D3Rumah2", "Rumah_Kayu", (10.0, -4.0)),
+                               ("D3Rumah3", "Rumah_Krem", (-11.0, 10.0)), ("D3Rumah4", "Rumah_Hijau", (11.5, 10.0))):
+        prefab(nm, pref, d3(dx, dy))
     prefab("D3Tenda1", "Tenda_1", d3(-5.0, 11.2))
     prefab("D3Tenda2", "Tenda_3", d3(5.2, 11.6))
     prefab("D3Tenda3", "Tenda_2", d3(0.4, 14.0))
@@ -526,21 +526,21 @@ def build():
         prefab(nm, pref, d3(dx, dy), solid=False)
     flam_tex = sc.ext_res("Texture2D", "res://assets/ninja/fx/Flam/Flam.png")
     smoke_tex = sc.ext_res("Texture2D", "res://assets/ninja/fx/Smoke/Smoke/SpriteSheet.png")
-    for i, (dx, dy) in enumerate(((-7.0, -3.2), (7.4, -3.4), (-12.5, 3.2), (14.2, 3.4), (0.5, -7.4))):
+    for i, (dx, dy) in enumerate(((-11.6, -8.6), (8.4, -9.0), (-9.6, 5.6), (13.0, 5.2), (0.5, -7.4))):
         fp = d3(dx, dy)
         sc.node(f"D3Api{i}", "Node2D", "Objects", script=f'ExtResource("{animprop_script}")', strip=f'ExtResource("{flam_tex}")',
-                position=v2(*fp), frame_w="20", frame_h="30", fps="9.0")
+                position=v2(*fp), frame_w="20", frame_h="30", fps="9.0", z_index="5" if i < 4 else "0")
         sc.node(f"D3Asap{i}", "Node2D", "Objects", script=f'ExtResource("{animprop_script}")', strip=f'ExtResource("{smoke_tex}")',
                 position=v2(fp[0], fp[1] - 22), frame_w="32", frame_h="32", fps="5.0", z_index="6", modulate="Color(0.7, 0.7, 0.7, 0.8)")
     inst("BonfireDesa3", bonfire_scene, d3(0.2, 9.0))
-    inst("BenderaDesa3", checkpoint_scene, d3(14.5, 6.0))
-    inst("PetiDesa3", chest_scene, d3(-15.0, -7.5), roll_count="2")
+    inst("BenderaDesa3", checkpoint_scene, d3(17.5, 5.0))
+    inst("PetiDesa3", chest_scene, d3(-17.0, -6.0), roll_count="2")
     prefab("D3PapanMasuk", "Papan_Kiri", d3(16.4, 0.4), solid=False)
     surv = [("Rani", d3(-3.0, 8.4)), ("Darso", d3(3.4, 8.8)), ("Tami", d3(-5.5, -1.6))]
     for nm, pos in surv:
         inst(nm, npc_scene, pos, npc_id=f'"{nm.lower()}"', dialog_id=f'"ch1_{nm.lower()}"', villager_chapter="101")
         npc_positions.append((nm, pos))
-    npc_positions += [("Bf2", d2(-2.5, 7.8)), ("Bf3", d3(0.2, 9.0)), ("Fl2", d2(-14.5, 5.2)), ("Fl3", d3(14.5, 6.0))]
+    npc_positions += [("Bf2", d2(-2.5, 7.8)), ("Bf3", d3(0.2, 9.0)), ("Fl2", d2(-14.5, 5.2)), ("Fl3", d3(17.5, 5.0))]
 
     # ------------------------------------------------------------ ARENA GOLEM: tanah terkutuk, obor segel, bendera, Skeleton
     def land_ok_px(x_, y_):
@@ -595,14 +595,14 @@ def build():
     sc.node("D4KutukTanah", "Sprite2D", "Decor", texture=f'ExtResource("{d4tex}")', position=v2(*d4(0, 0)))
     prefab("D4Altar", "Altar_Segel", d4(0, 0.5))
     sc.node("AltarSegel", "Area2D", "Objects", script=f'ExtResource("{altar_script}")', position=v2(*d4(0, 0.5)))
-    for nm, pref, (dx, dy) in (("D4Ruina1", "Ruina_2", (-6.0, -3.2)), ("D4Ruina2", "Ruina_1", (5.6, -3.6)),
-                               ("D4Ruina3", "Ruina_3", (-6.4, 4.2)), ("D4Pilar1", "Pilar_Lumut", (-2.4, -2.0)),
-                               ("D4Pilar2", "Pilar_Lumut", (2.4, -2.0)), ("D4Pilar3", "Pilar_Lumut", (6.0, 3.6))):
+    # rumah Desa 4 = prefab rumah yang sama dengan desa lain, mengapit altar di dalam kubah segel
+    for nm, pref, (dx, dy) in (("D4Rumah1", "Rumah_Kayu", (-5.6, -1.4)), ("D4Rumah2", "Rumah_Papan", (5.6, -1.4)),
+                               ("D4Pilar1", "Pilar_Lumut", (-6.4, 4.0)), ("D4Pilar3", "Pilar_Lumut", (6.0, 3.6))):
         prefab(nm, pref, d4(dx, dy))
     for k_, (pref, (dx, dy)) in enumerate((("Kutuk_Reruntuhan_1", (3.6, 4.6)), ("Kutuk_Reruntuhan_2", (-3.4, 5.0)),
                                            ("Kutuk_TanamanMata_1", (-7.6, 0.6)), ("Kutuk_BanyakMata", (7.4, 0.2)),
                                            ("Kutuk_Tulang_1", (-1.8, 3.0)), ("Kutuk_Tulang_3", (2.0, 2.8)),
-                                           ("Kutuk_BatuMata", (0.4, -4.6)), ("Kutuk_Tentakel", (-4.6, -0.6)))):
+                                           ("Kutuk_BatuMata", (0.4, -4.6)), ("Kutuk_Tentakel", (-3.6, 2.4)))):
         prefab(f"D4Kutuk{k_}", pref, d4(dx, dy), solid=False)
     inst("Tetua", npc_scene, d4(2.6, 1.6), npc_id='"tetua"', hidden_until_flag='"ch1_segel_pudar"')
     sc.node("KubahSegel", "Node2D", ".", script=f'ExtResource("{dome_script}")', position=v2(*d4(0, 0)),
