@@ -1,4 +1,4 @@
-"""Membuat interior rumah: Rumah Arman (Ch1) dan Rumah Mandor (Ch2, Kampung Tumpuk).
+"""Membuat interior: Rumah Arman (Ch1), Rumah Mandor (Ch2, Kampung Tumpuk), Kedai Dadang (Ch3, Kota Pelabuhan Antre).
 Tiap rumah: assets/props/buildings/Interior/room_<id>.png + scenes/world/Interior_<Nama>.tscn.
 
 Ruangan 288x192 dari Interior_Walls_01 (lantai & dinding log) dan Interior_Props_01 (kasur, meja, jendela, kompor, tanaman).
@@ -20,7 +20,7 @@ WALLS = Image.open(os.path.join(INT, "Interior_Walls_01.png")).convert("RGBA")
 PROPS = Image.open(os.path.join(INT, "Interior_Props_01.png")).convert("RGBA")
 
 # (kotak sheet, posisi kaki x, y, kotak tabrakan (w, h) atau None)
-ITEMS = [
+HOUSE_ITEMS = [
     ((0, 288, 31, 346), (14, 112), None),            # kasur
     ((0, 288, 31, 346), (56, 112), None),            # kasur ke-2
     ((80, 8, 113, 42), (216, 126), (30, 14)),        # meja bulat
@@ -28,6 +28,21 @@ ITEMS = [
     ((116, 0, 145, 62), (252, 70), (28, 18)),        # kompor
     ((0, 352, 80, 384), (30, 186), None),            # tanaman
 ]
+# Kedai Dadang (Ch3): meja bar panjang, tungku bata, meja bundar pelanggan, tong minuman, tanaman
+TAVERN_ITEMS = [
+    ((112, 224, 208, 258), (144, 78), (96, 26)),     # meja bar (konter)
+    ((384, 64, 432, 142), (256, 74), (46, 26)),      # tungku bata dapur
+    ((224, 118, 241, 140), (22, 66), (16, 12)),      # tong
+    ((224, 118, 241, 140), (40, 66), (16, 12)),      # tong
+    ((224, 118, 241, 140), (31, 80), (16, 12)),      # tong
+    ((80, 8, 113, 42), (60, 132), (30, 14)),         # meja bundar
+    ((80, 8, 113, 42), (228, 134), (30, 14)),        # meja bundar
+    ((80, 8, 113, 42), (92, 168), (30, 14)),         # meja bundar
+    ((68, 176, 91, 198), (196, 38), None),           # jendela
+    ((68, 176, 91, 198), (96, 38), None),            # jendela
+    ((0, 352, 80, 384), (258, 186), None),           # tanaman
+]
+ROOMS = {"arman": HOUSE_ITEMS, "mandor": HOUSE_ITEMS, "dadang": TAVERN_ITEMS}
 
 
 def trim(box, sheet=PROPS):
@@ -47,7 +62,7 @@ def build_room(room_id):
         room.alpha_composite(wall, (x, 16))
         room.alpha_composite(WALLS.crop((32, 96, 64, 112)), (x, 0))
     colliders = []
-    for box, (fx, fy), col in ITEMS:
+    for box, (fx, fy), col in ROOMS[room_id]:
         im, _ = trim(box)
         room.alpha_composite(im, (fx - im.width // 2 if box[1] != 288 else fx, fy - im.height))
         if col:
@@ -78,7 +93,8 @@ def build_scene(colliders, room_id, scene_name, chapter, music):
     walls = {"Atas": (RW / 2, 22, RW, 44), "Bawah": (RW / 2, RH + 8, RW, 16), "Kiri": (-8, RH / 2, 16, RH), "Kanan": (RW + 8, RH / 2, 16, RH)}
     for i, (fx, fy, w, h) in enumerate(colliders):
         walls[f"Furnitur{i}"] = (fx, fy - h / 2, w, h)
-    walls["Kasur"] = (14 + 34, 112 - 26, 78, 52)
+    if ROOMS[room_id] is HOUSE_ITEMS:
+        walls["Kasur"] = (14 + 34, 112 - 26, 78, 52)
     for nm, (x, y, w, h) in walls.items():
         sc.node(nm, "CollisionShape2D", "Bounds", position=v2(x, y), shape=f'SubResource("{sc.rect_shape(w, h)}")')
     out = os.path.join(ROOT, f"scenes/world/{scene_name}.tscn")
@@ -88,6 +104,7 @@ def build_scene(colliders, room_id, scene_name, chapter, music):
 
 if __name__ == "__main__":
     for rid, name, ch, music in (("arman", "Interior_RumahArman", 1, "desa_algoria"),
-                                 ("mandor", "Interior_RumahMandor", 2, "desa_algoria")):
+                                 ("mandor", "Interior_RumahMandor", 2, "desa_algoria"),
+                                 ("dadang", "Interior_KedaiDadang", 3, "desa_algoria")):
         build_scene(build_room(rid), rid, name, ch, music)
         print(name + ".tscn dibuat")

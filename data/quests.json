@@ -305,8 +305,34 @@
     "stage": 1,
     "type": "quiz",
     "npc": "dadang",
-    "title": "Antrean Kedai",
-    "objective": "Temui Dadang dan jawab 3 soal tentang Queue.",
+    "title": "Antrean Kacau di Pelabuhan",
+    "objective": "Laporkan petunjuk kepada Dadang, lalu jawab 3 soal tentang Queue.",
+    "steps": [
+      {
+        "id": "warga",
+        "text": "Tanya warga Kota Pelabuhan Antre (%d/%d)",
+        "villagers": 3,
+        "villager_chapter": 3
+      },
+      {
+        "id": "petunjuk",
+        "text": "Cari petunjuk di pinggiran kota (%d/%d)",
+        "flags_all": [
+          "ch3_petunjuk_1",
+          "ch3_petunjuk_2",
+          "ch3_petunjuk_3"
+        ],
+        "target": [
+          "Petunjuk1",
+          "Petunjuk2",
+          "Petunjuk3"
+        ],
+        "reward": {
+          "xp": 10
+        }
+      }
+    ],
+    "dialog_waiting": "dadang_ch3_tanya_warga",
     "dialog": "dadang_ch3_awal",
     "dialog_success": "dadang_ch3_awal_sukses",
     "dialog_done": "dadang_ch3_awal_sukses",

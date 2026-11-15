@@ -1,0 +1,12 @@
+{
+  "lines": [
+    {
+      "speaker": "narator",
+      "text": "Gulungan tiket bernomor 1, 2, 3, 4. Tertulis: \"Nomor 1 datang paling awal, dilayani paling awal.\""
+    },
+    {
+      "speaker": "raka",
+      "text": "Nomor baru selalu ditambahkan di belakang (enqueue), dan yang dilayani diambil dari depan (dequeue). Itulah Queue."
+    }
+  ]
+}

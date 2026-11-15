@@ -209,6 +209,15 @@ Tahap 3: Quest Tengah = puzzle tumpukan peti di mulut tambang → hadiah **Pedan
 Quest Akhir berlangkah: kalahkan Penyihir Menara (Kristal) → longsoran jalan pintas terbuka → **Lilbah tetap di Kampung Tumpuk**
 (2 soal) → Data Fragment + Gold → awan perbatasan ke Pelabuhan Antre hilang. Panah memakai `Region.shortcut_route` setelah Kristal.
 
+**Ch3 (keputusan, dikerjakan 3 tahap):** peta dibangun ulang 136×184 sesuai region_layout (generator `tools/gen_ch3_v2.py`, tileset
+`tools/gen_coast_tileset.py` → `coast_tileset.tres`; prototipe lama dicadangkan di `..\_backup_scenes_organik\`). **Kota Pelabuhan Antre
+digeser ke pesisir timur** (pusat tile (72,122), bukan village_center layout) supaya punya dermaga. Batas = laut (timur) + tebing berpuncak
+rumput tua; punggung tebing di utara kota dengan satu celah = gerbang kota (kabut laut, terbuka di quest_stage 1). Kota: alun-alun + sumur,
+**Kedai Dadang** (bisa dimasuki, `Interior_KedaiDadang.tscn`), pasar tenda, gudang + loket tiket + tali antrean di pangkal dermaga penumpang
+(kapal layar), dermaga ikan. Pinggiran: mercusuar (tanjung selatan), kebun kelapa (barat). Quest Awal: tanya 3 warga (Wulan penjual tiket,
+Pak Bahar nelayan, Nina penumpang) → 3 petunjuk Queue → kuis Dadang. Uji alur: `tools/test_ch3_flow.tscn` (headless).
+Tahap 1: perjalanan utara masih sementara (jalan layout → stasiun antrean → arena Kapten dalam cincin kabut stage 2); dirombak di Tahap 2.
+
 ## 10. Boss (sprite di `boss_preview/`, sudah diperbesar 2×)
 | Boss | Idle (frame) | Serang (frame) | Mati (frame) | Pola serangan |
 |---|---|---|---|---|
