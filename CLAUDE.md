@@ -225,6 +225,9 @@ Tahap 2: rute gerbang kota → barat di antara punggung tebing N & L → TONJOLA
 (`StageBlocker`, hilang di quest_stage 2) → Bonfire pra-boss → DERMAGA BAJAK LAUT (arena Kapten berlantai papan, dipindah ke (70,22))
 → dermaga keluar di teluk utara (Kapal Dadang, exit dipindah ke (91,12)). ±189 tile kota→arena. Jalan pintas arena→kota = pesisir timur,
 ditutup PERAHU KARAM (`StageBlocker` mode crystal). Musuh: awak bajak laut (Orc) + slime pantai, 25 ekor.
+Tahap 3: Quest Tengah = antrean warung → **Zirah Rantai** + Potion + barikade hilang. Quest Akhir berlangkah: kalahkan Kapten Bajak Laut
+di dermaga bajak laut (Kristal) → perahu karam tersingkir → **Dadang tetap di Kedai** (2 soal) → Data Fragment + Gold → awan di pangkal
+dermaga teluk utara hilang (Kapal Dadang ke Gua Rantai). Panah memakai `Region.shortcut_route` (pesisir timur) setelah Kristal.
 
 **Varian rumah (keputusan):** `tools/make_houses.py` merakit 17 rumah dari kit Pixel Crawler (Walls/Roofs/Props) →
 `assets/props/buildings/variants/*.png` + `_pintu.json` (geser pintu dari pusat, dipakai pagar & pintu interior) → prefab lewat

@@ -104,16 +104,41 @@ func _ready() -> void:
 	check(bar.is_open and not (bar.get_node("Block") as TileMapLayer).collision_enabled, "barikade bajak laut hilang (tabrakan mati)")
 	check(not wreck.is_open, "perahu karam masih menutup sebelum Kristal")
 	check(int(GameManager.inventory.get("zirah_rantai", 0)) >= 1 or GameManager.equipment.values().has("zirah_rantai"), "hadiah tengah: Zirah Rantai")
-	check(QuestManager.get_tracked_quest_id() == "ch3_akhir", "quest aktif ch3_akhir")
-	GameManager.add_crystal(3)
+	check(QuestManager.get_tracked_quest_id() == "ch3_akhir", "quest aktif ch3_akhir (langkah boss)")
+	check(QuestManager.get_dialog_for("dadang") == "dadang_ch3_tunggu_boss", "Dadang: arahkan ke Kapten Bajak Laut")
+	check(region.shortcut_route.size() > 4, "jalur pintas panah (pesisir timur) terpasang")
+
+	# Tahap 3: Kapten Bajak Laut kalah -> Kristal -> perahu karam tersingkir -> kembali ke Dadang -> kuis -> tamat
+	var boss: Boss = region.boss
+	check(boss != null and boss is BossKapten, "Kapten Bajak Laut ada di dermaga bajak laut")
+	if boss:
+		boss.apply_damage(99999)
+	await frames(420)
+	var cr: Node = get_tree().get_first_node_in_group("crystal")
+	if cr != null and cr.has_method("_on_body_entered"):
+		cr._on_body_entered(region.player)
+	else:
+		GameManager.add_crystal(3)
 	await frames(120)
+	print("== 5 Kapten: ", tracked())
+	check(GameManager.has_crystal(3), "Kristal Queue didapat")
 	check(wreck.is_open and not (wreck.get_node("Block") as TileMapLayer).collision_enabled, "perahu karam tersingkir setelah Kristal Queue")
+	check(QuestManager.is_ready("ch3_akhir") and QuestManager.get_dialog_for("dadang") == "dadang_ch3_akhir", "Dadang: dialog kuis akhir")
+	check(QuestManager.get_objective_text("ch3_akhir").contains("Dadang"), "pelacak: bawa Kristal ke Dadang")
 	check(not cloud_open("AwanPerbatasan"), "awan perbatasan masih ada sebelum kuis akhir")
+
+	lines = QuestManager.finish_quiz("ch3_akhir", true)
+	await frames(200)
+	print("== 6 Tamat: hadiah ", lines, " -> ", tracked())
+	check(GameManager.get_quest_stage(3) == 3 and GameManager.unlocked_chapter >= 4, "Chapter 3 selesai, Chapter 4 terbuka")
+	check(cloud_open("AwanPerbatasan"), "awan perbatasan ke Gua Rantai hilang")
+	check(int(GameManager.inventory.get("data_fragment", 0)) >= 1, "Data Fragment didapat")
+	check(QuestManager.get_dialog_for("dadang") == "dadang_ch3_akhir_sukses", "Dadang: dialog penutup")
 
 	var data: Dictionary = GameManager.get_save_data()
 	GameManager.reset_state()
 	GameManager.apply_save_data(data)
-	check(GameManager.has_story_flag("ch3_petunjuk_3") and GameManager.get_quest_stage(3) == 2 and GameManager.has_crystal(3), "flag, tahap quest & Kristal ikut tersimpan")
+	check(GameManager.has_story_flag("ch3_petunjuk_3") and GameManager.get_quest_stage(3) == 3 and GameManager.has_crystal(3), "flag, tahap quest & Kristal ikut tersimpan")
 
 	print("HASIL: ", "SEMUA OK" if fails == 0 else "%d GAGAL" % fails)
 	get_tree().quit(1 if fails > 0 else 0)

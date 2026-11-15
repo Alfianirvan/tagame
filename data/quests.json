@@ -408,7 +408,7 @@
     "npc": "dadang",
     "requires_crystal": true,
     "title": "Kristal Queue",
-    "objective": "Kalahkan Kapten Bajak Laut, lalu serahkan Kristal Queue kepada Dadang.",
+    "objective": "Bawa Kristal Queue kepada Dadang di Kedai (jalan pintas lewat pesisir timur, perahu karam sudah tersingkir), lalu jawab 2 soal.",
     "dialog": "dadang_ch3_akhir",
     "dialog_success": "dadang_ch3_akhir_sukses",
     "dialog_waiting": "dadang_ch3_menunggu",
@@ -424,7 +424,18 @@
     "bonus": {
       "gold": 50,
       "xp": 30
-    }
+    },
+    "steps": [
+      {
+        "id": "boss",
+        "text": "Kalahkan Kapten Bajak Laut di dermaga bajak laut",
+        "crystal": true,
+        "target_group": "boss",
+        "npc_dialogs": {
+          "dadang": "dadang_ch3_tunggu_boss"
+        }
+      }
+    ]
   },
   "ch4_awal": {
     "chapter": 4,
