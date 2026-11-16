@@ -126,5 +126,17 @@
   "dimas": {
     "name": "Dimas",
     "portrait": ""
+  },
+  "banyu": {
+    "name": "Pak Banyu",
+    "portrait": ""
+  },
+  "lastri": {
+    "name": "Lastri",
+    "portrait": ""
+  },
+  "tole": {
+    "name": "Tole",
+    "portrait": ""
   }
 }

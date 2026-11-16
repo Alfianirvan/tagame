@@ -253,6 +253,17 @@ selatan) memagari **Desa Akar** di ceruk barat daya; celah akar B = gerbang desa
 tengah, pos Tedy (`Interior_PosTedy.tscn`, Rumah_Menara_Ungu), rumah beratap ungu (`Rumah_*_Ungu`, `Pondok_Ungu`); pinggiran: kuil akar
 (barat laut), kebun sakura (barat), mata air ungu (timur). Quest Awal: tanya 3 warga (Wira penjaga akar, Nyai Sekar tetua, Dimas prajurit
 muda) → 3 petunjuk Tree (root, leaf, BST) → kuis Tedy. Uji alur: `tools/test_ch5_flow.tscn` (headless).
+Tahap 2 (tile peta terskala): akar E membelah dataran timur → rute memutar: gerbang desa → DATARAN SELATAN ke timur → celah timur →
+DATARAN UTARA ke barat → PERSIMPANGAN CABANG (stasiun labirin BST di (130,55)) → SEGEL CABANG di kaki TANGGA AKAR (`StageBlocker`, hilang
+di quest_stage 2) → tangga papan menembus batang Pohon Dunia → ARENA TAJUK POHON (King Subiyan, ujung utara semenanjung (95,12.5)).
+Akar C & D (batang → laut) membuat tajuk hanya bisa dicapai lewat tangga. ±229 tile gerbang→arena. Jalan pintas = AKAR TUMBANG di celah
+akar E (`StageBlocker` mode crystal). Musuh: pasukan King (Orc + Skeleton) + jamur/slime, 25 ekor. Hadiah tengah: Perisai & Armor Legendaris.
+Tambahan (permintaan Alfian): dataran tenggara diisi landmark (kemah pasukan King, reruntuhan desa lama, menara pengintai, 2 kolam ungu)
++ **DUSUN RANTING** di (157,128): 4 rumah di sekitar kolam ungu & altar akar, Bonfire 3, lapak + Pedagang, warga Pak Banyu, Lastri, Tole
+(dialog Tree: induk/ranting, kedalaman, penelusuran kiri-dulu); cabang jalan dari rute; zona aman tanpa musuh.
+Quest Tengah Ch5 kini berlangkah: temui Pak Banyu → nyalakan **LENTERA RANTING** (puzzle `TreeTraversal`: klik 7 lentera pohon biner
+sesuai PENELUSURAN PRE-ORDER, salah urutan = padam semua; flag `ch5_lentera_ranting`, hadiah Potion Besar) → baru stasiun labirin
+bercabang terbuka.
 
 **Varian rumah (keputusan):** `tools/make_houses.py` merakit 17 rumah dari kit Pixel Crawler (Walls/Roofs/Props) →
 `assets/props/buildings/variants/*.png` + `_pintu.json` (geser pintu dari pusat, dipakai pagar & pintu interior) → prefab lewat

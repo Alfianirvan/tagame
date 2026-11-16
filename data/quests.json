@@ -591,11 +591,51 @@
     "stage": 2,
     "type": "puzzle",
     "npc": "",
-    "title": "Labirin Bercabang",
-    "objective": "Di Pohon Dunia: lewati labirin bercabang ala BST (kecil ke kiri, besar ke kanan).",
+    "title": "Lentera Dusun Ranting & Labirin Bercabang",
+    "objective": "Di persimpangan cabang (dataran utara, lewat celah timur akar): lewati labirin bercabang ala BST (kecil ke kiri, besar ke kanan).",
     "reward": {
       "gold": 130,
-      "xp": 80
+      "xp": 80,
+      "items": {
+        "perisai_legendaris": 1,
+        "armor_legendaris": 1
+      }
+    },
+    "final_target": "StasiunLabirin",
+    "steps": [
+      {
+        "id": "dusun",
+        "text": "Ke Dusun Ranting di dataran tenggara: temui Pak Banyu",
+        "flag": "ch5_temui_banyu",
+        "target": "Banyu",
+        "talk": {
+          "npc": "banyu",
+          "dialog": "banyu_ch5_minta"
+        },
+        "npc_dialogs": {
+          "tedy": "tedy_ch5_tunggu_dusun"
+        }
+      },
+      {
+        "id": "lentera",
+        "text": "Nyalakan lentera ranting sesuai penelusuran pre-order (Dusun Ranting)",
+        "flag": "ch5_lentera_ranting",
+        "target": "StasiunLentera",
+        "npc_dialogs": {
+          "banyu": "banyu_ch5_tunggu",
+          "tedy": "tedy_ch5_tunggu_dusun"
+        },
+        "reward": {
+          "gold": 60,
+          "xp": 40,
+          "items": {
+            "potion_besar": 1
+          }
+        }
+      }
+    ],
+    "final_npc_dialogs": {
+      "banyu": "banyu"
     }
   },
   "ch5_akhir": {
