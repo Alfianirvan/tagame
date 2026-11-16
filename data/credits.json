@@ -1,0 +1,273 @@
+{
+  "team": {
+    "group": "Kelompok 10",
+    "members": [
+      {
+        "name": "(Nama anggota 1)",
+        "role": "Combat, musuh, boss",
+        "photo": ""
+      },
+      {
+        "name": "(Nama anggota 2)",
+        "role": "NPC, dialog, quest, shop",
+        "photo": ""
+      },
+      {
+        "name": "(Nama anggota 3)",
+        "role": "Map, UI, audio, dokumen",
+        "photo": ""
+      }
+    ],
+    "lecturer": {
+      "name": "(Nama dosen pengampu)",
+      "role": "Dosen pengampu",
+      "photo": ""
+    }
+  },
+  "opening_ch1": {
+    "title": "Chapter 1 — Hutan Indeks",
+    "subtitle": "Materi: Array",
+    "lines": [
+      {
+        "p": "king_subiyan",
+        "t": "Dahulu, Kerajaan Algoria dijaga oleh lima Kristal Struktur."
+      },
+      {
+        "p": "king_subiyan",
+        "t": "Kristal-kristal itu menjaga keteraturan dunia:\nsetiap benda punya tempat, setiap data punya urutan."
+      },
+      {
+        "p": "king_subiyan",
+        "t": "Lalu datang King Subiyan.\nIa menghancurkan kelima Kristal, dan dunia pun kacau."
+      },
+      {
+        "p": "joko",
+        "t": "Raka, murid pandai besi Lilbah, diutus berkelana\nmemulihkan Kristal satu demi satu."
+      },
+      {
+        "p": "raka",
+        "t": "Perjalanan pertama: Hutan Indeks,\ntempat semua benda diberi nomor urut..."
+      }
+    ]
+  },
+  "opening_ch2": {
+    "title": "Chapter 2 — Tambang Tumpuk",
+    "subtitle": "Materi: Stack",
+    "lines": [
+      {
+        "p": "raka",
+        "t": "Kristal Array telah pulih.\nHutan Indeks kembali tertata, setiap benda di nomornya."
+      },
+      {
+        "p": "lilbah",
+        "t": "Di ngarai merah, Kampung Tumpuk hidup dari tambang.\nPeti-peti bijih selalu ditumpuk: yang terakhir ditaruh, pertama diambil."
+      },
+      {
+        "p": "lilbah",
+        "t": "Sejak Kristal Stack pecah, tumpukan itu runtuh\ndan terowongan tambang tertutup."
+      },
+      {
+        "p": "raka",
+        "t": "Guru Lilbah menunggu di sana.\nSaatnya belajar dari tumpukan..."
+      }
+    ]
+  },
+  "opening_ch3": {
+    "title": "Chapter 3 — Pelabuhan Antre",
+    "subtitle": "Materi: Queue",
+    "lines": [
+      {
+        "p": "raka",
+        "t": "Terowongan tambang tembus ke sebuah teluk.\nDi tepinya berdiri Kota Pelabuhan Antre."
+      },
+      {
+        "p": "dadang",
+        "t": "Dulu penumpang naik kapal dengan tertib:\nyang datang lebih dulu, dilayani lebih dulu."
+      },
+      {
+        "p": "dadang",
+        "t": "Kini antrean kacau, kapal tak berangkat,\ndan bajak laut menguasai dermaga."
+      },
+      {
+        "p": "raka",
+        "t": "Kedai Dadang ada di tepi laut.\nSemoga antrean bisa dirapikan lagi..."
+      }
+    ]
+  },
+  "opening_ch4": {
+    "title": "Chapter 4 — Gua Rantai",
+    "subtitle": "Materi: Linked List",
+    "lines": [
+      {
+        "p": "raka",
+        "t": "Kapal Dadang menyeberangi teluk\nmenuju pegunungan bersalju di utara."
+      },
+      {
+        "p": "megas",
+        "t": "Di danau beku, pulau-pulau Desa Simpul tersambung jembatan.\nTiap jembatan hanya tahu satu hal: pulau berikutnya."
+      },
+      {
+        "p": "megas",
+        "t": "Sejak Kristal Linked List pecah, batu portal di Gua Rantai putus\ndan Ksatria Rantai berjaga di dalamnya."
+      },
+      {
+        "p": "raka",
+        "t": "Penyihir Megas menunggu di Desa Simpul.\nIkuti rantainya, satu simpul demi satu simpul..."
+      }
+    ]
+  },
+  "opening_ch5": {
+    "title": "Chapter 5 — Pohon Dunia",
+    "subtitle": "Materi: Tree",
+    "lines": [
+      {
+        "p": "raka",
+        "t": "Jembatan es membawa Raka ke dataran tertinggi Algoria,\ntempat Pohon Dunia menjulang."
+      },
+      {
+        "p": "tedy",
+        "t": "Dari satu batang, akar dan cabangnya bercabang lagi dan lagi.\nDi antara akar raksasanya, Desa Akar bertahan."
+      },
+      {
+        "p": "king_subiyan",
+        "t": "Di tajuk paling atas, King Subiyan menunggu\nbersama kristal terakhir yang ia hancurkan."
+      },
+      {
+        "p": "raka",
+        "t": "Ini perjalanan terakhir.\nUntuk Algoria, untuk kelima Kristal Struktur..."
+      }
+    ]
+  },
+  "ending": {
+    "title": "Epilog",
+    "subtitle": "Algoria Pulih",
+    "lines": [
+      {
+        "p": "king_subiyan",
+        "t": "King Subiyan tumbang di tajuk Pohon Dunia.\nMahkotanya jatuh, dan kekacauan pun mereda."
+      },
+      {
+        "p": "tedy",
+        "t": "Kelima Kristal Struktur bersinar lagi:\nArray, Stack, Queue, Linked List, dan Tree."
+      },
+      {
+        "p": "arman",
+        "t": "Di Hutan Indeks, benih-benih kembali ke rak bernomornya."
+      },
+      {
+        "p": "lilbah",
+        "t": "Di Kampung Tumpuk, peti ditumpuk rapi lagi,\ndan para penambang pulang dengan selamat."
+      },
+      {
+        "p": "dadang",
+        "t": "Di Pelabuhan Antre, penumpang mengantre tertib\ndan kapal-kapal kembali berlayar."
+      },
+      {
+        "p": "megas",
+        "t": "Di Desa Simpul, setiap jembatan kembali menunjuk\nke pulau berikutnya."
+      },
+      {
+        "p": "joko",
+        "t": "Dan di Desa Algoria, seluruh warga menyambut pulang\nsang murid pandai besi."
+      },
+      {
+        "p": "raka",
+        "t": "Keteraturan telah kembali.\nData punya tempatnya, dunia punya urutannya."
+      }
+    ]
+  },
+  "roll": [
+    {
+      "h": "STRUKTURA"
+    },
+    {
+      "t": "Legenda Dunia Data"
+    },
+    {
+      "gap": true
+    },
+    {
+      "h": "Proyek Akhir Mata Kuliah GameProg"
+    },
+    {
+      "t": "Workshop PPLG — Kelompok 10"
+    },
+    {
+      "gap": true
+    },
+    {
+      "h": "Tim Pengembang",
+      "team": true
+    },
+    {
+      "gap": true
+    },
+    {
+      "h": "Dosen Pengampu",
+      "lecturer": true
+    },
+    {
+      "gap": true
+    },
+    {
+      "h": "Materi Struktur Data"
+    },
+    {
+      "t": "Chapter 1 — Array (Hutan Indeks)"
+    },
+    {
+      "t": "Chapter 2 — Stack (Tambang Tumpuk)"
+    },
+    {
+      "t": "Chapter 3 — Queue (Pelabuhan Antre)"
+    },
+    {
+      "t": "Chapter 4 — Linked List (Gua Rantai)"
+    },
+    {
+      "t": "Chapter 5 — Tree (Pohon Dunia)"
+    },
+    {
+      "gap": true
+    },
+    {
+      "h": "Aset"
+    },
+    {
+      "t": "Pixel Crawler — Free Pack 2.11 oleh Anokolisa"
+    },
+    {
+      "t": "Ninja Adventure Asset Pack oleh pixel-boy & AAA (CC0)"
+    },
+    {
+      "t": "CraftPix.net — Free Fields, Free Cursed Land, Free 2D Top-Down Pixel Dungeon"
+    },
+    {
+      "t": "Tiny RPG Character Asset Pack oleh Zerie"
+    },
+    {
+      "t": "Sprite Raka, NPC, dan boss: buatan kelompok dari basis Pixel Crawler"
+    },
+    {
+      "t": "Potret dialog: dibuat dengan AI lalu dirapikan kelompok"
+    },
+    {
+      "gap": true
+    },
+    {
+      "h": "Dibuat dengan"
+    },
+    {
+      "t": "Godot Engine 4 (GDScript)"
+    },
+    {
+      "gap": true
+    },
+    {
+      "gap": true
+    },
+    {
+      "h": "Terima kasih sudah bermain!"
+    }
+  ]
+}

@@ -49,13 +49,16 @@ func _ready() -> void:
 		_move_npcs_to_final()
 
 
-## Opening credit scene (sekali per permainan) untuk wilayah yang mengaktifkan `opening_story` (Chapter 1).
+## Credit scene pembuka chapter (sekali per permainan): kartu judul + cerita dari data/credits.json ("opening_ch<N>").
+## Tampil untuk setiap chapter yang punya data (atau yang mengaktifkan `opening_story`).
 func _maybe_show_opening() -> void:
-	if not opening_story or GameManager.has_met("opening_ch%d" % chapter):
+	var key: String = "opening_ch%d" % chapter
+	if GameManager.has_met(key) or not (opening_story or OpeningCredits.has_scene(key)):
 		return
-	GameManager.mark_met("opening_ch%d" % chapter)
+	GameManager.mark_met(key)
 	player.set_controls_enabled(false)
-	var credits: CanvasLayer = load("res://scripts/ui/OpeningCredits.gd").new()
+	var credits: OpeningCredits = OpeningCredits.new()
+	credits.credits_key = key
 	add_child(credits)
 	credits.finished.connect(func() -> void: player.set_controls_enabled(true))
 

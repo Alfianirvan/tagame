@@ -1,6 +1,6 @@
 extends CanvasLayer
 ## About: nama + foto 3 anggota dan dosen (placeholder dulu), plus credit aset.
-## Ganti nama/foto di MEMBERS; letakkan foto di assets/ui/about/ lalu isi "photo".
+## Ganti nama/foto di data/credits.json ("team"); letakkan foto di assets/ui/about/ lalu isi "photo".
 
 signal closed
 
@@ -14,6 +14,13 @@ const CREDITS := "Aset utama: Pixel Crawler Free Pack 2.11 oleh Anokolisa. " 	+ 
 
 var _root: Control
 var _prev_music: String = ""
+
+
+## Anggota & dosen dari data/credits.json ("team"), dipakai juga oleh ending credit; konstanta di atas = cadangan.
+static func team_cards() -> Array:
+	var team: Dictionary = OpeningCredits.load_data().get("team", {})
+	var members: Array = team.get("members", MEMBERS)
+	return members + [team.get("lecturer", LECTURER)]
 
 
 func _ready() -> void:
@@ -32,7 +39,7 @@ func _ready() -> void:
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.add_theme_constant_override("separation", 10)
 	v.add_child(row)
-	for m: Dictionary in MEMBERS + [LECTURER]:
+	for m: Dictionary in team_cards():
 		row.add_child(_card(m))
 	v.add_child(UIKit.label(CREDITS, 9, UIKit.INK))
 	var back: Button = UIKit.button("Kembali")

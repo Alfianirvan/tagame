@@ -38,6 +38,16 @@ func _on_quest_completed(quest_id: String) -> void:
 	while DialogManager.is_active or QuestManager.quiz_active or _showing:
 		await get_tree().create_timer(0.4).timeout
 	await get_tree().create_timer(0.6).timeout
+	# tamat (King Subiyan kalah & Kristal terakhir diserahkan): ending credit dulu (epilog + credit bergulir), lalu layar TAMAT
+	if chapter >= GameManager.MAX_CHAPTER or bool(q.get("ends_game", false)):
+		_showing = true
+		var player: Node = get_tree().get_first_node_in_group("player")
+		if player and player.has_method("set_controls_enabled"):
+			player.set_controls_enabled(false)
+		var credits: EndCredits = EndCredits.new()
+		get_tree().root.add_child(credits)
+		await credits.finished
+		_showing = false
 	show_win(chapter, q)
 
 

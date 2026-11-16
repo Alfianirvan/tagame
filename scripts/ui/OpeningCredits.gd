@@ -1,33 +1,60 @@
+class_name OpeningCredits
 extends CanvasLayer
-## Opening credit scene: layar hitam, teks cerita bergulir naik dengan potret di sisi kiri.
+## Credit scene cerita: layar hitam, kartu judul (mis. "Chapter 2 — Tambang Tumpuk" + materi), lalu baris cerita satu per satu
+## dengan potret di sisi kiri. Isi diambil dari res://data/credits.json dengan kunci `credits_key` (opening_ch1..opening_ch5, ending).
 ## Bisa dilewati dengan E / Esc / Spasi / klik. Memancarkan `finished` saat selesai atau dilewati.
 
 signal finished
 
 const FONT := preload("res://assets/fonts/Square-Black.ttf")
-const LINES: Array = [
-	{"p": "king_subiyan", "t": "Dahulu, Kerajaan Algoria dijaga oleh lima Kristal Struktur."},
-	{"p": "king_subiyan", "t": "Kristal-kristal itu menjaga keteraturan dunia:\nsetiap benda punya tempat, setiap data punya urutan."},
-	{"p": "king_subiyan", "t": "Lalu datang King Subiyan.\nIa menghancurkan kelima Kristal, dan dunia pun kacau."},
-	{"p": "joko", "t": "Raka, murid pandai besi Lilbah, diutus berkelana\nmemulihkan Kristal satu demi satu."},
-	{"p": "raka", "t": "Perjalanan pertama: Hutan Indeks,\ntempat semua benda diberi nomor urut..."},
-]
+const DATA_PATH := "res://data/credits.json"
 const SEC_PER_LINE := 4.2
+const SEC_TITLE := 2.8
 
+## Kunci data di credits.json (diisi pemanggil sebelum add_child).
+var credits_key: String = "opening_ch1"
+
+var _lines: Array = []
+var _title: String = ""
+var _subtitle: String = ""
 var _idx: int = -1
 var _text: Label
 var _portrait: TextureRect
+var _title_label: Label
+var _sub_label: Label
 var _skip_hint: Label
 var _done: bool = false
+
+
+## Isi credits.json (kosong bila file tidak ada / rusak).
+static func load_data() -> Dictionary:
+	if not FileAccess.file_exists(DATA_PATH):
+		return {}
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(DATA_PATH))
+	return parsed if parsed is Dictionary else {}
+
+
+## Ada credit scene untuk kunci ini?
+static func has_scene(key: String) -> bool:
+	var entry: Variant = load_data().get(key, null)
+	return entry is Dictionary and not (entry as Dictionary).get("lines", []).is_empty()
 
 
 func _ready() -> void:
 	layer = 95
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	var entry: Dictionary = load_data().get(credits_key, {})
+	_lines = entry.get("lines", [])
+	_title = String(entry.get("title", ""))
+	_subtitle = String(entry.get("subtitle", ""))
 	var bg := ColorRect.new()
 	bg.color = Color.BLACK
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
+	_title_label = _make_label(Vector2(0, 140), Vector2(640, 30), 18, Color(1.0, 0.85, 0.4))
+	_title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_sub_label = _make_label(Vector2(0, 176), Vector2(640, 20), 11, Color(0.8, 0.8, 0.85))
+	_sub_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_portrait = TextureRect.new()
 	_portrait.position = Vector2(60, 110)
 	_portrait.custom_minimum_size = Vector2(160, 160)
@@ -36,35 +63,57 @@ func _ready() -> void:
 	_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	_portrait.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	add_child(_portrait)
-	_text = Label.new()
-	_text.position = Vector2(250, 130)
-	_text.size = Vector2(350, 120)
+	_text = _make_label(Vector2(250, 130), Vector2(350, 120), 12, Color(0.95, 0.9, 0.75))
 	_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_text.add_theme_font_override("font", FONT)
-	_text.add_theme_font_size_override("font_size", 12)
-	_text.add_theme_color_override("font_color", Color(0.95, 0.9, 0.75))
-	add_child(_text)
-	_skip_hint = Label.new()
+	_skip_hint = _make_label(Vector2(500, 336), Vector2(130, 14), 8, Color.WHITE)
 	_skip_hint.text = "E / Esc: lewati"
-	_skip_hint.position = Vector2(500, 336)
-	_skip_hint.add_theme_font_override("font", FONT)
-	_skip_hint.add_theme_font_size_override("font_size", 8)
 	_skip_hint.modulate = Color(1, 1, 1, 0.5)
-	add_child(_skip_hint)
-	_next_line()
+	if _lines.is_empty():
+		_finish.call_deferred()
+		return
+	_show_title()
+
+
+func _make_label(pos: Vector2, size: Vector2, font_size: int, color: Color) -> Label:
+	var l := Label.new()
+	l.position = pos
+	l.size = size
+	l.add_theme_font_override("font", FONT)
+	l.add_theme_font_size_override("font_size", font_size)
+	l.add_theme_color_override("font_color", color)
+	add_child(l)
+	return l
+
+
+## Kartu judul chapter (bila ada), lalu baris cerita.
+func _show_title() -> void:
+	if _title == "":
+		_next_line()
+		return
+	_title_label.text = _title
+	_sub_label.text = _subtitle
+	for l: Label in [_title_label, _sub_label]:
+		l.modulate.a = 0.0
+	var tw: Tween = create_tween()
+	tw.tween_property(_title_label, "modulate:a", 1.0, 0.8)
+	tw.parallel().tween_property(_sub_label, "modulate:a", 1.0, 1.0)
+	tw.tween_interval(SEC_TITLE)
+	tw.tween_property(_title_label, "modulate:a", 0.0, 0.5)
+	tw.parallel().tween_property(_sub_label, "modulate:a", 0.0, 0.5)
+	tw.tween_callback(_next_line)
 
 
 func _next_line() -> void:
 	if _done:
 		return
 	_idx += 1
-	if _idx >= LINES.size():
+	if _idx >= _lines.size():
 		_finish()
 		return
-	var line: Dictionary = LINES[_idx]
-	var path: String = "res://assets/portraits/portrait_%s_80.png" % line["p"]
-	_portrait.texture = load(path) if ResourceLoader.exists(path) else null
-	_text.text = line["t"]
+	var line: Dictionary = _lines[_idx]
+	var path: String = "res://assets/portraits/portrait_%s_80.png" % String(line.get("p", ""))
+	_portrait.texture = load(path) if line.get("p", "") != "" and ResourceLoader.exists(path) else null
+	_text.text = String(line.get("t", ""))
 	_text.modulate.a = 0.0
 	_portrait.modulate.a = 0.0
 	var tw: Tween = create_tween().set_parallel(true)
