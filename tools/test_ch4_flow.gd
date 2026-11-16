@@ -1,6 +1,6 @@
 extends Node
 ## Uji main otomatis Chapter 4 (headless): masuk Desa Simpul -> tanya 3 warga -> 3 petunjuk Linked List -> kuis Megas
-## -> badai salju gerbang desa terbuka. Aksi pemain disimulasikan lewat API yang sama dengan node game.
+## -> badai salju gerbang desa terbuka -> puzzle batu portal -> dinding rantai es pecah -> (Kristal) runtuhan es jalan pintas mencair. Aksi pemain disimulasikan lewat API yang sama dengan node game.
 ## Jalankan (save asli dicadangkan dulu oleh pemanggil):
 ##   godot --headless --fixed-fps 60 --path . res://tools/test_ch4_flow.tscn
 
@@ -82,10 +82,39 @@ func _ready() -> void:
 	check(cloud_open("AwanGerbangDesa") and not cloud_open("AwanPerbatasan"), "badai salju gerbang terbuka, perbatasan masih")
 	check(int(GameManager.inventory.get("tongkat_sihir", 0)) >= 1 or GameManager.equipment.values().has("tongkat_sihir"), "hadiah awal: Tongkat Sihir")
 
+	var st: PuzzleStation = node("StasiunPortal") as PuzzleStation
+	check(st != null and st._block_reason() == "", "stasiun batu portal bisa dibuka")
+
+	# Tahap 2: musuh perjalanan, dinding rantai es (Quest Tengah), runtuhan es (jalan pintas setelah Kristal)
+	var mobs: int = 0
+	for c in region.get_node("Objects").get_children():
+		if c is Enemy:
+			mobs += 1
+	check(mobs >= 20, "musuh perjalanan terpasang (%d)" % mobs)
+	var bar: StageBlocker = node("DindingRantaiEs") as StageBlocker
+	var sc1: StageBlocker = node("RuntuhanEsSelatan") as StageBlocker
+	var sc2: StageBlocker = node("RuntuhanEsUtara") as StageBlocker
+	check(not bar.is_open and not sc1.is_open and not sc2.is_open, "rantai es & 2 runtuhan es masih menutup")
+	st._open()
+	await frames(2)
+	st._puzzle.complete_puzzle()
+	st._puzzle.close_puzzle()
+	await frames(200)
+	print("== 4 Batu portal: ", tracked())
+	check(GameManager.get_quest_stage(4) == 2, "quest_stage Ch4 = 2")
+	check(bar.is_open and not (bar.get_node("Block") as TileMapLayer).collision_enabled, "dinding rantai es pecah (tabrakan mati)")
+	check(not sc1.is_open and not sc2.is_open, "runtuhan es masih menutup sebelum Kristal")
+	check(int(GameManager.inventory.get("tongkat_sihir_plus", 0)) >= 1 or GameManager.equipment.values().has("tongkat_sihir_plus"), "hadiah tengah: Tongkat Sihir+")
+	check(QuestManager.get_tracked_quest_id() == "ch4_akhir", "quest aktif ch4_akhir")
+	GameManager.add_crystal(4)
+	await frames(120)
+	check(sc1.is_open and sc2.is_open, "2 runtuhan es mencair setelah Kristal Linked List")
+	check(not cloud_open("AwanPerbatasan"), "awan perbatasan masih ada sebelum kuis akhir")
+
 	var data: Dictionary = GameManager.get_save_data()
 	GameManager.reset_state()
 	GameManager.apply_save_data(data)
-	check(GameManager.has_story_flag("ch4_petunjuk_3") and GameManager.get_quest_stage(4) == 1, "flag & tahap quest ikut tersimpan")
+	check(GameManager.has_story_flag("ch4_petunjuk_3") and GameManager.get_quest_stage(4) == 2 and GameManager.has_crystal(4), "flag, tahap quest & Kristal ikut tersimpan")
 
 	print("HASIL: ", "SEMUA OK" if fails == 0 else "%d GAGAL" % fails)
 	get_tree().quit(1 if fails > 0 else 0)
