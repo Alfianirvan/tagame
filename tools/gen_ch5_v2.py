@@ -321,6 +321,35 @@ def build():
                 return True
         return False
 
+    _open_cache = {}
+
+    def open_spot(pt, clear=2, rmax=176):
+        """Titik LAPANG terdekat untuk peti/petunjuk: tile dengan `clear` tile daratan bebas di sekelilingnya (tidak terjepit di kaki
+        tebing / tepi air) DAN terjangkau dari pintu masuk wilayah (bukan kantong terisolasi). Kembali ke pt bila tak ketemu."""
+        if "m" not in _open_cache:
+            from collections import deque
+            wk = land & ~face_m
+            seen = np.zeros_like(wk)
+            sx, sy = int(P["entry"][0] // TILE), int(P["entry"][1] // TILE)
+            seen[sx, sy] = True
+            dq = deque([(sx, sy)])
+            while dq:
+                x_, y_ = dq.popleft()
+                for dx_, dy_ in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    nx_, ny_ = x_ + dx_, y_ + dy_
+                    if 0 <= nx_ < W and 0 <= ny_ < H and wk[nx_, ny_] and not seen[nx_, ny_]:
+                        seen[nx_, ny_] = True
+                        dq.append((nx_, ny_))
+            _open_cache["m"] = erode(corridor, clear) & seen
+        m_ = _open_cache["m"]
+        for r in [0] + list(range(8, rmax + 1, 8)):
+            for a_ in range(0, 360, 20):
+                x, y = round(pt[0] + math.cos(math.radians(a_)) * r), round(pt[1] + math.sin(math.radians(a_)) * r)
+                tx_, ty_ = int(x // TILE), int(y // TILE)
+                if 0 <= tx_ < W and 0 <= ty_ < H and m_[tx_, ty_] and not near_building(x, y, 22):
+                    return (x, y)
+        return (round(pt[0]), round(pt[1]))
+
     # ------------------------------------------------------------ DESA AKAR
     houses = {"PosTedy": ("Rumah_Menara_Ungu", (45, 65.6)),            # pos Tedy (interior) di kaki akar A
               "RumahSekar": ("Rumah_Loteng_Ungu", (25.5, 65.6)),       # tetua desa
@@ -407,9 +436,9 @@ def build():
     inst("BenderaMasuk", checkpoint_scene, vat(35.6, 84.0))
     inst("BenderaGerbang", checkpoint_scene, at(*sp((54.6, 68.2))))
     inst("BenderaKuil", checkpoint_scene, (kx_ + 60, ky_ + 30))
-    inst("PetiKuil", chest_scene, (kx_ - 30, ky_ + 36), roll_count="2")
-    inst("PetiKebun", chest_scene, (gx0 - 10, gy0 + 50), roll_count="2")
-    clue_pts = [(kx_ + 4, ky_ + 18), (gx0 + 4, gy0 + 6), (sx_ - 36, sy_ - 30)]
+    inst("PetiKuil", chest_scene, open_spot((kx_ - 30, ky_ + 36)), roll_count="2")
+    inst("PetiKebun", chest_scene, open_spot((gx0 - 10, gy0 + 50)), roll_count="2")
+    clue_pts = [open_spot(p_) for p_ in ((kx_ + 4, ky_ + 18), (gx0 + 4, gy0 + 6), (sx_ - 36, sy_ - 30))]
     for k_, (ck, pos) in enumerate(zip(("jejak", "catatan", "barang"), clue_pts), start=1):
         sc.node(f"Petunjuk{k_}", "Area2D", "Objects", script=f'ExtResource("{clue_script}")', position=v2(*pos),
                 flag=f'"ch5_petunjuk_{k_}"', dialog_id=f'"ch5_petunjuk_{k_}"', required_step='"ch5_awal:petunjuk"', clue_kind=f'"{ck}"')
@@ -648,7 +677,7 @@ def build():
                 n_mob += 1
     chests = {"PetiSelatan": (124, 134), "PetiTenggara": (150, 142), "PetiTimur": (190, 96), "PetiUtara": (146, 44), "PetiSemenanjung": (110, 40)}
     for nm, (cx2, cy2) in chests.items():
-        q = spot(tpx((cx2, cy2)))
+        q = open_spot(tpx((cx2, cy2)))
         if not q:
             print("PERINGATAN: peti", nm, "tidak dapat tempat")
             continue

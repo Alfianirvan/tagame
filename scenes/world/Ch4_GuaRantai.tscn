@@ -233,7 +233,7 @@ position = Vector2(1794, 1208)
 position = Vector2(1768, 1766)
 
 [node name="PetiKristal" parent="Objects" instance=ExtResource("ext_4")]
-position = Vector2(1668, 1836)
+position = Vector2(1672, 1812)
 roll_count = 2
 
 [node name="PetiPondok" parent="Objects" instance=ExtResource("ext_4")]
@@ -242,7 +242,7 @@ roll_count = 2
 
 [node name="Petunjuk1" type="Area2D" parent="Objects"]
 script = ExtResource("ext_22")
-position = Vector2(2092, 1750.0)
+position = Vector2(2092, 1750)
 flag = "ch4_petunjuk_1"
 dialog_id = "ch4_petunjuk_1"
 required_step = "ch4_awal:petunjuk"
@@ -258,7 +258,7 @@ clue_kind = "barang"
 
 [node name="Petunjuk3" type="Area2D" parent="Objects"]
 script = ExtResource("ext_22")
-position = Vector2(1708, 1812)
+position = Vector2(1692, 1812)
 flag = "ch4_petunjuk_3"
 dialog_id = "ch4_petunjuk_3"
 required_step = "ch4_awal:petunjuk"
@@ -1099,7 +1099,7 @@ position = Vector2(648, 1320)
 roll_count = 2
 
 [node name="Herb4" parent="Objects" instance=ExtResource("ext_10")]
-position = Vector2(678, 1322)
+position = Vector2(668, 1328)
 
 [node name="GoldCoin5" parent="Objects" instance=ExtResource("ext_11")]
 position = Vector2(620, 1336)
@@ -1108,56 +1108,56 @@ position = Vector2(620, 1336)
 position = Vector2(644, 1364)
 
 [node name="PetiBarat" parent="Objects" instance=ExtResource("ext_4")]
-position = Vector2(382, 800)
+position = Vector2(375, 817)
 roll_count = 2
 
 [node name="Herb7" parent="Objects" instance=ExtResource("ext_10")]
-position = Vector2(381, 832)
+position = Vector2(393, 852)
 
 [node name="GoldCoin8" parent="Objects" instance=ExtResource("ext_11")]
-position = Vector2(354, 816)
+position = Vector2(347, 833)
 
 [node name="Ore9" parent="Objects" instance=ExtResource("ext_13")]
-position = Vector2(396, 855)
+position = Vector2(367, 857)
 
 [node name="PetiTengah" parent="Objects" instance=ExtResource("ext_4")]
-position = Vector2(1480, 904)
+position = Vector2(1488, 890)
 roll_count = 2
 
 [node name="Herb10" parent="Objects" instance=ExtResource("ext_10")]
-position = Vector2(1510, 918)
+position = Vector2(1518, 904)
 
 [node name="GoldCoin11" parent="Objects" instance=ExtResource("ext_11")]
-position = Vector2(1446, 910)
+position = Vector2(1460, 906)
 
 [node name="Ore12" parent="Objects" instance=ExtResource("ext_13")]
-position = Vector2(1482, 878)
+position = Vector2(1490, 924)
 
 [node name="PetiTimur" parent="Objects" instance=ExtResource("ext_4")]
-position = Vector2(2422, 809)
+position = Vector2(2391, 799)
 roll_count = 2
 
 [node name="Herb13" parent="Objects" instance=ExtResource("ext_10")]
-position = Vector2(2452, 799)
+position = Vector2(2421, 813)
 
 [node name="GoldCoin14" parent="Objects" instance=ExtResource("ext_11")]
-position = Vector2(2394, 825)
+position = Vector2(2363, 815)
 
 [node name="Ore15" parent="Objects" instance=ExtResource("ext_13")]
-position = Vector2(2364, 843)
+position = Vector2(2393, 821)
 
 [node name="PetiUtara" parent="Objects" instance=ExtResource("ext_4")]
-position = Vector2(1904, 306)
+position = Vector2(1914, 343)
 roll_count = 2
 
 [node name="Herb16" parent="Objects" instance=ExtResource("ext_10")]
-position = Vector2(1934, 320)
+position = Vector2(1944, 357)
 
 [node name="GoldCoin17" parent="Objects" instance=ExtResource("ext_11")]
-position = Vector2(1876, 322)
+position = Vector2(1886, 359)
 
 [node name="Ore18" parent="Objects" instance=ExtResource("ext_13")]
-position = Vector2(1906, 340)
+position = Vector2(1916, 377)
 
 [node name="Herb19" parent="Objects" instance=ExtResource("ext_10")]
 position = Vector2(1293, 785)

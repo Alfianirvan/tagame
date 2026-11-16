@@ -329,16 +329,16 @@ position = Vector2(1187, 1481)
 position = Vector2(327.20000000000005, 1420.4)
 
 [node name="PetiKuil" parent="Objects" instance=ExtResource("ext_4")]
-position = Vector2(237.20000000000005, 1426.4)
+position = Vector2(237, 1426)
 roll_count = 2
 
 [node name="PetiKebun" parent="Objects" instance=ExtResource("ext_4")]
-position = Vector2(170.8, 1591.6000000000001)
+position = Vector2(179, 1592)
 roll_count = 2
 
 [node name="Petunjuk1" type="Area2D" parent="Objects"]
 script = ExtResource("ext_22")
-position = Vector2(271.20000000000005, 1408.4)
+position = Vector2(271, 1408)
 flag = "ch5_petunjuk_1"
 dialog_id = "ch5_petunjuk_1"
 required_step = "ch5_awal:petunjuk"
@@ -346,7 +346,7 @@ clue_kind = "jejak"
 
 [node name="Petunjuk2" type="Area2D" parent="Objects"]
 script = ExtResource("ext_22")
-position = Vector2(184.8, 1547.6000000000001)
+position = Vector2(166, 1532)
 flag = "ch5_petunjuk_2"
 dialog_id = "ch5_petunjuk_2"
 required_step = "ch5_awal:petunjuk"
@@ -354,7 +354,7 @@ clue_kind = "catatan"
 
 [node name="Petunjuk3" type="Area2D" parent="Objects"]
 script = ExtResource("ext_22")
-position = Vector2(1073.6000000000001, 1630.4)
+position = Vector2(1071, 1615)
 flag = "ch5_petunjuk_3"
 dialog_id = "ch5_petunjuk_3"
 required_step = "ch5_awal:petunjuk"
@@ -1242,157 +1242,145 @@ position = Vector2(254, 1620)
 [node name="Sakura179" parent="Objects" instance=ExtResource("ext_38")]
 position = Vector2(267, 1646)
 
-[node name="Sakura180" parent="Objects" instance=ExtResource("ext_36")]
-position = Vector2(98, 1538)
-
-[node name="Sakura181" parent="Objects" instance=ExtResource("ext_45")]
+[node name="Sakura180" parent="Objects" instance=ExtResource("ext_45")]
 position = Vector2(1329, 423)
 
-[node name="Sakura182" parent="Objects" instance=ExtResource("ext_34")]
+[node name="Sakura181" parent="Objects" instance=ExtResource("ext_34")]
 position = Vector2(2773, 1204)
 
-[node name="Sakura183" parent="Objects" instance=ExtResource("ext_34")]
+[node name="Sakura182" parent="Objects" instance=ExtResource("ext_34")]
 position = Vector2(1227, 750)
 
-[node name="Sakura184" parent="Objects" instance=ExtResource("ext_34")]
+[node name="Sakura183" parent="Objects" instance=ExtResource("ext_34")]
 position = Vector2(2571, 1260)
 
-[node name="Sakura185" parent="Objects" instance=ExtResource("ext_38")]
+[node name="Sakura184" parent="Objects" instance=ExtResource("ext_38")]
 position = Vector2(2615, 1238)
 
-[node name="Sakura186" parent="Objects" instance=ExtResource("ext_34")]
+[node name="Sakura185" parent="Objects" instance=ExtResource("ext_34")]
 position = Vector2(458, 1313)
 
-[node name="Sakura187" parent="Objects" instance=ExtResource("ext_35")]
+[node name="Sakura186" parent="Objects" instance=ExtResource("ext_35")]
 position = Vector2(516, 1314)
 
-[node name="Sakura188" parent="Objects" instance=ExtResource("ext_35")]
+[node name="Sakura187" parent="Objects" instance=ExtResource("ext_35")]
 position = Vector2(1499, 851)
 
-[node name="Sakura189" parent="Objects" instance=ExtResource("ext_69")]
+[node name="Sakura188" parent="Objects" instance=ExtResource("ext_69")]
 position = Vector2(1511, 894)
 
-[node name="Sakura190" parent="Objects" instance=ExtResource("ext_34")]
+[node name="Sakura189" parent="Objects" instance=ExtResource("ext_34")]
 position = Vector2(1771, 171)
 
-[node name="Sakura191" parent="Objects" instance=ExtResource("ext_34")]
+[node name="Sakura190" parent="Objects" instance=ExtResource("ext_34")]
 position = Vector2(2056, 2214)
 
-[node name="Sakura192" parent="Objects" instance=ExtResource("ext_69")]
+[node name="Sakura191" parent="Objects" instance=ExtResource("ext_69")]
 position = Vector2(2017, 2213)
 
-[node name="Sakura193" parent="Objects" instance=ExtResource("ext_35")]
+[node name="Sakura192" parent="Objects" instance=ExtResource("ext_35")]
 position = Vector2(2082, 2232)
 
-[node name="Sakura194" parent="Objects" instance=ExtResource("ext_34")]
+[node name="Sakura193" parent="Objects" instance=ExtResource("ext_34")]
 position = Vector2(1714, 1758)
 
-[node name="Sakura195" parent="Objects" instance=ExtResource("ext_49")]
+[node name="Sakura194" parent="Objects" instance=ExtResource("ext_49")]
 position = Vector2(1672, 1769)
 
-[node name="Sakura196" parent="Objects" instance=ExtResource("ext_49")]
+[node name="Sakura195" parent="Objects" instance=ExtResource("ext_49")]
 position = Vector2(1721, 1806)
 
-[node name="Sakura197" parent="Objects" instance=ExtResource("ext_36")]
+[node name="Sakura196" parent="Objects" instance=ExtResource("ext_36")]
 position = Vector2(3173, 1878)
 
-[node name="Sakura198" parent="Objects" instance=ExtResource("ext_35")]
+[node name="Sakura197" parent="Objects" instance=ExtResource("ext_35")]
 position = Vector2(3102, 1879)
 
-[node name="Sakura199" parent="Objects" instance=ExtResource("ext_69")]
+[node name="Sakura198" parent="Objects" instance=ExtResource("ext_69")]
 position = Vector2(3175, 1916)
 
-[node name="Sakura200" parent="Objects" instance=ExtResource("ext_35")]
+[node name="Sakura199" parent="Objects" instance=ExtResource("ext_35")]
 position = Vector2(3218, 1884)
 
-[node name="Sakura201" parent="Objects" instance=ExtResource("ext_35")]
+[node name="Sakura200" parent="Objects" instance=ExtResource("ext_35")]
 position = Vector2(3122, 1894)
 
-[node name="Sakura202" parent="Objects" instance=ExtResource("ext_35")]
+[node name="Sakura201" parent="Objects" instance=ExtResource("ext_35")]
 position = Vector2(1294, 626)
 
-[node name="Sakura203" parent="Objects" instance=ExtResource("ext_35")]
+[node name="Sakura202" parent="Objects" instance=ExtResource("ext_35")]
 position = Vector2(1244, 630)
 
-[node name="Sakura204" parent="Objects" instance=ExtResource("ext_35")]
+[node name="Sakura203" parent="Objects" instance=ExtResource("ext_35")]
 position = Vector2(1976, 2111)
 
-[node name="Sakura205" parent="Objects" instance=ExtResource("ext_35")]
+[node name="Sakura204" parent="Objects" instance=ExtResource("ext_35")]
 position = Vector2(1993, 2156)
 
-[node name="Sakura206" parent="Objects" instance=ExtResource("ext_34")]
+[node name="Sakura205" parent="Objects" instance=ExtResource("ext_34")]
 position = Vector2(2856, 1312)
 
-[node name="Sakura207" parent="Objects" instance=ExtResource("ext_34")]
+[node name="Sakura206" parent="Objects" instance=ExtResource("ext_34")]
 position = Vector2(2699, 1413)
 
-[node name="Sakura208" parent="Objects" instance=ExtResource("ext_38")]
+[node name="Sakura207" parent="Objects" instance=ExtResource("ext_38")]
 position = Vector2(2717, 1440)
 
-[node name="Sakura209" parent="Objects" instance=ExtResource("ext_35")]
+[node name="Sakura208" parent="Objects" instance=ExtResource("ext_35")]
 position = Vector2(2668, 1444)
 
-[node name="Sakura210" parent="Objects" instance=ExtResource("ext_35")]
+[node name="Sakura209" parent="Objects" instance=ExtResource("ext_35")]
 position = Vector2(2741, 1413)
 
-[node name="Sakura211" parent="Objects" instance=ExtResource("ext_35")]
+[node name="Sakura210" parent="Objects" instance=ExtResource("ext_35")]
 position = Vector2(2336, 1504)
 
-[node name="Sakura212" parent="Objects" instance=ExtResource("ext_35")]
+[node name="Sakura211" parent="Objects" instance=ExtResource("ext_35")]
 position = Vector2(2271, 1526)
 
-[node name="Sakura213" parent="Objects" instance=ExtResource("ext_38")]
+[node name="Sakura212" parent="Objects" instance=ExtResource("ext_38")]
 position = Vector2(2321, 1543)
 
-[node name="Sakura214" parent="Objects" instance=ExtResource("ext_45")]
-position = Vector2(1719, 894)
-
-[node name="Sakura215" parent="Objects" instance=ExtResource("ext_38")]
-position = Vector2(1768, 925)
-
-[node name="Sakura216" parent="Objects" instance=ExtResource("ext_38")]
-position = Vector2(1676, 896)
-
-[node name="Sakura217" parent="Objects" instance=ExtResource("ext_35")]
+[node name="Sakura213" parent="Objects" instance=ExtResource("ext_35")]
 position = Vector2(2417, 815)
 
-[node name="Sakura218" parent="Objects" instance=ExtResource("ext_38")]
+[node name="Sakura214" parent="Objects" instance=ExtResource("ext_38")]
 position = Vector2(2451, 853)
 
-[node name="Sakura219" parent="Objects" instance=ExtResource("ext_49")]
+[node name="Sakura215" parent="Objects" instance=ExtResource("ext_49")]
 position = Vector2(2378, 799)
 
-[node name="Sakura220" parent="Objects" instance=ExtResource("ext_35")]
+[node name="Sakura216" parent="Objects" instance=ExtResource("ext_35")]
 position = Vector2(1754, 1601)
 
-[node name="Sakura221" parent="Objects" instance=ExtResource("ext_49")]
+[node name="Sakura217" parent="Objects" instance=ExtResource("ext_49")]
 position = Vector2(1687, 1582)
 
-[node name="Sakura222" parent="Objects" instance=ExtResource("ext_35")]
+[node name="Sakura218" parent="Objects" instance=ExtResource("ext_35")]
 position = Vector2(1825, 1589)
 
-[node name="Sakura223" parent="Objects" instance=ExtResource("ext_35")]
+[node name="Sakura219" parent="Objects" instance=ExtResource("ext_35")]
 position = Vector2(1689, 1604)
 
-[node name="Sakura224" parent="Objects" instance=ExtResource("ext_45")]
+[node name="Sakura220" parent="Objects" instance=ExtResource("ext_45")]
 position = Vector2(2505, 1747)
 
-[node name="Sakura225" parent="Objects" instance=ExtResource("ext_35")]
+[node name="Sakura221" parent="Objects" instance=ExtResource("ext_35")]
 position = Vector2(1160, 1736)
 
-[node name="Sakura226" parent="Objects" instance=ExtResource("ext_35")]
+[node name="Sakura222" parent="Objects" instance=ExtResource("ext_35")]
 position = Vector2(1310, 99)
 
-[node name="Sakura227" parent="Objects" instance=ExtResource("ext_69")]
+[node name="Sakura223" parent="Objects" instance=ExtResource("ext_69")]
 position = Vector2(1340, 64)
 
-[node name="Sakura228" parent="Objects" instance=ExtResource("ext_69")]
+[node name="Sakura224" parent="Objects" instance=ExtResource("ext_69")]
 position = Vector2(1347, 91)
 
-[node name="Sakura229" parent="Objects" instance=ExtResource("ext_45")]
+[node name="Sakura225" parent="Objects" instance=ExtResource("ext_45")]
 position = Vector2(1296, 236)
 
-[node name="Sakura230" parent="Objects" instance=ExtResource("ext_49")]
+[node name="Sakura226" parent="Objects" instance=ExtResource("ext_49")]
 position = Vector2(1256, 263)
 
 [node name="SakuraDesa0" parent="Objects" instance=ExtResource("ext_34")]
@@ -1531,30 +1519,30 @@ position = Vector2(1799, 654)
 enemy_id = "orc_warrior"
 
 [node name="PetiSelatan" parent="Objects" instance=ExtResource("ext_4")]
-position = Vector2(2004, 2173)
+position = Vector2(2048, 2055)
 roll_count = 2
 
 [node name="Herb4" parent="Objects" instance=ExtResource("ext_10")]
-position = Vector2(2034, 2235)
+position = Vector2(2078, 2069)
 
 [node name="GoldCoin5" parent="Objects" instance=ExtResource("ext_11")]
-position = Vector2(1986, 2195)
+position = Vector2(2044, 2071)
 
 [node name="Ore6" parent="Objects" instance=ExtResource("ext_13")]
-position = Vector2(2006, 2111)
+position = Vector2(2008, 2113)
 
 [node name="PetiTenggara" parent="Objects" instance=ExtResource("ext_4")]
-position = Vector2(2502, 2334)
+position = Vector2(2396, 2270)
 roll_count = 2
 
 [node name="Herb7" parent="Objects" instance=ExtResource("ext_10")]
-position = Vector2(2544, 2369)
+position = Vector2(2499, 2326)
 
 [node name="GoldCoin8" parent="Objects" instance=ExtResource("ext_11")]
-position = Vector2(2498, 2308)
+position = Vector2(2284, 2286)
 
 [node name="Ore9" parent="Objects" instance=ExtResource("ext_13")]
-position = Vector2(2528, 2326)
+position = Vector2(2482, 2304)
 
 [node name="PetiTimur" parent="Objects" instance=ExtResource("ext_4")]
 position = Vector2(3048, 1544)
@@ -1583,107 +1571,107 @@ position = Vector2(2316, 728)
 position = Vector2(2346, 746)
 
 [node name="PetiSemenanjung" parent="Objects" instance=ExtResource("ext_4")]
-position = Vector2(1762, 638)
+position = Vector2(1780, 658)
 roll_count = 2
 
 [node name="Herb16" parent="Objects" instance=ExtResource("ext_10")]
-position = Vector2(1771, 664)
+position = Vector2(1831, 660)
 
 [node name="GoldCoin17" parent="Objects" instance=ExtResource("ext_11")]
-position = Vector2(1713, 666)
+position = Vector2(1773, 662)
 
 [node name="Ore18" parent="Objects" instance=ExtResource("ext_13")]
-position = Vector2(1788, 630)
+position = Vector2(1800, 723)
 
 [node name="Herb19" parent="Objects" instance=ExtResource("ext_10")]
-position = Vector2(1956, 1686)
+position = Vector2(2613, 990)
 
 [node name="GoldCoin20" parent="Objects" instance=ExtResource("ext_11")]
-position = Vector2(2237, 876)
+position = Vector2(2041, 990)
 
 [node name="Ore21" parent="Objects" instance=ExtResource("ext_13")]
-position = Vector2(1586, 423)
+position = Vector2(1956, 1686)
 
 [node name="Herb22" parent="Objects" instance=ExtResource("ext_10")]
-position = Vector2(2239, 964)
+position = Vector2(2237, 876)
 
 [node name="Herb23" parent="Objects" instance=ExtResource("ext_10")]
-position = Vector2(1679, 855)
+position = Vector2(1586, 423)
 
 [node name="GoldCoin24" parent="Objects" instance=ExtResource("ext_11")]
-position = Vector2(1481, 807)
+position = Vector2(2239, 964)
 
 [node name="Ore25" parent="Objects" instance=ExtResource("ext_13")]
-position = Vector2(2664, 1026)
+position = Vector2(1679, 855)
 
 [node name="Herb26" parent="Objects" instance=ExtResource("ext_10")]
-position = Vector2(2278, 1735)
+position = Vector2(1481, 807)
 
 [node name="Herb27" parent="Objects" instance=ExtResource("ext_10")]
-position = Vector2(2561, 1602)
+position = Vector2(2664, 1026)
 
 [node name="GoldCoin28" parent="Objects" instance=ExtResource("ext_11")]
-position = Vector2(1521, 1557)
+position = Vector2(2278, 1735)
 
 [node name="Ore29" parent="Objects" instance=ExtResource("ext_13")]
-position = Vector2(2034, 1827)
+position = Vector2(2561, 1602)
 
 [node name="Herb30" parent="Objects" instance=ExtResource("ext_10")]
-position = Vector2(2097, 885)
+position = Vector2(1521, 1557)
 
 [node name="Herb31" parent="Objects" instance=ExtResource("ext_10")]
-position = Vector2(2613, 965)
+position = Vector2(2034, 1827)
 
 [node name="GoldCoin32" parent="Objects" instance=ExtResource("ext_11")]
-position = Vector2(2189, 960)
+position = Vector2(2097, 885)
 
 [node name="Ore33" parent="Objects" instance=ExtResource("ext_13")]
-position = Vector2(2586, 932)
+position = Vector2(2625, 965)
 
 [node name="Herb34" parent="Objects" instance=ExtResource("ext_10")]
-position = Vector2(1824, 1647)
+position = Vector2(2189, 960)
 
 [node name="Herb35" parent="Objects" instance=ExtResource("ext_10")]
-position = Vector2(2387, 964)
+position = Vector2(2586, 932)
 
 [node name="GoldCoin36" parent="Objects" instance=ExtResource("ext_11")]
-position = Vector2(2466, 1660)
+position = Vector2(1824, 1647)
 
 [node name="Ore37" parent="Objects" instance=ExtResource("ext_13")]
-position = Vector2(1719, 1597)
+position = Vector2(2387, 964)
 
 [node name="Herb38" parent="Objects" instance=ExtResource("ext_10")]
-position = Vector2(2502, 923)
+position = Vector2(2466, 1660)
 
 [node name="Herb39" parent="Objects" instance=ExtResource("ext_10")]
-position = Vector2(2678, 1127)
+position = Vector2(1719, 1597)
 
 [node name="GoldCoin40" parent="Objects" instance=ExtResource("ext_11")]
-position = Vector2(1558, 1697)
+position = Vector2(2502, 923)
 
 [node name="Ore41" parent="Objects" instance=ExtResource("ext_13")]
-position = Vector2(2606, 1281)
+position = Vector2(2678, 1127)
 
 [node name="Herb42" parent="Objects" instance=ExtResource("ext_10")]
-position = Vector2(1986, 1725)
+position = Vector2(1558, 1697)
 
 [node name="Herb43" parent="Objects" instance=ExtResource("ext_10")]
-position = Vector2(2439, 1671)
+position = Vector2(2606, 1281)
 
 [node name="GoldCoin44" parent="Objects" instance=ExtResource("ext_11")]
-position = Vector2(1547, 1556)
+position = Vector2(1986, 1725)
 
 [node name="Ore45" parent="Objects" instance=ExtResource("ext_13")]
-position = Vector2(2292, 963)
+position = Vector2(2439, 1671)
 
 [node name="Herb46" parent="Objects" instance=ExtResource("ext_10")]
-position = Vector2(1326, 599)
+position = Vector2(1547, 1556)
 
 [node name="Herb47" parent="Objects" instance=ExtResource("ext_10")]
-position = Vector2(1478, 1521)
+position = Vector2(2292, 963)
 
 [node name="GoldCoin48" parent="Objects" instance=ExtResource("ext_11")]
-position = Vector2(1435, 1534)
+position = Vector2(1326, 599)
 
 [node name="Potion1" parent="Objects" instance=ExtResource("ext_12")]
 position = Vector2(1790, 1794)
