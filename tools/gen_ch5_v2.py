@@ -2,7 +2,7 @@
 
 Jalankan dari folder proyek (setelah make_prefabs.py, make_villagers.py, gen_akar_tileset.py, gen_interior.py):
     python tools/gen_ch5_v2.py
-Tahap 1 (bagian ini): peta 152x117 tile, batas akar & laut ungu, Desa Akar + pinggiran + 3 petunjuk, gerbang kabut ajaib.
+Tahap 1 (bagian ini): peta 205x158 tile (layout 152x117 diperbesar 1,35x), batas akar & laut ungu, Desa Akar + pinggiran + 3 petunjuk, gerbang kabut ajaib.
   - Lantai: rumput; jalan = tanah (autotile sudut / marching squares, tools/gen_akar_tileset.py).
   - Batas: laut UNGU di utara/barat/timur (biru pada *_layout.png), akar raksasa (relief kulit kayu) di luar mask.
   - AKAR RAKSASA Pohon Dunia (punggung kayu di DALAM wilayah) memancar dari BATANG di semenanjung utara: akar A ke pantai barat,
@@ -29,24 +29,43 @@ from gen_village import ROOT, TILE, Scene, v2  # noqa: E402
 
 dist_to, dilate, erode, b64cells, tpx = v2mod.dist_to, v2mod.dilate, v2mod.erode, v2mod.b64cells, v2mod.tpx
 LAYOUT = json.load(open(os.path.join(ROOT, "docs/layout/region_layout.json"), encoding="utf-8"))["Ch5_PohonDunia"]
-W, H = LAYOUT["ukuran_tile"]            # 152 x 117
-PX_W, PX_H = LAYOUT["ukuran_px"]        # 2432 x 1872
+# peta DIPERBESAR 1,35x dari region_layout (152x117 -> 205x158): bentuk, akar, gerbang & pinggiran terskala; Desa Akar digeser utuh
+S = 1.35
+W0, H0 = LAYOUT["ukuran_tile"]          # 152 x 117 (layout asli)
+W, H = round(W0 * S), round(H0 * S)     # 205 x 158
+PX_W, PX_H = W * 16, H * 16
+VOFF = (36 * (S - 1), 72 * (S - 1))     # geser Desa Akar (pusat kolam layout (36,72)) ke pusat ceruk yang terskala
+
+
+def sp(p):
+    """Titik tile layout -> tile peta terskala."""
+    return (p[0] * S, p[1] * S)
+
+
+def vp(p):
+    """Titik tile Desa Akar (rancangan pada skala layout) -> tile peta (digeser utuh, tidak terskala)."""
+    return (p[0] + VOFF[0], p[1] + VOFF[1])
 DOOR_DX = json.load(open(os.path.join(ROOT, "assets/props/buildings/variants/_pintu.json"), encoding="utf-8"))
-TRUNK = (68, 24)                        # batang Pohon Dunia (semenanjung utara)
+TRUNK = sp((68, 24))                    # batang Pohon Dunia (semenanjung utara)
 # akar raksasa (dataran kayu di DALAM wilayah, tile): (polyline, setengah lebar)
-RIDGES = [([TRUNK, (TRUNK[0] + 0.01, TRUNK[1])], 7.0),                                          # batang Pohon Dunia
-          ([(64, 30), (56, 40), (44, 49), (28, 53), (12, 55), (-3, 57)], 3.2),                  # akar A: dinding utara Desa Akar
-          ([(66, 30), (64, 44), (61, 57), (59.5, 65)], 3.2),                                    # akar B atas
-          ([(58.5, 76), (57.5, 85), (57, 96)], 3.2)]                                            # akar B bawah (celah = gerbang desa)
-GATE_C = (59.2, 70.5)                   # pusat celah akar B (gerbang desa, kabut ajaib)
-POND_C, POND_R = (36, 71), (4.6, 3.2)   # kolam akar di tengah Desa Akar
-SPRING_C, SPRING_R = (51, 76.5), 2.4    # mata air ungu (pinggiran timur)
+RIDGES = [([TRUNK, (TRUNK[0] + 0.01, TRUNK[1])], 7.0 * S),                                              # batang Pohon Dunia
+          ([sp(q) for q in ((64, 30), (56, 40), (44, 49), (28, 53), (12, 55), (-3, 57))], 3.2),         # akar A: dinding utara Desa Akar
+          ([sp(q) for q in ((66, 30), (64, 44), (61, 57), (59.8, 66.2))], 3.2),                         # akar B atas
+          ([sp(q) for q in ((58.4, 75.2), (57.5, 85), (57, 96))], 3.2)]                                 # akar B bawah (celah = gerbang)
+GATE_C = sp((59.2, 70.6))               # pusat celah akar B (gerbang desa, kabut ajaib)
+POND_C, POND_R = vp((36, 71)), (4.6, 3.2)   # kolam akar di tengah Desa Akar
+SPRING_C, SPRING_R = sp((51, 76.5)), 2.4    # mata air ungu (pinggiran timur)
 PREFAB_SIZE = {}
 
 
 def at(x, y):
     """Titik (px) pada tile absolut (x, y), pecahan boleh."""
     return (round(x * TILE + 8), round(y * TILE + 8))
+
+
+def vat(x, y):
+    """Titik (px) rancangan Desa Akar (skala layout) setelah digeser utuh ke pusat ceruk yang terskala."""
+    return at(x + VOFF[0], y + VOFF[1])
 
 
 def thin_cells(mask_cells, dist, seed=5):
@@ -80,18 +99,20 @@ def build():
     for e in json.load(open(os.path.join(ROOT, "scenes/prefabs/_prefabs.json"), encoding="utf-8")):
         PREFAB_SIZE[e["name"]] = (e["w"], e["h"])
     rng = random.Random(5005)
-    mask = np.array([[c == "#" for c in row] for row in LAYOUT["mask"]]).T
-    P = {k: tpx(v) for k, v in LAYOUT["titik_tile"].items()}
-    orig = organic.polyline_samples([tpx(p) for p in LAYOUT["jalan_tile"]], 12.0)
+    mask0 = np.array([[c == "#" for c in row] for row in LAYOUT["mask"]]).T
+    ix_, iy_ = np.minimum((np.arange(W) / S).astype(int), W0 - 1), np.minimum((np.arange(H) / S).astype(int), H0 - 1)
+    mask = mask0[ix_][:, iy_]                                   # mask layout diperbesar (tetangga terdekat)
+    P = {k: tpx(sp(v)) for k, v in LAYOUT["titik_tile"].items()}
+    orig = organic.polyline_samples([tpx(sp(q)) for q in LAYOUT["jalan_tile"]], 12.0)
     gx, gy = organic.grid(W, H)
 
     def idx_near(arr, pt):
         return int(np.argmin(np.hypot(arr[:, 0] - pt[0], arr[:, 1] - pt[1])))
 
     # ------------------------------------------------------------ rute: entry -> kolam akar -> gerbang (celah akar B) -> jalan layout
-    i_cont = idx_near(orig, tpx((65, 67)))
-    seg_vil = organic.polyline_samples([P["entry"], tpx((33, 80)), tpx((36, 76.2)), tpx((44, 75)), tpx((50, 72.5)), tpx(GATE_C),
-                                        tpx((65, 67))], 12.0)
+    i_cont = idx_near(orig, tpx(sp((65, 67))))
+    seg_vil = organic.polyline_samples([P["entry"], tpx(vp((33, 82))), tpx(vp((36, 76.2))), tpx(vp((44, 75))), tpx(vp((50, 72.5))),
+                                        tpx(sp((54, 71.5))), tpx(GATE_C), tpx(sp((65, 67)))], 12.0)
     route = np.vstack([seg_vil, orig[i_cont:]])
 
     def route_i(pt):
@@ -104,9 +125,9 @@ def build():
     sea_img = np.zeros_like(mask)
     for tx in range(W):
         for ty in range(H):
-            py_, px_ = min(lay.shape[0] - 1, ty * 5 + 2), min(lay.shape[1] - 1, tx * 5 + 2)
+            py_, px_ = min(lay.shape[0] - 1, int(ty / S) * 5 + 2), min(lay.shape[1] - 1, int(tx / S) * 5 + 2)
             sea_img[tx, ty] = abs(lay[py_, px_] - np.array([40, 90, 160])).sum() < 60 and ty >= 6
-    sea_img[:, :6] = sea_img[:, 6:7]
+    sea_img[:, :8] = sea_img[:, 8:9]
     land = dilate(mask, 2) & ~sea_img
     land |= np.hypot(gx - P["entry"][0], gy - P["entry"][1]) <= 3.5 * TILE
     nz_r = organic.smooth_noise(gx, gy, 31)
@@ -142,12 +163,12 @@ def build():
     corridor = land & ~face_m & ~band
 
     # ------------------------------------------------------------ jalan tanah (rute + cabang pinggiran)
-    SHRINE = tpx((12, 64))        # kuil akar (barat laut)
-    GARDEN = tpx((8, 71))         # kebun sakura (barat)
+    SHRINE = tpx(sp((12, 64)))    # kuil akar (barat laut)
+    GARDEN = tpx(sp((8, 71)))     # kebun sakura (barat)
     SPRING = tpx(SPRING_C)        # mata air ungu (timur)
-    road_k = winding(tpx((30, 66)), SHRINE, 20, 81, n=4)
-    road_g = winding(tpx((30, 75)), GARDEN, 18, 83, n=4)
-    road_ring = np.vstack([organic.polyline_samples([tpx((36 + 7.6 * math.cos(t), 71.3 + 5.4 * math.sin(t))) for t in
+    road_k = winding(tpx(vp((30, 66))), SHRINE, 20, 81, n=4)
+    road_g = winding(tpx(vp((30, 75))), GARDEN, 18, 83, n=4)
+    road_ring = np.vstack([organic.polyline_samples([tpx(vp((36 + 7.6 * math.cos(t), 71.3 + 5.4 * math.sin(t)))) for t in
                                                      np.linspace(0, math.tau, 40)], 12.0)])
     roads = np.vstack([route, road_k, road_g, road_ring])
     vx = (np.arange(W + 1) * TILE)[:, None] * np.ones((1, H + 1))
@@ -252,6 +273,7 @@ def build():
               "RumahWira": ("Rumah_Runcing_Ungu", (21, 80.6)),         # penjaga akar
               "RumahDimas": ("Pondok_Ungu", (46, 81.6)),               # prajurit muda
               "RumahWarga": ("Rumah_Runcing_Ungu", (13, 75.6))}
+    houses = {k: (pref, vp(xy)) for k, (pref, xy) in houses.items()}
     for name, (pref, (x, y)) in houses.items():
         prefab(name, pref, at(x, y))
     fence_w = PREFAB_SIZE["Pagar_Kayu"][0]
@@ -269,9 +291,9 @@ def build():
                 n += 1
     for nm, pref, (x, y) in (("LapakAkar", "Lapak_Sayur", (41.4, 77.8)), ("TongAkar", "Barel_Besar", (28.4, 77.6)),
                              ("PetiAkar", "Peti_Kayu_A", (43.6, 68.4))):
-        prefab(nm, pref, at(x, y))
+        prefab(nm, pref, vat(x, y))
     for i, (x, y) in enumerate(((29.0, 67.6), (43.0, 67.6), (29.4, 75.6), (42.6, 75.6), (33.0, 82.6), (53.6, 72.6))):
-        prefab(f"Lentera{i}", "Lentera_Tiang", at(x, y), solid=False)
+        prefab(f"Lentera{i}", "Lentera_Tiang", vat(x, y), solid=False)
     # pinggiran 1: KUIL AKAR (barat laut) - altar & pilar berlumut di bawah sakura besar
     kx_, ky_ = SHRINE
     for k, (pref, (ox, oy)) in enumerate((("Altar_Segel", (0, -6)), ("Pilar_Lumut", (-40, -10)), ("Pilar_Lumut", (40, -10)),
@@ -297,21 +319,21 @@ def build():
         npc_positions.append(pos)
 
     tedy_pos = (door_x + 40, door_y + 24)
-    wira_pos, sekar_pos, dimas_pos = at(24.4, 82.4), at(29.6, 67.8), at(49.6, 80.0)
+    wira_pos, sekar_pos, dimas_pos = vat(24.4, 82.4), vat(29.6, 67.8), vat(49.6, 80.0)
     npc("Tedy", tedy_pos, npc_id='"tedy"')
     npc("Wira", wira_pos, npc_id='"wira"', dialog_id='"ch5_wira"', villager_chapter="5")
     npc("Sekar", sekar_pos, npc_id='"sekar"', dialog_id='"ch5_sekar"', villager_chapter="5")
     npc("Dimas", dimas_pos, npc_id='"dimas"', dialog_id='"ch5_dimas"', villager_chapter="5")
-    npc("Pedagang", at(39.4, 78.0), npc_id='"pedagang"', opens_shop="true")
+    npc("Pedagang", vat(39.4, 78.0), npc_id='"pedagang"', opens_shop="true")
     sc.node("PintuTedy", "Area2D", "Objects", position=v2(door_x, door_y + 14), script=f'ExtResource("{door_script}")',
             interior_scene='"res://scenes/world/Interior_PosTedy.tscn"', hint_text='"E: Masuk pos Tedy"')
     sc.node("CollisionShape2D", "CollisionShape2D", "Objects/PintuTedy", shape=f'SubResource("{sc.rect_shape(46, 26)}")')
 
     start = tuple(int(v) for v in route[3])
-    bf1 = at(32.4, 77.6)
+    bf1 = vat(32.4, 77.6)
     inst("Bonfire1", bonfire_scene, bf1)
-    inst("BenderaMasuk", checkpoint_scene, at(35.6, 84.0))
-    inst("BenderaGerbang", checkpoint_scene, at(54.2, 68.4))
+    inst("BenderaMasuk", checkpoint_scene, vat(35.6, 84.0))
+    inst("BenderaGerbang", checkpoint_scene, at(*sp((54.6, 68.2))))
     inst("BenderaKuil", checkpoint_scene, (kx_ + 60, ky_ + 30))
     inst("PetiKuil", chest_scene, (kx_ - 30, ky_ + 36), roll_count="2")
     inst("PetiKebun", chest_scene, (gx0 - 10, gy0 + 50), roll_count="2")
@@ -344,7 +366,7 @@ def build():
         return float(d_route[tx_, ty_]) if 0 <= tx_ < W and 0 <= ty_ < H else 0.0
 
     tcol, trow = np.arange(W)[:, None], np.arange(H)[None, :]
-    village_zone = (tcol >= 6) & (tcol <= 56) & (trow >= 58) & (trow <= 88)
+    village_zone = (tcol >= 6 + VOFF[0]) & (tcol <= 58 + VOFF[0]) & (trow >= 58 + VOFF[1]) & (trow <= 88 + VOFF[1])
     keypts = [P[k] for k in ("entry", "puzzle", "bonfire_preboss", "boss_arena")] + [bf1, start] + npc_positions
     no_deco = dilate(band, 3) | (np.hypot(gx - P["boss_arena"][0], gy - P["boss_arena"][1]) < 12 * TILE)
 
@@ -384,7 +406,7 @@ def build():
                 nm_ += 1
     # sakura di tepi desa (di luar jalan & rumah)
     for k, (x, y) in enumerate(((8, 64), (16, 62), (52, 64), (10, 84), (40, 86), (54, 86), (18, 70), (50, 70))):
-        q_ = at(x, y)
+        q_ = vat(x, y)
         tx_, ty_ = int(q_[0] // TILE), int(q_[1] // TILE)
         if corridor[tx_, ty_] and road_dist(*q_) > 30 and not near_building(q_[0], q_[1], 10):
             prefab(f"SakuraDesa{k}", "Sakura_1" if k % 2 else "Sakura_Besar", q_)
@@ -392,7 +414,7 @@ def build():
 
     nl = 0
     for nm, (bx_, by_) in (("Herb", (kx_ - 60, ky_ + 50)), ("Herb", (gx0 + 60, gy0 - 50)), ("GoldCoin", (sx_ + 50, sy_ + 30)),
-                           ("Herb", (gx0 - 30, gy0 + 70)), ("Potion", at(47.0, 71.0))):
+                           ("Herb", (gx0 - 30, gy0 + 70)), ("Potion", vat(47.0, 71.0))):
         tx_, ty_ = int(bx_ // TILE), int(by_ // TILE)
         if corridor[tx_, ty_] and not near_building(bx_, by_, 6):
             nl += 1

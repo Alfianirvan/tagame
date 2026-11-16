@@ -246,7 +246,7 @@ Tahap 3: Quest Akhir berlangkah: kalahkan Ksatria Rantai di arena lantai es (Kri
 Simpul** (2 soal) → Data Fragment + Gold → awan di celah gunung barat laut hilang (jembatan es ke Pohon Dunia). Panah memakai
 `Region.shortcut_route` (runtuhan es N2 → N1 → gerbang → Pulau 2) setelah Kristal.
 
-**Ch5 (keputusan, dikerjakan 3 tahap):** peta dibangun ulang 152x117 sesuai region_layout (generator `tools/gen_ch5_v2.py`, tileset
+**Ch5 (keputusan, dikerjakan 3 tahap):** peta dibangun ulang dari region_layout 152x117 DIPERBESAR 1,35x = 205x158 (permintaan Alfian; generator `tools/gen_ch5_v2.py`, tileset
 `tools/gen_akar_tileset.py` → `akar_tileset.tres`: rumput + jalan tanah, AKAR RAKSASA = relief diwarnai kulit kayu, air UNGU; prototipe
 lama dicadangkan di `..\_backup_scenes_organik\`). Batang Pohon Dunia di semenanjung utara; akar A (ke pantai barat) & akar B (ke tebing
 selatan) memagari **Desa Akar** di ceruk barat daya; celah akar B = gerbang desa (kabut ajaib, quest_stage 1). Desa: kolam akar ungu di
