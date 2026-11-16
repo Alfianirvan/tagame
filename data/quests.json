@@ -491,11 +491,15 @@
     "type": "puzzle",
     "npc": "",
     "title": "Sambung Batu Portal",
-    "objective": "Di Gua Rantai: sambung batu portal (next), sisipkan node yang hilang, buang node jebakan.",
+    "objective": "Di dataran utara (lewat Celah Barat & Celah Timur): sambung batu portal, sisipkan node yang hilang, buang node jebakan.",
     "reward": {
       "gold": 110,
-      "xp": 60
-    }
+      "xp": 60,
+      "items": {
+        "tongkat_sihir_plus": 1
+      }
+    },
+    "final_target": "StasiunPortal"
   },
   "ch4_akhir": {
     "chapter": 4,

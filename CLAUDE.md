@@ -237,6 +237,11 @@ Pulau 1 (Gilang) → Pulau 2 (rumah Megas = `Interior_RumahMegas.tscn` meja alki
 gerbang. Rumah beratap salju (`Rumah_*_Salju`, `Pondok_Salju`). Pinggiran: pondok pencari kristal (timur laut), gua kristal (barat daya),
 tepi danau tenggara. Quest Awal: tanya 3 warga (Gilang penjaga jembatan, Laras murid sihir, Bayu pencari kristal) → 3 petunjuk Linked List
 → kuis Megas. Uji alur: `tools/test_ch4_flow.tscn` (headless).
+Tahap 2: rute zig-zag (punggung es N1/N2/N3 di dalam wilayah): gerbang desa → LERENG SELATAN ke barat → CELAH BARAT (dekat laut beku)
+→ LEMBAH TENGAH ke timur → CELAH TIMUR → DATARAN UTARA (stasiun batu portal, puzzle dipindah ke tile (116,34)) → DINDING RANTAI ES di
+celah N3 (`StageBlocker`, hilang di quest_stage 2) → Bonfire pra-boss → ARENA LANTAI ES Ksatria Rantai (sumber 3 `glacier_ice.png`)
+→ jembatan es di celah gunung barat laut (exit dipindah ke (38,4)). ±276 tile gerbang→arena. Jalan pintas arena→desa = 2 RUNTUHAN ES
+(celah N2 & N1, `StageBlocker` mode crystal). Musuh: kerangka (Skeleton) + slime es, 24 ekor. Hadiah tengah: Tongkat Sihir+.
 
 **Varian rumah (keputusan):** `tools/make_houses.py` merakit 17 rumah dari kit Pixel Crawler (Walls/Roofs/Props) →
 `assets/props/buildings/variants/*.png` + `_pintu.json` (geser pintu dari pusat, dipakai pagar & pintu interior) → prefab lewat
