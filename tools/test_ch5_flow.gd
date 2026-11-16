@@ -1,6 +1,6 @@
 extends Node
 ## Uji main otomatis Chapter 5 (headless): masuk Desa Akar -> tanya 3 warga -> 3 petunjuk Tree -> kuis Tedy
-## -> kabut ajaib di celah akar terbuka. Aksi pemain disimulasikan lewat API yang sama dengan node game.
+## -> kabut ajaib di celah akar terbuka -> labirin bercabang -> segel cabang memudar -> (Kristal) akar tumbang jalan pintas menyusut. Aksi pemain disimulasikan lewat API yang sama dengan node game.
 ## Jalankan (save asli dicadangkan dulu oleh pemanggil):
 ##   godot --headless --fixed-fps 60 --path . res://tools/test_ch5_flow.tscn
 
@@ -82,10 +82,60 @@ func _ready() -> void:
 	check(cloud_open("AwanGerbangDesa"), "kabut ajaib gerbang terbuka")
 	check(int(GameManager.inventory.get("armor_besi", 0)) >= 1 or GameManager.equipment.values().has("armor_besi"), "hadiah awal: Armor Besi")
 
+	var st: PuzzleStation = node("StasiunLabirin") as PuzzleStation
+	check(st != null and st._block_reason() != "", "stasiun labirin terkunci sebelum misi Dusun Ranting")
+
+	# Dusun Ranting: temui Pak Banyu -> nyalakan lentera ranting (pre-order) -> baru labirin bercabang
+	var lt: PuzzleStation = node("StasiunLentera") as PuzzleStation
+	check(node("Banyu") != null and lt != null, "Dusun Ranting: Pak Banyu & lentera ranting terpasang")
+	check(QuestManager.get_current_step("ch5_tengah").get("id", "") == "dusun", "langkah aktif: temui Pak Banyu")
+	check(QuestManager.get_dialog_for("banyu") == "banyu_ch5_minta", "Banyu: dialog minta tolong")
+	check(lt._block_reason() != "", "lentera belum bisa dinyalakan sebelum bicara dengan Banyu")
+	await end_dialog("banyu_ch5_minta")
+	check(lt._block_reason() == "", "lentera ranting bisa dinyalakan")
+	lt._open()
+	await frames(2)
+	var tt: TreeTraversal = lt._puzzle as TreeTraversal
+	tt._on_lantern(2)                       # salah: bukan akar -> semua padam
+	check(tt.lit.is_empty(), "salah urutan memadamkan semua lentera")
+	for i in TreeTraversal.PREORDER:
+		tt._on_lantern(i)
+	check(tt.is_solved, "lentera menyala sesuai pre-order")
+	tt.close_puzzle()
+	await frames(60)
+	print("== 3b Dusun Ranting: ", tracked())
+	check(GameManager.has_story_flag("ch5_lentera_ranting") and GameManager.get_quest_stage(5) == 1, "langkah lentera selesai, quest tengah belum")
+	check(QuestManager.get_dialog_for("banyu") == "banyu", "Banyu: dialog terima kasih")
+	check(st._block_reason() == "", "stasiun labirin bercabang bisa dibuka")
+
+	# Tahap 2: musuh perjalanan, segel cabang di kaki tangga akar (Quest Tengah), akar tumbang (jalan pintas setelah Kristal)
+	var mobs: int = 0
+	for c in region.get_node("Objects").get_children():
+		if c is Enemy:
+			mobs += 1
+	check(mobs >= 20, "musuh perjalanan terpasang (%d)" % mobs)
+	var bar: StageBlocker = node("SegelCabang") as StageBlocker
+	var sc: StageBlocker = node("AkarTumbang") as StageBlocker
+	check(not bar.is_open and not sc.is_open, "segel cabang & akar tumbang masih menutup")
+	st._open()
+	await frames(2)
+	st._puzzle.complete_puzzle()
+	st._puzzle.close_puzzle()
+	await frames(200)
+	print("== 4 Labirin: ", tracked())
+	check(GameManager.get_quest_stage(5) == 2, "quest_stage Ch5 = 2")
+	check(bar.is_open and not (bar.get_node("Block") as TileMapLayer).collision_enabled, "segel cabang memudar (tabrakan mati)")
+	check(not sc.is_open, "akar tumbang masih menutup sebelum Kristal")
+	check(int(GameManager.inventory.get("perisai_legendaris", 0)) >= 1 or GameManager.equipment.values().has("perisai_legendaris"), "hadiah tengah: Perisai Legendaris")
+	check(QuestManager.get_tracked_quest_id() == "ch5_akhir", "quest aktif ch5_akhir")
+	GameManager.add_crystal(5)
+	await frames(120)
+	check(sc.is_open, "akar tumbang menyusut setelah Kristal Tree")
+
 	var data: Dictionary = GameManager.get_save_data()
 	GameManager.reset_state()
 	GameManager.apply_save_data(data)
-	check(GameManager.has_story_flag("ch5_petunjuk_3") and GameManager.get_quest_stage(5) == 1, "flag & tahap quest ikut tersimpan")
+	check(GameManager.has_story_flag("ch5_petunjuk_3") and GameManager.get_quest_stage(5) == 2 and GameManager.has_crystal(5), "flag, tahap quest & Kristal ikut tersimpan")
 
 	print("HASIL: ", "SEMUA OK" if fails == 0 else "%d GAGAL" % fails)
 	get_tree().quit(1 if fails > 0 else 0)

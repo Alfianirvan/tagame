@@ -44,6 +44,10 @@ VILLAGERS = {
     "Wira": ("Knight/Idle/Idle-Sheet.png", 0.3, 0.9),
     "Sekar": ("Wizzard/Idle/Idle-Sheet.png", 0.6, 0.9),
     "Dimas": ("Rogue/Idle/Idle-Sheet.png", 0.9, 0.95),
+    # warga Dusun Ranting (Ch5): kepala dusun, penjual bunga, anak penggembala
+    "Banyu": ("Knight/Idle/Idle-Sheet.png", 0.75, 0.85),
+    "Lastri": ("Citizen_F/Tavern_A/Idle/Idle_Side-Sheet.png", 0.85, 1.0),
+    "Tole": ("Citizen_F/Peasant_A/Idle/Idle-Sheet.png", 0.1, 1.0),
 }
 
 
