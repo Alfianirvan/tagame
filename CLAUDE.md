@@ -195,6 +195,12 @@ Struktur tiap wilayah (desa alun-alun, cari petunjuk, zona aman, skala map): iku
 | 4 Linked List | Megas | "Selain data, node menyimpan apa?" (penunjuk ke node berikutnya) | Tongkat Sihir | Sambung batu portal (next), sisipkan node hilang, buang node jebakan | Ksatria Rantai | Tongkat Sihir+ | "Kelebihan linked list saat sisip di tengah?" (tidak perlu geser elemen) |
 | 5 Tree | Tedy | "Node paling atas pada tree?" (root) | Armor Besi + Potion Besar | Labirin bercabang ala BST (kecil kiri, besar kanan) | King Subiyan | Perisai & Armor Legendaris | "Node tanpa anak disebut?" (leaf) → tamat |
 
+**Credit scene (keputusan, permintaan Alfian):** isi di `data/credits.json`. Tiap chapter (Ch1–Ch5) punya credit pembuka
+`opening_ch<N>` (kartu judul "Chapter N — Wilayah" + materi, lalu baris cerita berpotret; `OpeningCredits.gd`, tampil sekali saat pertama
+masuk wilayah, lewati dengan E/Esc). Setelah King Subiyan kalah & Kristal Tree diserahkan ke Tedy: ENDING CREDIT (`EndCredits.gd`: epilog
+`ending` + credit bergulir `roll`), lalu layar TAMAT. Data tim/dosen (`team`) dipakai About & credit; **ganti nama placeholder di sana**.
+Uji: `tools/test_credits.tscn`; tangkapan layar: `tools/render_credits.tscn` → `docs/layout/Credit_*.png`.
+
 **Desa Algoria (keputusan, permintaan Alfian: desa yang besar):** `Village.tscn` dibangun ulang 128x96 tile (generator `tools/gen_algoria.py`,
 tileset pesisir; desa kecil lama dicadangkan di `..\_backup_scenes_organik\Village_desa_kecil_lama.tscn`). Jalan utama dari gerbang hutan (utara,
 papan jalan ke Hutan Indeks) ke pelabuhan (selatan), Jalan Pasar, alun-alun (sumur, lapak, Bonfire, bendera) dengan Balai Desa Joko & Toko
