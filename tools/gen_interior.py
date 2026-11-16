@@ -42,7 +42,29 @@ TAVERN_ITEMS = [
     ((68, 176, 91, 198), (96, 38), None),            # jendela
     ((0, 352, 80, 384), (258, 186), None),           # tanaman
 ]
-ROOMS = {"arman": HOUSE_ITEMS, "mandor": HOUSE_ITEMS, "dadang": TAVERN_ITEMS}
+# Rumah Megas (Ch4): meja alkimia (Stations/Alchemy, frame pertama), rak ramuan & toples (Esoteric), jendela, tanaman.
+# Elemen ke-4 (opsional) = lembar sumber relatif assets/props/ (default Interior_Props_01).
+ALCH = "stations/Alchemy/Alchemy_Table_0%d-Sheet.png"
+MAGE_ITEMS = [
+    ((0, 31, 32, 64), (48, 84), (28, 14), ALCH % 1),
+    ((0, 20, 48, 64), (144, 80), (44, 16), ALCH % 2),
+    ((0, 8, 80, 80), (238, 88), (62, 20), ALCH % 3),
+    ((86, 14, 113, 34), (96, 44), None, "Esoteric.png"),          # rak ramuan di dinding
+    ((86, 46, 113, 66), (196, 44), None, "Esoteric.png"),
+    ((0, 86, 16, 112), (20, 168), (12, 8), "Esoteric.png"),       # toples spesimen
+    ((32, 86, 48, 112), (268, 160), (12, 8), "Esoteric.png"),
+    ((0, 160, 26, 176), (112, 150), None, "Esoteric.png"),        # buku terbuka di lantai
+    ((68, 176, 91, 198), (40, 38), None),                         # jendela
+    ((0, 352, 80, 384), (258, 186), None),                        # tanaman
+]
+ROOMS = {"arman": HOUSE_ITEMS, "mandor": HOUSE_ITEMS, "dadang": TAVERN_ITEMS, "megas": MAGE_ITEMS}
+_SHEETS = {}
+
+
+def sheet_of(rel):
+    if rel not in _SHEETS:
+        _SHEETS[rel] = Image.open(os.path.join(ROOT, "assets/props", rel)).convert("RGBA")
+    return _SHEETS[rel]
 
 
 def trim(box, sheet=PROPS):
@@ -62,8 +84,9 @@ def build_room(room_id):
         room.alpha_composite(wall, (x, 16))
         room.alpha_composite(WALLS.crop((32, 96, 64, 112)), (x, 0))
     colliders = []
-    for box, (fx, fy), col in ROOMS[room_id]:
-        im, _ = trim(box)
+    for item in ROOMS[room_id]:
+        box, (fx, fy), col = item[:3]
+        im, _ = trim(box, sheet_of(item[3]) if len(item) > 3 else PROPS)
         room.alpha_composite(im, (fx - im.width // 2 if box[1] != 288 else fx, fy - im.height))
         if col:
             colliders.append((fx, fy, col[0], col[1]))
@@ -105,6 +128,7 @@ def build_scene(colliders, room_id, scene_name, chapter, music):
 if __name__ == "__main__":
     for rid, name, ch, music in (("arman", "Interior_RumahArman", 1, "desa_algoria"),
                                  ("mandor", "Interior_RumahMandor", 2, "desa_algoria"),
-                                 ("dadang", "Interior_KedaiDadang", 3, "desa_algoria")):
+                                 ("dadang", "Interior_KedaiDadang", 3, "desa_algoria"),
+                                 ("megas", "Interior_RumahMegas", 4, "desa_algoria")):
         build_scene(build_room(rid), rid, name, ch, music)
         print(name + ".tscn dibuat")

@@ -1,0 +1,12 @@
+{
+  "lines": [
+    {
+      "speaker": "narator",
+      "text": "Catatan jembatan Gilang: \"Tepi masuk -> Pulau 1 -> Pulau 2 -> Pulau 3 -> Gerbang -> (habis).\""
+    },
+    {
+      "speaker": "raka",
+      "text": "Tiap pulau menunjuk ke pulau berikutnya, dan yang terakhir menunjuk ke kosong. Persis rantai Linked List."
+    }
+  ]
+}

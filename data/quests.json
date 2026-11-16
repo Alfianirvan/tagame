@@ -442,8 +442,8 @@
     "stage": 1,
     "type": "quiz",
     "npc": "megas",
-    "title": "Rantai yang Terputus",
-    "objective": "Temui Megas dan jawab 3 soal tentang Linked List.",
+    "title": "Desa Simpul yang Terputus",
+    "objective": "Laporkan petunjuk kepada Megas, lalu jawab 3 soal tentang Linked List.",
     "dialog": "megas_ch4_awal",
     "dialog_success": "megas_ch4_awal_sukses",
     "dialog_done": "megas_ch4_awal_sukses",
@@ -457,7 +457,33 @@
     "bonus": {
       "gold": 60,
       "xp": 35
-    }
+    },
+    "steps": [
+      {
+        "id": "warga",
+        "text": "Tanya warga Desa Simpul (%d/%d)",
+        "villagers": 3,
+        "villager_chapter": 4
+      },
+      {
+        "id": "petunjuk",
+        "text": "Cari petunjuk di pinggiran desa (%d/%d)",
+        "flags_all": [
+          "ch4_petunjuk_1",
+          "ch4_petunjuk_2",
+          "ch4_petunjuk_3"
+        ],
+        "target": [
+          "Petunjuk1",
+          "Petunjuk2",
+          "Petunjuk3"
+        ],
+        "reward": {
+          "xp": 10
+        }
+      }
+    ],
+    "dialog_waiting": "megas_ch4_tanya_warga"
   },
   "ch4_tengah": {
     "chapter": 4,

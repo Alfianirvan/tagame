@@ -2,7 +2,7 @@
   "lines": [
     {
       "speaker": "megas",
-      "text": "Bagus! Kamu paham Linked List: tiap node menyimpan data dan penunjuk ke node berikutnya."
+      "text": "Bagus! Kamu paham Linked List: mulai dari head, ikuti penunjuk next sampai bertemu null."
     },
     {
       "speaker": "megas",
@@ -10,11 +10,11 @@
     },
     {
       "speaker": "megas",
-      "text": "Di dalam gua, sambung batu portal, sisipkan node yang hilang, dan buang node jebakan. Setelah itu hadapi Ksatria Rantai."
+      "text": "Badai salju di gerbang barat laut sudah kuredakan. Seberangi jembatan terakhir, lalu ikuti jalan menuju mulut gua."
     },
     {
       "speaker": "megas",
-      "text": "Sebelum masuk gua, kunjungi Pedagang di dekat api unggun. Beli Potion dan perlengkapan, sebab Ksatria Rantai menunggumu di dalam."
+      "text": "Mampirlah ke Pedagang dulu. Beli Potion dan perlengkapan, sebab Ksatria Rantai menunggumu di dalam."
     }
   ]
 }

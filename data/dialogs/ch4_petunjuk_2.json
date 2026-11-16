@@ -1,0 +1,12 @@
+{
+  "lines": [
+    {
+      "speaker": "narator",
+      "text": "Batu portal kecil berukir dua bagian: kiri bertuliskan \"isi\", kanan sebuah panah bertuliskan \"berikutnya\"."
+    },
+    {
+      "speaker": "raka",
+      "text": "Satu node = data + penunjuk next. Batu ini adalah sebuah node."
+    }
+  ]
+}

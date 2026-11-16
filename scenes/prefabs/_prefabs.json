@@ -544,6 +544,78 @@
   "cdx": 0
  },
  {
+  "name": "Pinus_Salju_1",
+  "w": 32,
+  "h": 32,
+  "cw": 8,
+  "ch": 6,
+  "cdx": 0
+ },
+ {
+  "name": "Pinus_Salju_2",
+  "w": 32,
+  "h": 32,
+  "cw": 8,
+  "ch": 6,
+  "cdx": 0
+ },
+ {
+  "name": "Pohon_Salju_Bulat",
+  "w": 32,
+  "h": 29,
+  "cw": 10,
+  "ch": 6,
+  "cdx": 0
+ },
+ {
+  "name": "Pinus_Salju_Rumpun",
+  "w": 64,
+  "h": 31,
+  "cw": 40,
+  "ch": 10,
+  "cdx": 0
+ },
+ {
+  "name": "Pohon_Salju_Besar",
+  "w": 50,
+  "h": 48,
+  "cw": 14,
+  "ch": 8,
+  "cdx": 0
+ },
+ {
+  "name": "Gundukan_Salju",
+  "w": 32,
+  "h": 30,
+  "cw": 26,
+  "ch": 10,
+  "cdx": 0
+ },
+ {
+  "name": "Batu_Kelabu",
+  "w": 61,
+  "h": 31,
+  "cw": 54,
+  "ch": 14,
+  "cdx": 0
+ },
+ {
+  "name": "Kristal_Ungu_1",
+  "w": 58,
+  "h": 44,
+  "cw": 30,
+  "ch": 8,
+  "cdx": 0
+ },
+ {
+  "name": "Kristal_Ungu_2",
+  "w": 40,
+  "h": 34,
+  "cw": 20,
+  "ch": 8,
+  "cdx": 0
+ },
+ {
   "name": "Rumah_Krem",
   "w": 128,
   "h": 138,
@@ -608,6 +680,14 @@
   "cdx": 0
  },
  {
+  "name": "Pondok_Salju",
+  "w": 72,
+  "h": 96,
+  "cw": 60,
+  "ch": 46,
+  "cdx": 0
+ },
+ {
   "name": "Rumah_Loteng_Biru",
   "w": 128,
   "h": 190,
@@ -640,6 +720,14 @@
   "cdx": 0
  },
  {
+  "name": "Rumah_Loteng_Salju",
+  "w": 128,
+  "h": 190,
+  "cw": 116,
+  "ch": 46,
+  "cdx": 0
+ },
+ {
   "name": "Rumah_Menara_Hijau",
   "w": 196,
   "h": 148,
@@ -657,6 +745,14 @@
  },
  {
   "name": "Rumah_Menara_Merah",
+  "w": 196,
+  "h": 148,
+  "cw": 184,
+  "ch": 46,
+  "cdx": 0
+ },
+ {
+  "name": "Rumah_Menara_Salju",
   "w": 196,
   "h": 148,
   "cw": 184,
@@ -688,6 +784,14 @@
   "cdx": 0
  },
  {
+  "name": "Rumah_Runcing_Salju",
+  "w": 96,
+  "h": 143,
+  "cw": 84,
+  "ch": 46,
+  "cdx": 0
+ },
+ {
   "name": "Rumah_Teras_Biru",
   "w": 176,
   "h": 138,
@@ -697,6 +801,14 @@
  },
  {
   "name": "Rumah_Teras_Coklat",
+  "w": 176,
+  "h": 138,
+  "cw": 164,
+  "ch": 46,
+  "cdx": 0
+ },
+ {
+  "name": "Rumah_Teras_Salju",
   "w": 176,
   "h": 138,
   "cw": 164,

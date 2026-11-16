@@ -36,6 +36,10 @@ VILLAGERS = {
     "Sesepuh": ("Wizzard/Idle/Idle-Sheet.png", 0.75, 0.8),
     "Raras": ("Citizen_F/Tavern_B/Idle/Idle_Side-Sheet.png", 0.6, 0.95),
     "Bimo": ("Rogue/Idle/Idle-Sheet.png", 0.3, 0.9),
+    # warga Desa Simpul (Ch4): penjaga jembatan, murid sihir, pencari kristal
+    "Gilang": ("Knight/Idle/Idle-Sheet.png", 0.55, 0.95),
+    "Laras": ("Wizzard/Idle/Idle-Sheet.png", 0.2, 1.0),
+    "Bayu": ("Rogue/Idle/Idle-Sheet.png", 0.72, 0.95),
 }
 
 

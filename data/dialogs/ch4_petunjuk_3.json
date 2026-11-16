@@ -1,0 +1,12 @@
+{
+  "lines": [
+    {
+      "speaker": "narator",
+      "text": "Jejak kristal ungu berderet. Kristal pertama bertanda \"HEAD\", kristal terakhir bertanda \"NULL\"."
+    },
+    {
+      "speaker": "raka",
+      "text": "Linked List dimulai dari head dan berakhir ketika next bernilai null."
+    }
+  ]
+}
