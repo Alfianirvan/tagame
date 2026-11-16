@@ -87,7 +87,7 @@ def recolor_hue(im, hue, sat_mul=1.0, val_mul=1.0):
 
 def roof_piece(kind, color):
     """Potongan atap A/B/C dalam warna tertentu."""
-    green = color in ("hijau", "merah", "biru")
+    green = color in ("hijau", "merah", "biru", "salju")
     dx = 128 if green else 0
     if kind == "A":
         im = ROOFS.crop((dx, 6, dx + 128, 95))
@@ -110,6 +110,8 @@ def roof_piece(kind, color):
         im = recolor_hue(im, 0.01, 1.05, 0.95)
     elif color == "biru":
         im = recolor_hue(im, 0.6, 0.95, 0.95)
+    elif color == "salju":                      # atap tertutup salju: putih kebiruan
+        im = recolor_hue(im, 0.58, 0.18, 1.32)
     return im
 
 
@@ -276,6 +278,19 @@ DESIGNS = {
                                windows=[("biru", 12, 0), ("biru", -12, 0), ("bingkai", 24, 1), ("bingkai", -24, 1)])],
     "Rumah_Loteng_Coklat": [dict(kind="A", wall="papan_gelap", floors=2, roof="coklat", door=("kayu", "kayu"), chimney=20,
                                  windows=[("tutup", 12, 0), ("tutup", -12, 0), ("kisi", 26, 1), ("kisi", -26, 1)])],
+    # Ch4 Desa Simpul: atap bersalju
+    "Rumah_Menara_Salju": [
+        dict(kind="C", wall="bata", floors=2, roof="salju", width=56, windows=[("lengkung", 16, 1)]),
+        dict(kind="B", wall="rangka", floors=1, roof="salju", door=("batu", "lengkung_abu"), windows=[("biru", 8, 0)]),
+        dict(kind="P", roof="salju", width=44)],
+    "Rumah_Loteng_Salju": [dict(kind="A", wall="gelondong", floors=2, roof="salju", door=("kayu", "kayu"), chimney=86,
+                                windows=[("tutup", 12, 0), ("tutup", -12, 0), ("kecil", 30, 1), ("kecil2", -30, 1)])],
+    "Rumah_Runcing_Salju": [dict(kind="B", wall="papan", floors=1, roof="salju", door=("kayu", "kayu"),
+                                 windows=[("biru", 8, 0), ("biru", -8, 0)])],
+    "Rumah_Teras_Salju": [dict(kind="A", wall="papan_gelap", floors=1, roof="salju", door=("kayu", "kayu"), chimney=90,
+                               windows=[("bingkai", 12, 0), ("bingkai", -12, 0)]), dict(kind="P", roof="salju", width=48)],
+    "Pondok_Salju": [dict(kind="C", wall="gelondong", floors=1, roof="salju", width=72, door=(None, "kayu"), door_x=8,
+                          windows=[("kecil", -10, 0)])],
     # atap runcing satu lantai (rumah warga kecil)
     "Rumah_Runcing_Coklat": [dict(kind="B", wall="papan_gelap", floors=1, roof="coklat", door=(None, "kayu"),
                                   windows=[("kisi", 8, 0), ("kisi", -8, 0)])],

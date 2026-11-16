@@ -95,6 +95,16 @@ SHEET = {
     "Kerang_2": ("../tilesets_biome/TilesetDesert.png", (289, 178, 303, 190), (4, 4)),
     "Menara_Kubah": ("../tilesets_biome/TilesetDesert.png", (49, 0, 95, 80), (40, 24)),
     "Perahu_Kecil": ("../tilesets_biome/TilesetWater.png", (416, 0, 448, 16), (28, 10)),
+    # Ch4 Gua Rantai: pohon & semak bersalju (Ninja TilesetNature), batu kelabu, kristal ungu (generated)
+    "Pinus_Salju_1": ("../tilesets_biome/TilesetNature.png", (160, 0, 192, 32), (8, 6)),
+    "Pinus_Salju_2": ("../tilesets_biome/TilesetNature.png", (128, 0, 160, 32), (8, 6)),
+    "Pohon_Salju_Bulat": ("../tilesets_biome/TilesetNature.png", (192, 0, 224, 32), (10, 6)),
+    "Pinus_Salju_Rumpun": ("../tilesets_biome/TilesetNature.png", (128, 96, 192, 127), (40, 10)),
+    "Pohon_Salju_Besar": ("../tilesets_biome/TilesetNature.png", (100, 288, 150, 336), (14, 8)),
+    "Gundukan_Salju": ("../tilesets_biome/TilesetNature.png", (32, 192, 64, 224), (26, 10)),
+    "Batu_Kelabu": ("../tilesets_biome/TilesetNature.png", (256, 96, 320, 132), (54, 14)),
+    "Kristal_Ungu_1": ("generated/kristal_ungu_1.png", (0, 0, 60, 48), (30, 8)),
+    "Kristal_Ungu_2": ("generated/kristal_ungu_2.png", (0, 0, 40, 40), (20, 8)),
 }
 BUILDINGS = {
     "Rumah_Krem": "buildings/house_brown.png", "Rumah_Hijau": "buildings/house_green.png", "Rumah_Kayu": "buildings/house_log.png",

@@ -229,6 +229,15 @@ Tahap 3: Quest Tengah = antrean warung → **Zirah Rantai** + Potion + barikade 
 di dermaga bajak laut (Kristal) → perahu karam tersingkir → **Dadang tetap di Kedai** (2 soal) → Data Fragment + Gold → awan di pangkal
 dermaga teluk utara hilang (Kapal Dadang ke Gua Rantai). Panah memakai `Region.shortcut_route` (pesisir timur) setelah Kristal.
 
+**Ch4 (keputusan, dikerjakan 3 tahap):** peta dibangun ulang 165x128 sesuai region_layout (generator `tools/gen_ch4_v2.py`, tileset
+`tools/gen_glacier_tileset.py` → `glacier_tileset.tres`: salju, tebing salju biru kelabu, air bertepi salju; prototipe lama dicadangkan
+di `..\_backup_scenes_organik\`). KANTONG DESA di tenggara dipagari PUNGGUNG ES (R1 utara, R2 barat), celah barat laut = gerbang
+badai salju (quest_stage 1). **Desa Simpul** = danau beku dengan 3 pulau yang DIRANTAI JEMBATAN papan (tema Linked List): tepi masuk →
+Pulau 1 (Gilang) → Pulau 2 (rumah Megas = `Interior_RumahMegas.tscn` meja alkimia, alun-alun, Bonfire, Pedagang) → Pulau 3 → tepi utara →
+gerbang. Rumah beratap salju (`Rumah_*_Salju`, `Pondok_Salju`). Pinggiran: pondok pencari kristal (timur laut), gua kristal (barat daya),
+tepi danau tenggara. Quest Awal: tanya 3 warga (Gilang penjaga jembatan, Laras murid sihir, Bayu pencari kristal) → 3 petunjuk Linked List
+→ kuis Megas. Uji alur: `tools/test_ch4_flow.tscn` (headless).
+
 **Varian rumah (keputusan):** `tools/make_houses.py` merakit 17 rumah dari kit Pixel Crawler (Walls/Roofs/Props) →
 `assets/props/buildings/variants/*.png` + `_pintu.json` (geser pintu dari pusat, dipakai pagar & pintu interior) → prefab lewat
 `make_prefabs.py` (Rumah_Menara_*, Rumah_Loteng_*, Rumah_Runcing_*, Rumah_Teras_*, Gudang_Panjang, Pondok_*, Toko_*). Gaya per wilayah:

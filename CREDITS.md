@@ -19,6 +19,8 @@
 | Ch2: batu ngarai (Rocks), bengkel Lilbah (Anvil, Furnace, Workbench), sprite warga Kampung Tumpuk (Mandor, Bu Mirah, Udin; diwarnai ulang dari Knight, Peasant_A, Rogue) | **Pixel Crawler – Free Pack 2.11** oleh Anokolisa | Free / turunan Pixel Crawler |
 | Ch3 Pelabuhan Antre: rumput & pantai (TilesetFloor, tanah diwarnai ulang jadi pasir oleh `tools/gen_coast_tileset.py`), laut bertepi pasir & papan dermaga (TilesetWater), tebing berpuncak rumput (TilesetRelief diwarnai ulang), palem, lapak tenda, keranjang, kerang, menara kubah/mercusuar (TilesetDesert), kapal layar (Boat + Sail), perahu kecil | **Ninja Adventure – Asset Pack** oleh pixel-boy & AAA | CC0 |
 | Ch3: interior Kedai Dadang (Interior_Walls/Props), sprite warga Kota Pelabuhan Antre (Wulan, Pak Bahar, Nina; diwarnai ulang dari Tavern_A, Rogue, Peasant_A) | **Pixel Crawler – Free Pack 2.11** oleh Anokolisa | Free / turunan Pixel Crawler |
+| Ch4 Gua Rantai: salju & jalan salju (TilesetFloor), air/danau bertepi salju & papan jembatan (TilesetWater), tebing salju (TilesetRelief diwarnai ulang oleh `tools/gen_glacier_tileset.py`), pinus & pohon bersalju, gundukan salju, batu kelabu (TilesetNature), kristal ungu (GemPurple, dirakit oleh `tools/make_snow_props.py`) | **Ninja Adventure – Asset Pack** oleh pixel-boy & AAA | CC0 |
+| Ch4: interior rumah Megas (Interior_Walls/Props, Alchemy_Table_01–03, Esoteric), rumah beratap salju (Walls/Roofs/Props, atap diwarnai ulang), sprite warga Desa Simpul (Gilang, Laras, Bayu; diwarnai ulang dari Knight, Wizzard, Rogue) | **Pixel Crawler – Free Pack 2.11** oleh Anokolisa | Free / turunan Pixel Crawler |
 
 Lisensi Ninja Adventure: `assets/ui/LICENSE_NinjaAdventure_CC0.txt`.
 
