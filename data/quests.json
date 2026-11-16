@@ -508,7 +508,7 @@
     "npc": "megas",
     "requires_crystal": true,
     "title": "Kristal Linked List",
-    "objective": "Kalahkan Ksatria Rantai, lalu serahkan Kristal Linked List kepada Megas.",
+    "objective": "Bawa Kristal Linked List kepada Megas di Desa Simpul (jalan pintas lewat runtuhan es yang mencair), lalu jawab 2 soal.",
     "dialog": "megas_ch4_akhir",
     "dialog_success": "megas_ch4_akhir_sukses",
     "dialog_waiting": "megas_ch4_menunggu",
@@ -524,7 +524,18 @@
     "bonus": {
       "gold": 60,
       "xp": 35
-    }
+    },
+    "steps": [
+      {
+        "id": "boss",
+        "text": "Kalahkan Ksatria Rantai di arena lantai es",
+        "crystal": true,
+        "target_group": "boss",
+        "npc_dialogs": {
+          "megas": "megas_ch4_tunggu_boss"
+        }
+      }
+    ]
   },
   "ch5_awal": {
     "chapter": 5,
