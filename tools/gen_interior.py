@@ -57,7 +57,7 @@ MAGE_ITEMS = [
     ((68, 176, 91, 198), (40, 38), None),                         # jendela
     ((0, 352, 80, 384), (258, 186), None),                        # tanaman
 ]
-ROOMS = {"arman": HOUSE_ITEMS, "mandor": HOUSE_ITEMS, "dadang": TAVERN_ITEMS, "megas": MAGE_ITEMS, "tedy": HOUSE_ITEMS}
+ROOMS = {"arman": HOUSE_ITEMS, "mandor": HOUSE_ITEMS, "dadang": TAVERN_ITEMS, "megas": MAGE_ITEMS, "tedy": HOUSE_ITEMS, "raka": HOUSE_ITEMS}
 _SHEETS = {}
 
 
@@ -130,6 +130,7 @@ if __name__ == "__main__":
                                  ("mandor", "Interior_RumahMandor", 2, "desa_algoria"),
                                  ("dadang", "Interior_KedaiDadang", 3, "desa_algoria"),
                                  ("megas", "Interior_RumahMegas", 4, "desa_algoria"),
-                                 ("tedy", "Interior_PosTedy", 5, "desa_algoria")):
+                                 ("tedy", "Interior_PosTedy", 5, "desa_algoria"),
+                                 ("raka", "Interior_RumahRaka", 0, "desa_algoria")):
         build_scene(build_room(rid), rid, name, ch, music)
         print(name + ".tscn dibuat")

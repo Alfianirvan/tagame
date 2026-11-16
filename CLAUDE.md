@@ -195,6 +195,13 @@ Struktur tiap wilayah (desa alun-alun, cari petunjuk, zona aman, skala map): iku
 | 4 Linked List | Megas | "Selain data, node menyimpan apa?" (penunjuk ke node berikutnya) | Tongkat Sihir | Sambung batu portal (next), sisipkan node hilang, buang node jebakan | Ksatria Rantai | Tongkat Sihir+ | "Kelebihan linked list saat sisip di tengah?" (tidak perlu geser elemen) |
 | 5 Tree | Tedy | "Node paling atas pada tree?" (root) | Armor Besi + Potion Besar | Labirin bercabang ala BST (kecil kiri, besar kanan) | King Subiyan | Perisai & Armor Legendaris | "Node tanpa anak disebut?" (leaf) → tamat |
 
+**Desa Algoria (keputusan, permintaan Alfian: desa yang besar):** `Village.tscn` dibangun ulang 128x96 tile (generator `tools/gen_algoria.py`,
+tileset pesisir; desa kecil lama dicadangkan di `..\_backup_scenes_organik\Village_desa_kecil_lama.tscn`). Jalan utama dari gerbang hutan (utara,
+papan jalan ke Hutan Indeks) ke pelabuhan (selatan), Jalan Pasar, alun-alun (sumur, lapak, Bonfire, bendera) dengan Balai Desa Joko & Toko
+Pedagang, permukiman barat (rumah Raka = `Interior_RumahRaka.tscn` + bengkel tempa; Raka mulai di depan rumahnya) & timur, taman berkolam,
+ladang + lumbung (barat laut), pelabuhan 2 dermaga. Warga: Bu Ani, Pak Rudi, Nenek Sumi, Bagas. `Village.gd`: `map_size` (export) & pulang dari
+Ch1 muncul di marker FromNext (gerbang). Uji alur: `tools/test_ch0_flow.tscn` (headless).
+
 **Ch1 (keputusan Tahap 3, menggantikan baris Ch1 di atas):** alur 4 desa: Goblin menyerbu Desa 1 → tanya 3 warga → 3 petunjuk → kuis Arman (Quest Awal) → rak lumbung Desa 2 memurnikan sumur → lapor Arman → selamatkan 3 penyintas Desa 3 → Arman menyusun petunjuk → obor segel [0]..[4] di gerbang arena (Quest Tengah) → Golem → Kristal di altar Desa 4 (kubah segel pudar) → **Quest Akhir dari Tetua Desa 4** (2 soal) → awan perbatasan hilang. Quest berlangkah memakai `steps` di quests.json + flag cerita (`GameManager.story_flags`, ikut tersimpan); uji alur: `tools/test_ch1_flow.tscn` (headless).
 
 **Ch2 (keputusan, dikerjakan 3 tahap):** peta dibangun ulang 161×161 sesuai region_layout (generator `tools/gen_ch2_v2.py`; prototipe lama
