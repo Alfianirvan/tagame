@@ -138,5 +138,21 @@
   "tole": {
     "name": "Tole",
     "portrait": ""
+  },
+  "ani": {
+    "name": "Bu Ani",
+    "portrait": ""
+  },
+  "rudi": {
+    "name": "Pak Rudi",
+    "portrait": ""
+  },
+  "sumi": {
+    "name": "Nenek Sumi",
+    "portrait": ""
+  },
+  "bagas": {
+    "name": "Bagas",
+    "portrait": ""
   }
 }

@@ -48,6 +48,11 @@ VILLAGERS = {
     "Banyu": ("Knight/Idle/Idle-Sheet.png", 0.75, 0.85),
     "Lastri": ("Citizen_F/Tavern_A/Idle/Idle_Side-Sheet.png", 0.85, 1.0),
     "Tole": ("Citizen_F/Peasant_A/Idle/Idle-Sheet.png", 0.1, 1.0),
+    # warga Desa Algoria (desa awal): penjual kue, nelayan, nenek petani, penjaga gerbang
+    "Ani": ("Citizen_F/Tavern_B/Idle/Idle_Side-Sheet.png", 0.15, 1.0),
+    "Rudi": ("Rogue/Idle/Idle-Sheet.png", 0.58, 0.95),
+    "Sumi": ("Citizen_F/Peasant_A/Idle/Idle-Sheet.png", 0.05, 0.85),
+    "Bagas": ("Knight/Idle/Idle-Sheet.png", 0.2, 0.95),
 }
 
 
