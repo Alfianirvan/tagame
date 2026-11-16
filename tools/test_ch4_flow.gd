@@ -1,6 +1,6 @@
 extends Node
 ## Uji main otomatis Chapter 4 (headless): masuk Desa Simpul -> tanya 3 warga -> 3 petunjuk Linked List -> kuis Megas
-## -> badai salju gerbang desa terbuka -> puzzle batu portal -> dinding rantai es pecah -> (Kristal) runtuhan es jalan pintas mencair. Aksi pemain disimulasikan lewat API yang sama dengan node game.
+## -> badai salju gerbang desa terbuka -> puzzle batu portal -> dinding rantai es pecah -> Ksatria Rantai -> Kristal -> runtuhan es mencair -> kuis akhir Megas -> Ch5 terbuka. Aksi pemain disimulasikan lewat API yang sama dengan node game.
 ## Jalankan (save asli dicadangkan dulu oleh pemanggil):
 ##   godot --headless --fixed-fps 60 --path . res://tools/test_ch4_flow.tscn
 
@@ -105,16 +105,41 @@ func _ready() -> void:
 	check(bar.is_open and not (bar.get_node("Block") as TileMapLayer).collision_enabled, "dinding rantai es pecah (tabrakan mati)")
 	check(not sc1.is_open and not sc2.is_open, "runtuhan es masih menutup sebelum Kristal")
 	check(int(GameManager.inventory.get("tongkat_sihir_plus", 0)) >= 1 or GameManager.equipment.values().has("tongkat_sihir_plus"), "hadiah tengah: Tongkat Sihir+")
-	check(QuestManager.get_tracked_quest_id() == "ch4_akhir", "quest aktif ch4_akhir")
-	GameManager.add_crystal(4)
+	check(QuestManager.get_tracked_quest_id() == "ch4_akhir", "quest aktif ch4_akhir (langkah boss)")
+	check(QuestManager.get_dialog_for("megas") == "megas_ch4_tunggu_boss", "Megas: arahkan ke Ksatria Rantai")
+	check(region.shortcut_route.size() > 4, "jalur pintas panah (runtuhan es) terpasang")
+
+	# Tahap 3: Ksatria Rantai kalah -> Kristal -> runtuhan es mencair -> kembali ke Megas -> kuis -> tamat
+	var boss: Boss = region.boss
+	check(boss != null and boss is BossKsatria, "Ksatria Rantai ada di arena lantai es")
+	if boss:
+		boss.apply_damage(99999)
+	await frames(420)
+	var cr: Node = get_tree().get_first_node_in_group("crystal")
+	if cr != null and cr.has_method("_on_body_entered"):
+		cr._on_body_entered(region.player)
+	else:
+		GameManager.add_crystal(4)
 	await frames(120)
+	print("== 5 Ksatria: ", tracked())
+	check(GameManager.has_crystal(4), "Kristal Linked List didapat")
 	check(sc1.is_open and sc2.is_open, "2 runtuhan es mencair setelah Kristal Linked List")
+	check(QuestManager.is_ready("ch4_akhir") and QuestManager.get_dialog_for("megas") == "megas_ch4_akhir", "Megas: dialog kuis akhir")
+	check(QuestManager.get_objective_text("ch4_akhir").contains("Megas"), "pelacak: bawa Kristal ke Megas")
 	check(not cloud_open("AwanPerbatasan"), "awan perbatasan masih ada sebelum kuis akhir")
+
+	lines = QuestManager.finish_quiz("ch4_akhir", true)
+	await frames(200)
+	print("== 6 Tamat: hadiah ", lines, " -> ", tracked())
+	check(GameManager.get_quest_stage(4) == 3 and GameManager.unlocked_chapter >= 5, "Chapter 4 selesai, Chapter 5 terbuka")
+	check(cloud_open("AwanPerbatasan"), "awan di celah gunung (jembatan es) hilang")
+	check(int(GameManager.inventory.get("data_fragment", 0)) >= 1, "Data Fragment didapat")
+	check(QuestManager.get_dialog_for("megas") == "megas_ch4_akhir_sukses", "Megas: dialog penutup")
 
 	var data: Dictionary = GameManager.get_save_data()
 	GameManager.reset_state()
 	GameManager.apply_save_data(data)
-	check(GameManager.has_story_flag("ch4_petunjuk_3") and GameManager.get_quest_stage(4) == 2 and GameManager.has_crystal(4), "flag, tahap quest & Kristal ikut tersimpan")
+	check(GameManager.has_story_flag("ch4_petunjuk_3") and GameManager.get_quest_stage(4) == 3 and GameManager.has_crystal(4), "flag, tahap quest & Kristal ikut tersimpan")
 
 	print("HASIL: ", "SEMUA OK" if fails == 0 else "%d GAGAL" % fails)
 	get_tree().quit(1 if fails > 0 else 0)

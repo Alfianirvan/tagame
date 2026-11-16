@@ -242,6 +242,9 @@ Tahap 2: rute zig-zag (punggung es N1/N2/N3 di dalam wilayah): gerbang desa → 
 celah N3 (`StageBlocker`, hilang di quest_stage 2) → Bonfire pra-boss → ARENA LANTAI ES Ksatria Rantai (sumber 3 `glacier_ice.png`)
 → jembatan es di celah gunung barat laut (exit dipindah ke (38,4)). ±276 tile gerbang→arena. Jalan pintas arena→desa = 2 RUNTUHAN ES
 (celah N2 & N1, `StageBlocker` mode crystal). Musuh: kerangka (Skeleton) + slime es, 24 ekor. Hadiah tengah: Tongkat Sihir+.
+Tahap 3: Quest Akhir berlangkah: kalahkan Ksatria Rantai di arena lantai es (Kristal) → 2 runtuhan es mencair → **Megas tetap di Desa
+Simpul** (2 soal) → Data Fragment + Gold → awan di celah gunung barat laut hilang (jembatan es ke Pohon Dunia). Panah memakai
+`Region.shortcut_route` (runtuhan es N2 → N1 → gerbang → Pulau 2) setelah Kristal.
 
 **Varian rumah (keputusan):** `tools/make_houses.py` merakit 17 rumah dari kit Pixel Crawler (Walls/Roofs/Props) →
 `assets/props/buildings/variants/*.png` + `_pintu.json` (geser pintu dari pusat, dipakai pagar & pintu interior) → prefab lewat
