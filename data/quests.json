@@ -646,7 +646,7 @@
     "requires_crystal": true,
     "ends_game": true,
     "title": "Kristal Tree",
-    "objective": "Kalahkan King Subiyan, lalu serahkan Kristal Tree kepada Tedy.",
+    "objective": "Bawa Kristal Tree kepada Tedy di Desa Akar (jalan pintas lewat akar tumbang yang menyusut), lalu jawab 2 soal terakhir.",
     "dialog": "tedy_ch5_akhir",
     "dialog_success": "tedy_ch5_akhir_sukses",
     "dialog_waiting": "tedy_ch5_menunggu",
@@ -661,6 +661,17 @@
     "bonus": {
       "gold": 80,
       "xp": 50
-    }
+    },
+    "steps": [
+      {
+        "id": "boss",
+        "text": "Kalahkan King Subiyan di tajuk Pohon Dunia",
+        "crystal": true,
+        "target_group": "boss",
+        "npc_dialogs": {
+          "tedy": "tedy_ch5_tunggu_boss"
+        }
+      }
+    ]
   }
 }

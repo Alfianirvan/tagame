@@ -1,6 +1,6 @@
 extends Node
 ## Uji main otomatis Chapter 5 (headless): masuk Desa Akar -> tanya 3 warga -> 3 petunjuk Tree -> kuis Tedy
-## -> kabut ajaib di celah akar terbuka -> labirin bercabang -> segel cabang memudar -> (Kristal) akar tumbang jalan pintas menyusut. Aksi pemain disimulasikan lewat API yang sama dengan node game.
+## -> kabut ajaib di celah akar terbuka -> labirin bercabang -> segel cabang memudar -> King Subiyan -> Kristal -> akar tumbang menyusut -> kuis akhir Tedy -> TAMAT. Aksi pemain disimulasikan lewat API yang sama dengan node game.
 ## Jalankan (save asli dicadangkan dulu oleh pemanggil):
 ##   godot --headless --fixed-fps 60 --path . res://tools/test_ch5_flow.tscn
 
@@ -44,7 +44,8 @@ func _ready() -> void:
 	QuestManager.reset_state()
 	GameManager.set_quest_stage(0, 1)
 	for ch in [1, 2, 3, 4]:
-		GameManager.set_quest_stage(ch, 3)     # Chapter 1-4 tamat
+		GameManager.set_quest_stage(ch, 3)     # Chapter 1-4 tamat (Kristalnya sudah didapat)
+		GameManager.add_crystal(ch)
 	GameManager.unlocked_chapter = 5
 	QuestManager.refresh_active()
 	region = (load("res://scenes/world/Ch5_PohonDunia.tscn") as PackedScene).instantiate()
@@ -127,15 +128,43 @@ func _ready() -> void:
 	check(bar.is_open and not (bar.get_node("Block") as TileMapLayer).collision_enabled, "segel cabang memudar (tabrakan mati)")
 	check(not sc.is_open, "akar tumbang masih menutup sebelum Kristal")
 	check(int(GameManager.inventory.get("perisai_legendaris", 0)) >= 1 or GameManager.equipment.values().has("perisai_legendaris"), "hadiah tengah: Perisai Legendaris")
-	check(QuestManager.get_tracked_quest_id() == "ch5_akhir", "quest aktif ch5_akhir")
-	GameManager.add_crystal(5)
+	check(QuestManager.get_tracked_quest_id() == "ch5_akhir", "quest aktif ch5_akhir (langkah boss)")
+	check(QuestManager.get_dialog_for("tedy") == "tedy_ch5_tunggu_boss", "Tedy: arahkan ke King Subiyan")
+	check(region.shortcut_route.size() > 4, "jalur pintas panah (akar tumbang) terpasang")
+
+	# Tahap 3: King Subiyan kalah -> Kristal -> akar tumbang menyusut -> kembali ke Tedy -> kuis -> TAMAT
+	var boss: Boss = region.boss
+	check(boss != null and boss is BossKing, "King Subiyan ada di tajuk Pohon Dunia")
+	if boss:
+		boss.apply_damage(99999)
+	await frames(420)
+	var cr: Node = get_tree().get_first_node_in_group("crystal")
+	if cr != null and cr.has_method("_on_body_entered"):
+		cr._on_body_entered(region.player)
+	else:
+		GameManager.add_crystal(5)
 	await frames(120)
+	print("== 5 King Subiyan: ", tracked())
+	check(GameManager.has_crystal(5), "Kristal Tree didapat")
 	check(sc.is_open, "akar tumbang menyusut setelah Kristal Tree")
+	check(QuestManager.is_ready("ch5_akhir") and QuestManager.get_dialog_for("tedy") == "tedy_ch5_akhir", "Tedy: dialog kuis akhir")
+	check(QuestManager.get_objective_text("ch5_akhir").contains("Tedy"), "pelacak: bawa Kristal ke Tedy")
+
+	lines = QuestManager.finish_quiz("ch5_akhir", true)
+	await frames(200)
+	print("== 6 TAMAT: hadiah ", lines, " -> ", tracked())
+	check(GameManager.get_quest_stage(5) == 3, "Chapter 5 selesai (game tamat)")
+	var all_crystals: bool = true
+	for ch in range(1, 6):
+		all_crystals = all_crystals and GameManager.has_crystal(ch)
+	check(all_crystals, "kelima Kristal Struktur terkumpul")
+	check(int(GameManager.inventory.get("data_fragment", 0)) >= 1, "Data Fragment didapat")
+	check(QuestManager.get_dialog_for("tedy") == "tedy_ch5_akhir_sukses", "Tedy: dialog penutup")
 
 	var data: Dictionary = GameManager.get_save_data()
 	GameManager.reset_state()
 	GameManager.apply_save_data(data)
-	check(GameManager.has_story_flag("ch5_petunjuk_3") and GameManager.get_quest_stage(5) == 2 and GameManager.has_crystal(5), "flag, tahap quest & Kristal ikut tersimpan")
+	check(GameManager.has_story_flag("ch5_petunjuk_3") and GameManager.get_quest_stage(5) == 3 and GameManager.has_crystal(5), "flag, tahap quest & Kristal ikut tersimpan")
 
 	print("HASIL: ", "SEMUA OK" if fails == 0 else "%d GAGAL" % fails)
 	get_tree().quit(1 if fails > 0 else 0)
