@@ -7,6 +7,7 @@ extends Control
 
 const MARGIN := 22.0          # jarak panah dari tepi layar
 const ON_SCREEN_PAD := 14.0   # target dianggap terlihat bila lebih dari ini di dalam layar
+const DIRECT_RANGE := 520.0   # target lebih dekat dari ini (px, ~32 tile): panah menunjuk lurus, tidak mengikuti jalur
 
 var _target: Node2D = null
 var _arrow_pos: Vector2 = Vector2.ZERO
@@ -193,6 +194,11 @@ func _guide_point(target_screen: Vector2) -> Vector2:
 		route = scene.shortcut_route
 	if route.size() < 4:
 		return target_screen
+	# target sudah dekat: tunjuk lurus (jalur utama justru bisa memutar menjauh, mis. target di jalan cabang desa samping)
+	var direct: float = player.global_position.distance_to(_target.global_position)
+	if direct < DIRECT_RANGE:
+		_on_route = false
+		return target_screen
 	var ip: int = _nearest_index(route, player.global_position)
 	var it: int = _nearest_index(route, _target.global_position)
 	# target jauh dari jalur utama (mis. di dalam desa samping): jalur tidak relevan. Batas masuk/keluar mode jalur dibuat
@@ -208,6 +214,9 @@ func _guide_point(target_screen: Vector2) -> Vector2:
 	var i: int = ip
 	while i != it and route[i].distance_to(player.global_position) < 260.0:
 		i += step
+	# hanya ikuti jalur bila titik yang dibidik memang mendekatkan ke target; bila tidak, tunjuk lurus
+	if route[i].distance_to(_target.global_position) >= direct - 16.0:
+		return target_screen
 	return get_viewport().get_canvas_transform() * (route[i] + Vector2(0, -16))
 
 
