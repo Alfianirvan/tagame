@@ -264,6 +264,9 @@ Tambahan (permintaan Alfian): dataran tenggara diisi landmark (kemah pasukan Kin
 Quest Tengah Ch5 kini berlangkah: temui Pak Banyu → nyalakan **LENTERA RANTING** (puzzle `TreeTraversal`: klik 7 lentera pohon biner
 sesuai PENELUSURAN PRE-ORDER, salah urutan = padam semua; flag `ch5_lentera_ranting`, hadiah Potion Besar) → baru stasiun labirin
 bercabang terbuka.
+Tahap 3: Quest Akhir berlangkah: kalahkan King Subiyan di tajuk Pohon Dunia (Kristal Tree) → akar tumbang menyusut → **Tedy tetap di
+Desa Akar** (2 soal) → Data Fragment + Gold → TAMAT (`ends_game`, EndScreen "TAMAT — Algoria Pulih!"). Panah memakai `Region.shortcut_route`
+(tangga → akar tumbang → gerbang → pos Tedy) setelah Kristal.
 
 **Varian rumah (keputusan):** `tools/make_houses.py` merakit 17 rumah dari kit Pixel Crawler (Walls/Roofs/Props) →
 `assets/props/buildings/variants/*.png` + `_pintu.json` (geser pintu dari pusat, dipakai pagar & pintu interior) → prefab lewat
