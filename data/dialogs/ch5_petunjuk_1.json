@@ -1,0 +1,12 @@
+{
+  "lines": [
+    {
+      "speaker": "narator",
+      "text": "Ukiran silsilah akar: satu lingkaran besar di atas bertuliskan \"BATANG\", bercabang dua, lalu bercabang lagi."
+    },
+    {
+      "speaker": "raka",
+      "text": "Satu node paling atas tanpa induk: root. Setiap node lain punya tepat satu induk."
+    }
+  ]
+}

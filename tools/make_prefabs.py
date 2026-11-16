@@ -105,6 +105,11 @@ SHEET = {
     "Batu_Kelabu": ("../tilesets_biome/TilesetNature.png", (256, 96, 320, 132), (54, 14)),
     "Kristal_Ungu_1": ("generated/kristal_ungu_1.png", (0, 0, 60, 48), (30, 8)),
     "Kristal_Ungu_2": ("generated/kristal_ungu_2.png", (0, 0, 40, 40), (20, 8)),
+    # Ch5 Pohon Dunia: pohon sakura & musim gugur (Ninja TilesetNature)
+    "Sakura_1": ("../tilesets_biome/TilesetNature.png", (224, 0, 256, 32), (10, 6)),
+    "Sakura_Rumpun": ("../tilesets_biome/TilesetNature.png", (192, 32, 256, 83), (44, 10)),
+    "Sakura_Besar": ("../tilesets_biome/TilesetNature.png", (0, 288, 49, 336), (14, 8)),
+    "Pohon_Gugur_Besar": ("../tilesets_biome/TilesetNature.png", (147, 288, 208, 336), (14, 8)),
 }
 BUILDINGS = {
     "Rumah_Krem": "buildings/house_brown.png", "Rumah_Hijau": "buildings/house_green.png", "Rumah_Kayu": "buildings/house_log.png",

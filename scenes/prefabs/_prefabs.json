@@ -616,6 +616,38 @@
   "cdx": 0
  },
  {
+  "name": "Sakura_1",
+  "w": 32,
+  "h": 29,
+  "cw": 10,
+  "ch": 6,
+  "cdx": 0
+ },
+ {
+  "name": "Sakura_Rumpun",
+  "w": 64,
+  "h": 47,
+  "cw": 44,
+  "ch": 10,
+  "cdx": 0
+ },
+ {
+  "name": "Sakura_Besar",
+  "w": 49,
+  "h": 48,
+  "cw": 14,
+  "ch": 8,
+  "cdx": 0
+ },
+ {
+  "name": "Pohon_Gugur_Besar",
+  "w": 45,
+  "h": 48,
+  "cw": 14,
+  "ch": 8,
+  "cdx": 0
+ },
+ {
   "name": "Rumah_Krem",
   "w": 128,
   "h": 138,
@@ -688,6 +720,14 @@
   "cdx": 0
  },
  {
+  "name": "Pondok_Ungu",
+  "w": 72,
+  "h": 96,
+  "cw": 60,
+  "ch": 46,
+  "cdx": 0
+ },
+ {
   "name": "Rumah_Loteng_Biru",
   "w": 128,
   "h": 190,
@@ -728,6 +768,14 @@
   "cdx": 0
  },
  {
+  "name": "Rumah_Loteng_Ungu",
+  "w": 128,
+  "h": 190,
+  "cw": 116,
+  "ch": 46,
+  "cdx": 0
+ },
+ {
   "name": "Rumah_Menara_Hijau",
   "w": 196,
   "h": 148,
@@ -760,6 +808,14 @@
   "cdx": 0
  },
  {
+  "name": "Rumah_Menara_Ungu",
+  "w": 196,
+  "h": 148,
+  "cw": 184,
+  "ch": 46,
+  "cdx": 0
+ },
+ {
   "name": "Rumah_Runcing_Biru",
   "w": 96,
   "h": 143,
@@ -785,6 +841,14 @@
  },
  {
   "name": "Rumah_Runcing_Salju",
+  "w": 96,
+  "h": 143,
+  "cw": 84,
+  "ch": 46,
+  "cdx": 0
+ },
+ {
+  "name": "Rumah_Runcing_Ungu",
   "w": 96,
   "h": 143,
   "cw": 84,

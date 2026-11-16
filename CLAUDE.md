@@ -246,6 +246,14 @@ Tahap 3: Quest Akhir berlangkah: kalahkan Ksatria Rantai di arena lantai es (Kri
 Simpul** (2 soal) → Data Fragment + Gold → awan di celah gunung barat laut hilang (jembatan es ke Pohon Dunia). Panah memakai
 `Region.shortcut_route` (runtuhan es N2 → N1 → gerbang → Pulau 2) setelah Kristal.
 
+**Ch5 (keputusan, dikerjakan 3 tahap):** peta dibangun ulang 152x117 sesuai region_layout (generator `tools/gen_ch5_v2.py`, tileset
+`tools/gen_akar_tileset.py` → `akar_tileset.tres`: rumput + jalan tanah, AKAR RAKSASA = relief diwarnai kulit kayu, air UNGU; prototipe
+lama dicadangkan di `..\_backup_scenes_organik\`). Batang Pohon Dunia di semenanjung utara; akar A (ke pantai barat) & akar B (ke tebing
+selatan) memagari **Desa Akar** di ceruk barat daya; celah akar B = gerbang desa (kabut ajaib, quest_stage 1). Desa: kolam akar ungu di
+tengah, pos Tedy (`Interior_PosTedy.tscn`, Rumah_Menara_Ungu), rumah beratap ungu (`Rumah_*_Ungu`, `Pondok_Ungu`); pinggiran: kuil akar
+(barat laut), kebun sakura (barat), mata air ungu (timur). Quest Awal: tanya 3 warga (Wira penjaga akar, Nyai Sekar tetua, Dimas prajurit
+muda) → 3 petunjuk Tree (root, leaf, BST) → kuis Tedy. Uji alur: `tools/test_ch5_flow.tscn` (headless).
+
 **Varian rumah (keputusan):** `tools/make_houses.py` merakit 17 rumah dari kit Pixel Crawler (Walls/Roofs/Props) →
 `assets/props/buildings/variants/*.png` + `_pintu.json` (geser pintu dari pusat, dipakai pagar & pintu interior) → prefab lewat
 `make_prefabs.py` (Rumah_Menara_*, Rumah_Loteng_*, Rumah_Runcing_*, Rumah_Teras_*, Gudang_Panjang, Pondok_*, Toko_*). Gaya per wilayah:
