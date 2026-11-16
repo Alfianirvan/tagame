@@ -12,6 +12,7 @@ var _target: Node2D = null
 var _arrow_pos: Vector2 = Vector2.ZERO
 var _arrow_dir: Vector2 = Vector2.RIGHT
 var _pulse: float = 0.0
+var _on_route: bool = false   # sedang menuntun lewat jalur (histeresis supaya panah tidak bolak-balik di batas jarak)
 
 
 func _ready() -> void:
@@ -59,11 +60,11 @@ func _find_target() -> Node2D:
 	# Quest kuis dengan syarat warga: tuntun ke warga terdekat yang belum diajak bicara
 	if int(q.get("requires_villagers", 0)) > 0 and QuestManager.is_available(id) and not QuestManager.is_ready(id):
 		var player: Node2D = tree.get_first_node_in_group("player") as Node2D
-		var best: Node2D = null
+		var cands0: Array[Node2D] = []
 		for n: Node in tree.get_nodes_in_group("npc"):
 			if int(n.get("villager_chapter")) == chapter and not QuestManager.has_talked_to_villager(chapter, String(n.get("npc_id"))):
-				if best == null or (player != null and (n as Node2D).global_position.distance_to(player.global_position) < best.global_position.distance_to(player.global_position)):
-					best = n as Node2D
+				cands0.append(n as Node2D)
+		var best: Node2D = _pick(cands0, player)
 		if best != null:
 			return best
 	# Quest kuis: bila belum siap (Kristal belum diambil) arahkan ke boss / Kristal / gerbang
@@ -94,13 +95,13 @@ func _step_target(step: Dictionary, chapter: int) -> Node2D:
 		for n: Node in tree.get_nodes_in_group("npc"):
 			if int(n.get("villager_chapter")) == vc and not QuestManager.has_talked_to_villager(vc, String(n.get("npc_id"))):
 				cands.append(n as Node2D)
-		return _nearest(cands, player)
+		return _pick(cands, player)
 	if step.has("target_group"):
 		var cands2: Array[Node2D] = []
 		for n: Node in tree.get_nodes_in_group(String(step["target_group"])):
 			if n is Node2D and n.is_inside_tree():
 				cands2.append(n as Node2D)
-		var g: Node2D = _nearest(cands2, player)
+		var g: Node2D = _pick(cands2, player)
 		if g != null:
 			return g
 	if step.has("target"):
@@ -121,7 +122,16 @@ func _nearest_named(names: Array, flags: Array) -> Node2D:
 		var n: Node = scene.find_child(String(names[i]), true, false)
 		if n is Node2D and not n.is_queued_for_deletion():
 			cands.append(n as Node2D)
-	return _nearest(cands, get_tree().get_first_node_in_group("player") as Node2D)
+	return _pick(cands, get_tree().get_first_node_in_group("player") as Node2D)
+
+
+## Pilih target dari beberapa kandidat (warga, petunjuk): tetap pada target sekarang selama masih jadi kandidat
+## (belum selesai), supaya panah fokus ke SATU tujuan dan tidak berpindah-pindah saat Raka bergerak. Baru memilih
+## kandidat terdekat bila target sekarang sudah selesai / bukan kandidat lagi.
+func _pick(cands: Array[Node2D], player: Node2D) -> Node2D:
+	if _target != null and is_instance_valid(_target) and _target in cands:
+		return _target
+	return _nearest(cands, player)
 
 
 static func _nearest(cands: Array[Node2D], player: Node2D) -> Node2D:
@@ -185,8 +195,12 @@ func _guide_point(target_screen: Vector2) -> Vector2:
 		return target_screen
 	var ip: int = _nearest_index(route, player.global_position)
 	var it: int = _nearest_index(route, _target.global_position)
-	# target jauh dari jalur utama (mis. di dalam desa samping): jalur tidak relevan
-	if route[it].distance_to(_target.global_position) > 420.0 or route[ip].distance_to(player.global_position) > 300.0:
+	# target jauh dari jalur utama (mis. di dalam desa samping): jalur tidak relevan. Batas masuk/keluar mode jalur dibuat
+	# berbeda (histeresis) supaya panah tidak bolak-balik antara arah jalur dan arah lurus ketika Raka berdiri di dekat batas.
+	var lim_t: float = 480.0 if _on_route else 420.0
+	var lim_p: float = 360.0 if _on_route else 300.0
+	_on_route = route[it].distance_to(_target.global_position) <= lim_t and route[ip].distance_to(player.global_position) <= lim_p
+	if not _on_route:
 		return target_screen
 	if ip == it:
 		return target_screen

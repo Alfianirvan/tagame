@@ -470,7 +470,7 @@ position = Vector2(1227, 1728)
 position = Vector2(1650, 1720)
 
 [node name="PetiMercusuar" parent="Objects" instance=ExtResource("ext_5")]
-position = Vector2(1688, 2742)
+position = Vector2(1673, 2747)
 roll_count = 2
 
 [node name="PetiKebun" parent="Objects" instance=ExtResource("ext_5")]
@@ -479,7 +479,7 @@ roll_count = 2
 
 [node name="Petunjuk1" type="Area2D" parent="Objects"]
 script = ExtResource("ext_21")
-position = Vector2(1740, 2800)
+position = Vector2(1741, 2808)
 flag = "ch3_petunjuk_1"
 dialog_id = "ch3_petunjuk_1"
 required_step = "ch3_awal:petunjuk"
@@ -495,7 +495,7 @@ clue_kind = "catatan"
 
 [node name="Petunjuk3" type="Area2D" parent="Objects"]
 script = ExtResource("ext_21")
-position = Vector2(840, 2282)
+position = Vector2(832, 2282)
 flag = "ch3_petunjuk_3"
 dialog_id = "ch3_petunjuk_3"
 required_step = "ch3_awal:petunjuk"
@@ -1425,69 +1425,69 @@ position = Vector2(1258, 700)
 enemy_id = "orc"
 
 [node name="PetiLobus" parent="Objects" instance=ExtResource("ext_5")]
-position = Vector2(125, 1468)
+position = Vector2(157, 1461)
 roll_count = 2
 
 [node name="Herb5" parent="Objects" instance=ExtResource("ext_13")]
-position = Vector2(155, 1458)
+position = Vector2(177, 1469)
 
 [node name="GoldCoin6" parent="Objects" instance=ExtResource("ext_14")]
-position = Vector2(79, 1515)
+position = Vector2(123, 1487)
 
 [node name="Herb7" parent="Objects" instance=ExtResource("ext_13")]
-position = Vector2(151, 1544)
+position = Vector2(141, 1464)
 
 [node name="PetiKoridor" parent="Objects" instance=ExtResource("ext_5")]
-position = Vector2(728, 1000)
+position = Vector2(720, 1003)
 roll_count = 2
 
 [node name="Herb8" parent="Objects" instance=ExtResource("ext_13")]
-position = Vector2(800, 990)
+position = Vector2(719, 999)
 
 [node name="GoldCoin9" parent="Objects" instance=ExtResource("ext_14")]
-position = Vector2(690, 1010)
+position = Vector2(682, 1013)
 
 [node name="Herb10" parent="Objects" instance=ExtResource("ext_13")]
-position = Vector2(678, 1064)
+position = Vector2(670, 1067)
 
 [node name="PetiPesisirSelatan" parent="Objects" instance=ExtResource("ext_5")]
-position = Vector2(1320, 1448)
+position = Vector2(1304, 1476)
 roll_count = 2
 
 [node name="Herb11" parent="Objects" instance=ExtResource("ext_13")]
-position = Vector2(1338, 1483)
+position = Vector2(1334, 1490)
 
 [node name="GoldCoin12" parent="Objects" instance=ExtResource("ext_14")]
-position = Vector2(1292, 1464)
+position = Vector2(1276, 1492)
 
 [node name="Herb13" parent="Objects" instance=ExtResource("ext_13")]
-position = Vector2(1312, 1488)
+position = Vector2(1306, 1510)
 
 [node name="PetiUtara" parent="Objects" instance=ExtResource("ext_5")]
-position = Vector2(840, 152)
+position = Vector2(844, 176)
 roll_count = 2
 
 [node name="Herb14" parent="Objects" instance=ExtResource("ext_13")]
-position = Vector2(870, 166)
+position = Vector2(874, 190)
 
 [node name="GoldCoin15" parent="Objects" instance=ExtResource("ext_14")]
-position = Vector2(812, 168)
+position = Vector2(816, 192)
 
 [node name="Ore16" parent="Objects" instance=ExtResource("ext_16")]
-position = Vector2(842, 186)
+position = Vector2(846, 210)
 
 [node name="PetiTanjungUtara" parent="Objects" instance=ExtResource("ext_5")]
-position = Vector2(1730, 370)
+position = Vector2(1732, 384)
 roll_count = 2
 
 [node name="Herb17" parent="Objects" instance=ExtResource("ext_13")]
-position = Vector2(1760, 384)
+position = Vector2(1762, 398)
 
 [node name="GoldCoin18" parent="Objects" instance=ExtResource("ext_14")]
-position = Vector2(1702, 386)
+position = Vector2(1704, 400)
 
 [node name="Ore19" parent="Objects" instance=ExtResource("ext_16")]
-position = Vector2(1732, 404)
+position = Vector2(1734, 418)
 
 [node name="Herb20" parent="Objects" instance=ExtResource("ext_13")]
 position = Vector2(494, 1250)
@@ -1559,7 +1559,7 @@ position = Vector2(469, 1264)
 position = Vector2(849, 1177)
 
 [node name="Ore43" parent="Objects" instance=ExtResource("ext_16")]
-position = Vector2(830, 993)
+position = Vector2(818, 993)
 
 [node name="Herb44" parent="Objects" instance=ExtResource("ext_13")]
 position = Vector2(457, 1547)
