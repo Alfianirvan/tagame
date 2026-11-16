@@ -40,6 +40,10 @@ VILLAGERS = {
     "Gilang": ("Knight/Idle/Idle-Sheet.png", 0.55, 0.95),
     "Laras": ("Wizzard/Idle/Idle-Sheet.png", 0.2, 1.0),
     "Bayu": ("Rogue/Idle/Idle-Sheet.png", 0.72, 0.95),
+    # warga Desa Akar (Ch5): penjaga akar, tetua desa, prajurit muda
+    "Wira": ("Knight/Idle/Idle-Sheet.png", 0.3, 0.9),
+    "Sekar": ("Wizzard/Idle/Idle-Sheet.png", 0.6, 0.9),
+    "Dimas": ("Rogue/Idle/Idle-Sheet.png", 0.9, 0.95),
 }
 
 

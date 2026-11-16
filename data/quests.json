@@ -542,8 +542,8 @@
     "stage": 1,
     "type": "quiz",
     "npc": "tedy",
-    "title": "Akar Pohon Dunia",
-    "objective": "Temui Tedy dan jawab 3 soal tentang Tree.",
+    "title": "Desa di Akar Raksasa",
+    "objective": "Laporkan petunjuk kepada Tedy, lalu jawab 3 soal tentang Tree.",
     "dialog": "tedy_ch5_awal",
     "dialog_success": "tedy_ch5_awal_sukses",
     "dialog_done": "tedy_ch5_awal_sukses",
@@ -558,7 +558,33 @@
     "bonus": {
       "gold": 70,
       "xp": 40
-    }
+    },
+    "steps": [
+      {
+        "id": "warga",
+        "text": "Tanya warga Desa Akar (%d/%d)",
+        "villagers": 3,
+        "villager_chapter": 5
+      },
+      {
+        "id": "petunjuk",
+        "text": "Cari petunjuk di pinggiran desa (%d/%d)",
+        "flags_all": [
+          "ch5_petunjuk_1",
+          "ch5_petunjuk_2",
+          "ch5_petunjuk_3"
+        ],
+        "target": [
+          "Petunjuk1",
+          "Petunjuk2",
+          "Petunjuk3"
+        ],
+        "reward": {
+          "xp": 10
+        }
+      }
+    ],
+    "dialog_waiting": "tedy_ch5_tanya_warga"
   },
   "ch5_tengah": {
     "chapter": 5,

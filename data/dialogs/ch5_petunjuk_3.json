@@ -1,0 +1,12 @@
+{
+  "lines": [
+    {
+      "speaker": "narator",
+      "text": "Penanda patroli Dimas: angka 50 di tengah, 30 di cabang kiri, 70 di cabang kanan."
+    },
+    {
+      "speaker": "raka",
+      "text": "Kecil ke kiri, besar ke kanan, dan tiap node paling banyak punya dua anak: Binary Search Tree."
+    }
+  ]
+}

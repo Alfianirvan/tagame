@@ -87,7 +87,7 @@ def recolor_hue(im, hue, sat_mul=1.0, val_mul=1.0):
 
 def roof_piece(kind, color):
     """Potongan atap A/B/C dalam warna tertentu."""
-    green = color in ("hijau", "merah", "biru", "salju")
+    green = color in ("hijau", "merah", "biru", "salju", "ungu")
     dx = 128 if green else 0
     if kind == "A":
         im = ROOFS.crop((dx, 6, dx + 128, 95))
@@ -110,6 +110,8 @@ def roof_piece(kind, color):
         im = recolor_hue(im, 0.01, 1.05, 0.95)
     elif color == "biru":
         im = recolor_hue(im, 0.6, 0.95, 0.95)
+    elif color == "ungu":                       # atap ungu ajaib (Pohon Dunia)
+        im = recolor_hue(im, 0.8, 0.9, 0.95)
     elif color == "salju":                      # atap tertutup salju: putih kebiruan
         im = recolor_hue(im, 0.58, 0.18, 1.32)
     return im
@@ -278,6 +280,15 @@ DESIGNS = {
                                windows=[("biru", 12, 0), ("biru", -12, 0), ("bingkai", 24, 1), ("bingkai", -24, 1)])],
     "Rumah_Loteng_Coklat": [dict(kind="A", wall="papan_gelap", floors=2, roof="coklat", door=("kayu", "kayu"), chimney=20,
                                  windows=[("tutup", 12, 0), ("tutup", -12, 0), ("kisi", 26, 1), ("kisi", -26, 1)])],
+    # Ch5 Desa Akar: atap ungu, dinding kayu gelondong/papan
+    "Rumah_Menara_Ungu": [
+        dict(kind="C", wall="gelondong", floors=2, roof="ungu", width=56, windows=[("daun_hijau", 12, 1)], planter=True),
+        dict(kind="B", wall="papan", floors=1, roof="ungu", door=("lengkung_kayu", "lengkung_besi"), windows=[("bingkai", 6, 0)]),
+        dict(kind="P", roof="ungu", width=44)],
+    "Rumah_Loteng_Ungu": [dict(kind="A", wall="rangka", floors=2, roof="ungu", door=("batu", "lengkung_abu"), chimney=20,
+                               windows=[("daun_hijau", 10, 0), ("daun_hijau2", -10, 0), ("lengkung", 22, 1), ("lengkung", -22, 1)], planter=True)],
+    "Rumah_Runcing_Ungu": [dict(kind="B", wall="gelondong", floors=1, roof="ungu", door=("kayu", "kayu"), windows=[("tutup", 8, 0), ("tutup", -8, 0)])],
+    "Pondok_Ungu": [dict(kind="C", wall="papan", floors=1, roof="ungu", width=72, door=(None, "kayu"), door_x=8, windows=[("kecil", -10, 0)])],
     # Ch4 Desa Simpul: atap bersalju
     "Rumah_Menara_Salju": [
         dict(kind="C", wall="bata", floors=2, roof="salju", width=56, windows=[("lengkung", 16, 1)]),
