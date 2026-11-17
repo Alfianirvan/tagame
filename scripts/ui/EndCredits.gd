@@ -1,8 +1,8 @@
-class_name EndCredits
 extends CanvasLayer
 ## Ending credit setelah King Subiyan kalah & Kristal terakhir diserahkan: epilog cerita (OpeningCredits dengan kunci "ending"),
 ## lalu CREDIT BERGULIR (judul, tim, dosen, materi, aset) dari res://data/credits.json ("roll" + "team").
 ## Bisa dilewati dengan E / Esc / Spasi / klik. Memancarkan `finished` setelah selesai atau dilewati.
+const OC := preload("res://scripts/ui/OpeningCredits.gd")   # dipakai lewat preload (tidak bergantung cache class_name editor)
 
 signal finished
 
@@ -21,7 +21,7 @@ func _ready() -> void:
 	layer = 96
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	AudioManager.play_music("kredit_about", 1.0)
-	var epilog: OpeningCredits = OpeningCredits.new()
+	var epilog: OC = OC.new()
 	epilog.credits_key = "ending"
 	epilog.finished.connect(_start_roll)
 	add_child(epilog)
@@ -41,7 +41,7 @@ func _start_roll() -> void:
 	_roll.custom_minimum_size = Vector2(640, 0)
 	_roll.add_theme_constant_override("separation", 6)
 	add_child(_roll)
-	var data: Dictionary = OpeningCredits.load_data()
+	var data: Dictionary = OC.load_data()
 	var team: Dictionary = data.get("team", {})
 	for e: Dictionary in data.get("roll", []):
 		if e.get("gap", false):
@@ -87,7 +87,7 @@ func _add_line(text: String, size: int, color: Color) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if _done or not _rolling:
-		return       # saat epilog, input dipegang OpeningCredits (lewati epilog -> credit bergulir)
+		return       # saat epilog, input dipegang OC (lewati epilog -> credit bergulir)
 	var skip: bool = event.is_action_pressed("interact") or event.is_action_pressed("pause") \
 		or (event is InputEventKey and event.pressed and event.keycode == KEY_SPACE) \
 		or (event is InputEventMouseButton and event.pressed)

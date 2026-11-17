@@ -3,6 +3,7 @@ extends CanvasLayer
 ##  - Menang: muncul setelah Quest Akhir chapter selesai (rangkuman materi + hadiah). Chapter 5 = tamat.
 ##  - Kalah : dipanggil Region saat Raka mati (Coba Lagi dari checkpoint / Menu Utama).
 ## Dipasang sekali per scene permainan oleh Player._ensure_ui.
+const EC := preload("res://scripts/ui/EndCredits.gd")
 
 const START_SCREEN := "res://scenes/ui/StartScreen.tscn"
 
@@ -44,7 +45,7 @@ func _on_quest_completed(quest_id: String) -> void:
 		var player: Node = get_tree().get_first_node_in_group("player")
 		if player and player.has_method("set_controls_enabled"):
 			player.set_controls_enabled(false)
-		var credits: EndCredits = EndCredits.new()
+		var credits: EC = EC.new()
 		get_tree().root.add_child(credits)
 		await credits.finished
 		_showing = false

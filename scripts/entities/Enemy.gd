@@ -60,7 +60,9 @@ func _ready() -> void:
 	if not is_equal_approx(damage_scale, 1.0):
 		cfg = cfg.duplicate()   # jangan ubah data bersama milik musuh lain
 		cfg["damage"] = maxi(1, roundi(float(cfg.get("damage", 5)) * damage_scale))
-	max_hp = int(cfg.get("hp", 20))
+	# HP musuh makin tebal per chapter (difficulty.json "enemy_hp"); chapter diambil dari Region induk karena
+	# Region._ready (yang men-set current_chapter) baru jalan setelah anak-anaknya.
+	max_hp = maxi(1, roundi(float(cfg.get("hp", 20)) * GameManager.enemy_mult(_region_chapter(), "enemy_hp")))
 	hp = max_hp
 	sprite.sprite_frames = EnemySprites.build(cfg["sprite"], int(cfg.get("death_frames", 6)))
 	sprite.offset = BODY_CENTER
@@ -72,6 +74,16 @@ func _ready() -> void:
 	health_bar.position = Vector2(0, -36)
 	health_bar.set_ratio(1.0)
 	sprite.play("idle")
+
+
+## Chapter wilayah tempat musuh ini berada (Region induk); cadangan: chapter aktif di GameManager.
+func _region_chapter() -> int:
+	var n: Node = get_parent()
+	while n != null:
+		if n is Region:
+			return (n as Region).chapter
+		n = n.get_parent()
+	return GameManager.current_chapter
 
 
 static func _get_config(id: String) -> Dictionary:

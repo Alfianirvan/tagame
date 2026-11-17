@@ -69,6 +69,7 @@ var upgrade_data: Dictionary = {}
 var shop_stock: Array = []                  # dari shop.json
 var recipes: Array = []                     # dari recipes.json
 var skill_db: Dictionary = {}               # dari skills.json
+var difficulty: Dictionary = {}     # data/difficulty.json (rumus pertahanan + pengali musuh per chapter)
 var unlocked_skills: Array[String] = []     # skill spesial yang sudah dibuka (Data Fragment)
 
 var _regen_timer: Timer
@@ -104,6 +105,8 @@ func _load_databases() -> void:
 	recipes = rec.get("resep", []) if rec is Dictionary else []
 	var sk: Variant = load_json(DATA_DIR + "skills.json")
 	skill_db = sk.get("skill", {}) if sk is Dictionary else {}
+	var dif: Variant = load_json(DATA_DIR + "difficulty.json")
+	difficulty = dif if dif is Dictionary else {}
 
 
 ## Membaca file JSON; mengembalikan null bila gagal.
@@ -309,7 +312,7 @@ func _process(delta: float) -> void:
 func take_damage(amount: int, ignore_defense: bool = false) -> int:
 	if hp <= 0:
 		return 0
-	var dmg: int = amount if ignore_defense else maxi(1, amount - get_defense())
+	var dmg: int = amount if ignore_defense else reduce_by_defense(amount)
 	hp = maxi(0, hp - dmg)
 	hp_changed.emit(hp, max_hp)
 	if hp == 0:
@@ -494,6 +497,19 @@ func get_attack_damage() -> int:
 	if id == "":
 		return 3  # tangan kosong
 	return roundi(float(get_item(id).get("damage", 0)) * upgrade_multiplier(id))
+
+
+## Damage setelah dipotong pertahanan secara PERSEN (difficulty.json "defense_k"): pertahanan = defense_k -> damage separuh.
+## Armor tetap terasa, tetapi tidak lagi menghapus damage musuh sampai tinggal 1 seperti pengurangan flat.
+func reduce_by_defense(amount: int) -> int:
+	var k: float = float(difficulty.get("defense_k", 30))
+	return maxi(1, roundi(float(amount) * k / (k + float(get_defense()))))
+
+
+## Pengali kesulitan musuh per chapter (difficulty.json): key = "enemy_hp" / "enemy_damage".
+func enemy_mult(chapter: int, key: String) -> float:
+	var ch: Dictionary = difficulty.get("chapters", {}).get(str(chapter), {})
+	return float(ch.get(key, 1.0))
 
 
 func get_defense() -> int:

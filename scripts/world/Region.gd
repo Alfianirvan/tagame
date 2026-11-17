@@ -4,6 +4,7 @@ extends Node2D
 ## (dari checkpoint bila ada), boss, dan hidup ulang saat Raka mati.
 ## Isi wilayah (tile, pohon, musuh, stasiun) dibuat oleh tools/gen_region.py dan boleh dirapikan di editor.
 ## Marker yang dibutuhkan: PlayerStart, BossSpawn (opsional), node Objects/Player.
+const OC := preload("res://scripts/ui/OpeningCredits.gd")   # dipakai lewat preload (tidak bergantung cache class_name editor)
 
 @export var chapter: int = 1
 @export var music_name: String = "ch1_hutan_indeks"
@@ -53,11 +54,11 @@ func _ready() -> void:
 ## Tampil untuk setiap chapter yang punya data (atau yang mengaktifkan `opening_story`).
 func _maybe_show_opening() -> void:
 	var key: String = "opening_ch%d" % chapter
-	if GameManager.has_met(key) or not (opening_story or OpeningCredits.has_scene(key)):
+	if GameManager.has_met(key) or not (opening_story or OC.has_scene(key)):
 		return
 	GameManager.mark_met(key)
 	player.set_controls_enabled(false)
-	var credits: OpeningCredits = OpeningCredits.new()
+	var credits: OC = OC.new()
 	credits.credits_key = key
 	add_child(credits)
 	credits.finished.connect(func() -> void: player.set_controls_enabled(true))

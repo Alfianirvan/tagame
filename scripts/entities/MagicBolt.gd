@@ -18,11 +18,12 @@ var _sprite: AnimatedSprite2D
 var _done: bool = false
 
 
-## Membuat dan melepaskan bola sihir dari posisi pos ke arah dir.
-static func launch(parent: Node, pos: Vector2, dir: Vector2, dmg: int) -> MagicBolt:
+## Membuat dan melepaskan bola sihir dari posisi pos ke arah dir; reach = jarak terbang (px, "range" senjata di weapons.json).
+static func launch(parent: Node, pos: Vector2, dir: Vector2, dmg: int, reach: float = 90.0) -> MagicBolt:
 	var b: MagicBolt = MagicBolt.new()
 	b.direction = dir.normalized()
 	b.damage = dmg
+	b.lifetime = maxf(0.1, reach / b.speed)
 	parent.add_child(b)
 	b.global_position = pos
 	return b
