@@ -304,6 +304,12 @@ Desa 3 = kemah penyintas (api unggun di tengah, cincin tenda, barikade darurat c
 Desa 4 = desa kuil (altar + 4 pilar lumut, 2 rumah; kubah segel diperbesar D4_RX/RY 220/190, `cursed_desa4.png` 440x380).
 Desa Algoria (desa awal) belum diubah.
 
+**Keseimbangan (keputusan, revisi Alfian):** `data/difficulty.json`. Pertahanan memotong damage secara PERSEN
+(`damage x defense_k / (defense_k + pertahanan)`, defense_k 30; dulu pengurangan flat sehingga armor membuat musuh hanya memukul 1).
+Pengali per chapter: `enemy_hp` (HP musuh biasa, `Enemy.gd` membaca chapter dari Region induk) dan `enemy_damage` (semua serangan musuh
+& boss, diterapkan di `Player.take_hit`): Ch1 1/1, Ch2 1,3/1,4, Ch3 1,6/1,9, Ch4 2/2,5, Ch5 2,4/3,6. Tongkat Sihir 10 dmg / 90 px,
+Tongkat Sihir+ 16 dmg / 105 px; bola sihir (`MagicBolt`) kini terbang sejauh `range` senjata. Uji: `tools/test_balance.tscn`.
+
 ## 10. Boss (sprite di `boss_preview/`, sudah diperbesar 2×)
 | Boss | Idle (frame) | Serang (frame) | Mati (frame) | Pola serangan |
 |---|---|---|---|---|

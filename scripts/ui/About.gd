@@ -1,6 +1,7 @@
 extends CanvasLayer
 ## About: nama + foto 3 anggota dan dosen (placeholder dulu), plus credit aset.
 ## Ganti nama/foto di data/credits.json ("team"); letakkan foto di assets/ui/about/ lalu isi "photo".
+const OC := preload("res://scripts/ui/OpeningCredits.gd")   # dipakai lewat preload (tidak bergantung cache class_name editor)
 
 signal closed
 
@@ -18,7 +19,7 @@ var _prev_music: String = ""
 
 ## Anggota & dosen dari data/credits.json ("team"), dipakai juga oleh ending credit; konstanta di atas = cadangan.
 static func team_cards() -> Array:
-	var team: Dictionary = OpeningCredits.load_data().get("team", {})
+	var team: Dictionary = OC.load_data().get("team", {})
 	var members: Array = team.get("members", MEMBERS)
 	return members + [team.get("lecturer", LECTURER)]
 

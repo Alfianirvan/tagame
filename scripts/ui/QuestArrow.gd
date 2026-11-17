@@ -46,9 +46,9 @@ func _find_target() -> Node2D:
 	# quest berlangkah: tuntun ke target langkah aktif, lalu ke final_target setelah semua langkah beres
 	var step: Dictionary = QuestManager.get_current_step(id)
 	if not step.is_empty():
-		var st: Node2D = _step_target(step, chapter)
-		if st != null:
-			return st
+		# langkah aktif SELALU menentukan tujuan; bila targetnya tidak ada di scene ini, panah disembunyikan (bukan
+		# jatuh ke stasiun puzzle / boss / wilayah lain yang belum waktunya, yang membingungkan pemain)
+		return _step_target(step, chapter)
 	elif not QuestManager.get_steps(id).is_empty() and q.has("final_target"):
 		var ft: Node2D = _nearest_named([q["final_target"]] if q["final_target"] is String else q["final_target"], [])
 		if ft != null:
@@ -90,6 +90,14 @@ func _find_target() -> Node2D:
 func _step_target(step: Dictionary, chapter: int) -> Node2D:
 	var tree: SceneTree = get_tree()
 	var player: Node2D = tree.get_first_node_in_group("player") as Node2D
+	# langkah lapor: tuju NPC yang harus diajak bicara (mis. "Kembali ke Arman")
+	if step.has("talk"):
+		var who: String = String(step["talk"].get("npc", ""))
+		var cands_t: Array[Node2D] = []
+		for n: Node in tree.get_nodes_in_group("npc"):
+			if String(n.get("npc_id")) == who and n is Node2D:
+				cands_t.append(n as Node2D)
+		return _pick(cands_t, player)
 	if step.has("villagers"):
 		var vc: int = int(step.get("villager_chapter", chapter))
 		var cands: Array[Node2D] = []

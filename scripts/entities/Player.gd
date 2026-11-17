@@ -400,7 +400,7 @@ func _start_combo_attack(weapon: Dictionary, alt: bool) -> bool:
 func _fire_magic_bolt() -> void:
 	# Tinggi bola disamakan dengan badan musuh (bukan dada Raka) agar tidak lewat di atas musuh pendek.
 	var tip: Vector2 = global_position + Vector2(0, -10) + _aim_dir * STAFF_TIP_DIST
-	MagicBolt.launch(get_parent(), tip, _aim_dir, _attack_damage)
+	MagicBolt.launch(get_parent(), tip, _aim_dir, _attack_damage, float(_attack_weapon.get("range", 90)))
 
 
 ## Staff slam: damage area (radius dari weapons.json, default 24 px) di ujung tongkat.
@@ -723,7 +723,9 @@ func _on_hurtbox_area_entered(area: Area2D) -> void:
 func take_hit(damage: int, from_pos: Vector2) -> void:
 	if is_invulnerable():
 		return
-	GameManager.take_damage(damage)
+	# semua serangan musuh & boss lewat sini: makin jauh chapter, makin sakit (difficulty.json "enemy_damage")
+	var scaled: int = maxi(1, roundi(float(damage) * GameManager.enemy_mult(GameManager.current_chapter, "enemy_damage")))
+	GameManager.take_damage(scaled)
 	if state == State.DEAD:  # player_died sudah memicu _die()
 		return
 	AudioManager.play_sfx("kena_hit")
