@@ -1221,7 +1221,7 @@ position = Vector2(1992, 808)
 
 [node name="OborSegel" type="Node2D" parent="Objects"]
 script = ExtResource("ext_29")
-position = Vector2(1756, 908)
+position = Vector2(1431, 991)
 
 [node name="BenderaKutuk" parent="Objects" instance=ExtResource("ext_11")]
 position = Vector2(1774, 1014)

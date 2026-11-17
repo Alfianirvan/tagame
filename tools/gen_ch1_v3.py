@@ -46,7 +46,7 @@ PREFAB_SIZE = {}                                     # nama prefab -> (lebar, ti
 
 
 # Titik petunjuk/peti yang dipindah karena tertutup pohon/rumah/NPC/awan (hasil tools/fix_clue_spots.tscn; px absolut).
-SPOT_FIX = {'Petunjuk1': (1942, 1920), 'Petunjuk2': (1357, 1396), 'Petunjuk3': (1953, 1600), 'Peti3': (2143, 177)}
+SPOT_FIX = {'Petunjuk1': (1942, 1920), 'Petunjuk2': (1357, 1396), 'Petunjuk3': (1953, 1600), 'Peti3': (2143, 177), 'OborSegel': (1431, 991)}  # obor dijauhkan dari arena Golem
 
 def tp(dx, dy):
     """Titik (px) pada offset tile (dx, dy) dari pusat dusun."""
@@ -594,6 +594,7 @@ def build():
     curse_tex = sc.ext_res("Texture2D", "res://assets/props/generated/cursed_arena.png")
     sc.node("TanahKutukArena", "Sprite2D", "Decor", texture=f'ExtResource("{curse_tex}")', position=v2(ax, ay))
     torch_c = before_arena(14.2, -1, 130)   # di sisi jalan, terpisah dari perkemahan Bonfire pra-boss
+    torch_c = SPOT_FIX.get("OborSegel", torch_c)   # padang barat perkemahan, >= 420 px dari Golem (Golem tak terlihat)
     sc.node("OborSegel", "Node2D", "Objects", script=f'ExtResource("{torch_script}")', position=v2(*torch_c))
     for k_ in range(5):
         buildings.append((torch_c[0] - 72 + 36 * k_, torch_c[1], 12, 20))

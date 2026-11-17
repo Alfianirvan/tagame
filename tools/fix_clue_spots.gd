@@ -6,13 +6,15 @@ extends Node
 ##   godot --headless --path . res://tools/fix_clue_spots.tscn -- <scene.tscn> <NamaNode> [<NamaNode> ...]
 ## Mode cek tutupan saja (untuk peti): tambahkan --tutup sebelum nama node; hanya melaporkan "TERTUTUP <nama> oleh <node>".
 ## Opsi: --dari=<Node> (titik awal flood, default PlayerStart), --tahap=<N> (quest_stage chapter + Kristal bila >= 3),
-##       --awan=<px> (jarak minimal ke blok awan, default 260).
+##       --awan=<px> (jarak minimal ke blok awan, default 260),
+##       --grup=dx,dy;dx,dy;... (semua titik relatif ini harus aman, mis. 5 obor TorchSeal),
+##       --jauh=<Node>:<px> (titik baru minimal sejauh px dari node itu, mis. BossSpawn:420).
 ## Keluaran: baris "SPOT <NamaNode> <x> <y> (geser <d> px)" atau "OK <NamaNode>" bila posisi lama sudah aman.
 
 const GRID := 8.0
 var CLOUD_MIN := 260.0
 const NPC_MIN := 40.0
-const SEARCH := 260.0
+var SEARCH := 260.0
 
 var region: Node
 var space: PhysicsDirectSpaceState2D
@@ -21,6 +23,10 @@ var cloud_pts: Array[Vector2] = []
 var npc_pts: Array[Vector2] = []
 var reach: Dictionary = {}    # Vector2i sel grid -> true
 var exclude: Array[RID] = []
+var group_offs: Array[Vector2] = [Vector2.ZERO]
+var far_node: String = ""
+var far_px: float = 0.0
+var far_pos: Vector2 = Vector2.INF
 
 
 func _ready() -> void:
@@ -32,6 +38,14 @@ func _ready() -> void:
 		if x.begins_with("--dari="): from_node = x.substr(7)
 		elif x.begins_with("--tahap="): stage = int(x.substr(8))
 		elif x.begins_with("--awan="): CLOUD_MIN = float(x.substr(7))
+		elif x.begins_with("--cari="): SEARCH = float(x.substr(7))
+		elif x.begins_with("--grup="):
+			for pr in x.substr(7).split(";"):
+				var xy: PackedStringArray = pr.split(",")
+				group_offs.append(Vector2(float(xy[0]), float(xy[1])))
+		elif x.begins_with("--jauh="):
+			far_node = x.substr(7).split(":")[0]
+			far_px = float(x.substr(7).split(":")[1])
 		else: args.append(x)
 	GameManager.reset_state()
 	QuestManager.reset_state()
@@ -66,6 +80,8 @@ func _ready() -> void:
 		return
 	for i in 30:
 		await get_tree().physics_frame   # awan yang terbuka memudar & mematikan collision
+	if far_node != "":
+		far_pos = (region.find_child(far_node, true, false) as Node2D).global_position
 	_flood((region.find_child(from_node, true, false) as Node2D).global_position + Vector2(0, 24))
 	for nm: String in names:
 		var n: Node2D = region.find_child(nm, true, false) as Node2D
@@ -178,6 +194,15 @@ func _flood(start: Vector2) -> void:
 
 
 func _good(p: Vector2) -> bool:
+	if far_pos != Vector2.INF and p.distance_to(far_pos) < far_px:
+		return false
+	for o: Vector2 in group_offs:
+		if not _good_one(p + o):
+			return false
+	return true
+
+
+func _good_one(p: Vector2) -> bool:
 	if not reach.get(Vector2i((p / GRID).round()), false) or _blocked(p, 9.0):
 		return false
 	for o: Array in occluders:
