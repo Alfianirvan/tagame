@@ -9356,7 +9356,7 @@ position = Vector2(1672, 1920)
 
 [node name="Petunjuk1" type="Area2D" parent="Objects"]
 script = ExtResource("ext_27")
-position = Vector2(1986, 1886)
+position = Vector2(1942, 1920)
 flag = "ch1_petunjuk_1"
 dialog_id = "ch1_petunjuk_1"
 required_step = "ch1_awal:petunjuk"
@@ -9364,7 +9364,7 @@ clue_kind = "barang"
 
 [node name="Petunjuk2" type="Area2D" parent="Objects"]
 script = ExtResource("ext_27")
-position = Vector2(1445, 1464)
+position = Vector2(1357, 1396)
 flag = "ch1_petunjuk_2"
 dialog_id = "ch1_petunjuk_2"
 required_step = "ch1_awal:petunjuk"
@@ -9372,7 +9372,7 @@ clue_kind = "catatan"
 
 [node name="Petunjuk3" type="Area2D" parent="Objects"]
 script = ExtResource("ext_27")
-position = Vector2(2178, 1566)
+position = Vector2(1953, 1600)
 flag = "ch1_petunjuk_3"
 dialog_id = "ch1_petunjuk_3"
 required_step = "ch1_awal:petunjuk"
@@ -9453,7 +9453,7 @@ position = Vector2(2052, 856)
 position = Vector2(2066, 870)
 
 [node name="Peti3" parent="Objects" instance=ExtResource("ext_8")]
-position = Vector2(2039, 169)
+position = Vector2(2143, 177)
 roll_count = 2
 
 [node name="Herb7" parent="Objects" instance=ExtResource("ext_18")]

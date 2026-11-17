@@ -346,7 +346,7 @@ clue_kind = "jejak"
 
 [node name="Petunjuk2" type="Area2D" parent="Objects"]
 script = ExtResource("ext_22")
-position = Vector2(166, 1532)
+position = Vector2(162, 1525)
 flag = "ch5_petunjuk_2"
 dialog_id = "ch5_petunjuk_2"
 required_step = "ch5_awal:petunjuk"
@@ -354,7 +354,7 @@ clue_kind = "catatan"
 
 [node name="Petunjuk3" type="Area2D" parent="Objects"]
 script = ExtResource("ext_22")
-position = Vector2(1071, 1615)
+position = Vector2(969, 1595)
 flag = "ch5_petunjuk_3"
 dialog_id = "ch5_petunjuk_3"
 required_step = "ch5_awal:petunjuk"

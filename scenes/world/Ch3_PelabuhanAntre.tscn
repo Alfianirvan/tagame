@@ -495,7 +495,7 @@ clue_kind = "catatan"
 
 [node name="Petunjuk3" type="Area2D" parent="Objects"]
 script = ExtResource("ext_21")
-position = Vector2(832, 2282)
+position = Vector2(840, 2282)
 flag = "ch3_petunjuk_3"
 dialog_id = "ch3_petunjuk_3"
 required_step = "ch3_awal:petunjuk"

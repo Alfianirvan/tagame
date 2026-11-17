@@ -45,6 +45,9 @@ DIRS8 = [(0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1)]
 PREFAB_SIZE = {}                                     # nama prefab -> (lebar, tinggi) sprite (dari _prefabs.json)
 
 
+# Titik petunjuk/peti yang dipindah karena tertutup pohon/rumah/NPC/awan (hasil tools/fix_clue_spots.tscn; px absolut).
+SPOT_FIX = {'Petunjuk1': (1942, 1920), 'Petunjuk2': (1357, 1396), 'Petunjuk3': (1953, 1600), 'Peti3': (2143, 177)}
+
 def tp(dx, dy):
     """Titik (px) pada offset tile (dx, dy) dari pusat dusun."""
     return (round(CX + dx * TILE), round(CY + dy * TILE))
@@ -813,7 +816,7 @@ def build():
         inst(f"GoblinEvent{i + 1}", enemy_scene, tp(dx, dy), enemy_id='"orc"', damage_scale="0.6")
     sc.node("SeranganGoblin", "Node2D", ".", script=f'ExtResource("{watcher_script}")', position=v2(*tp(0, 17.5)))
     for k_, (ck, (dx, dy)) in enumerate((("barang", (19.6, 15.4)), ("catatan", (-14.2, -11.0)), ("jejak", (31.6, -4.6))), start=1):
-        sc.node(f"Petunjuk{k_}", "Area2D", "Objects", script=f'ExtResource("{clue_script}")', position=v2(*tp(dx, dy)),
+        sc.node(f"Petunjuk{k_}", "Area2D", "Objects", script=f'ExtResource("{clue_script}")', position=v2(*SPOT_FIX.get(f"Petunjuk{k_}", tp(dx, dy))),
                 flag=f'"ch1_petunjuk_{k_}"', dialog_id=f'"ch1_petunjuk_{k_}"', required_step='"ch1_awal:petunjuk"', clue_kind=f'"{ck}"')
     sc.node("Suasana", "Node2D", ".", script=f'ExtResource("{atmos_script}")')
 
@@ -858,7 +861,7 @@ def build():
         inst(f"Musuh{k + 1}", enemy_scene, (x, y), enemy_id=f'"{eid}"', **({"damage_scale": ds} if ds else {}))
     for i, e in enumerate([b[-1] for b in branches]):
         cpos = find_clear(e[0], e[1]) or (round(e[0]), round(e[1]))
-        inst(f"Peti{i + 1}", chest_scene, cpos, roll_count="2")
+        inst(f"Peti{i + 1}", chest_scene, SPOT_FIX.get(f"Peti{i + 1}", cpos), roll_count="2")
         for nm, (ox, oy) in ((f"Herb{i * 3 + 1}", (26, 12)), (f"Herb{i * 3 + 2}", (-24, 16)), (f"Ore{i + 1}", (2, 30))):
             q = find_clear(cpos[0] + ox, cpos[1] + oy)
             if q:
