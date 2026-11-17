@@ -554,7 +554,7 @@ roll_count = 2
 
 [node name="Petunjuk1" type="Area2D" parent="Objects"]
 script = ExtResource("ext_23")
-position = Vector2(2140, 1550)
+position = Vector2(2188, 1550)
 flag = "ch2_petunjuk_1"
 dialog_id = "ch2_petunjuk_1"
 required_step = "ch2_awal:petunjuk"
@@ -562,7 +562,7 @@ clue_kind = "barang"
 
 [node name="Petunjuk2" type="Area2D" parent="Objects"]
 script = ExtResource("ext_23")
-position = Vector2(1116, 1658)
+position = Vector2(1124, 1658)
 flag = "ch2_petunjuk_2"
 dialog_id = "ch2_petunjuk_2"
 required_step = "ch2_awal:petunjuk"

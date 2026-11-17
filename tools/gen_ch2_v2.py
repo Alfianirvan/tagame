@@ -55,6 +55,9 @@ DIRS8 = [(0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1)]
 PREFAB_SIZE = {}
 
 
+# Titik petunjuk/peti yang dipindah karena tertutup pohon/rumah/NPC/awan (hasil tools/fix_clue_spots.tscn; px absolut).
+SPOT_FIX = {'Petunjuk1': (2188, 1550), 'Petunjuk2': (1124, 1658)}
+
 def tp(dx, dy):
     """Titik (px) pada offset tile (dx, dy) dari pusat kampung."""
     return (round(CX + dx * TILE), round(CY + dy * TILE))
@@ -498,6 +501,7 @@ def build():
     for k_, (ck, pos) in enumerate((("barang", (STORE[0] + 4, STORE[1] + 44)), ("jejak", (qx + 4, qy - 14)),
                                     ("catatan", (cx_ + 26, cy_ - 2))), start=1):
         pos = open_spot(pos)
+        pos = SPOT_FIX.get(f"Petunjuk{k_}", pos)
         sc.node(f"Petunjuk{k_}", "Area2D", "Objects", script=f'ExtResource("{clue_script}")', position=v2(*pos),
                 flag=f'"ch2_petunjuk_{k_}"', dialog_id=f'"ch2_petunjuk_{k_}"', required_step='"ch2_awal:petunjuk"', clue_kind=f'"{ck}"')
         recorded.append(pos)

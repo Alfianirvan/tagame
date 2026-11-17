@@ -46,6 +46,9 @@ PX_W, PX_H = W * 16, H * 16
 VOFF = (36 * (S - 1), 72 * (S - 1))     # geser Desa Akar (pusat kolam layout (36,72)) ke pusat ceruk yang terskala
 
 
+# Titik petunjuk/peti yang dipindah karena tertutup pohon/rumah/NPC/awan (hasil tools/fix_clue_spots.tscn; px absolut).
+SPOT_FIX = {'Petunjuk2': (162, 1525), 'Petunjuk3': (969, 1595)}
+
 def sp(p):
     """Titik tile layout -> tile peta terskala."""
     return (p[0] * S, p[1] * S)
@@ -440,6 +443,7 @@ def build():
     inst("PetiKebun", chest_scene, open_spot((gx0 - 10, gy0 + 50)), roll_count="2")
     clue_pts = [open_spot(p_) for p_ in ((kx_ + 4, ky_ + 18), (gx0 + 4, gy0 + 6), (sx_ - 36, sy_ - 30))]
     for k_, (ck, pos) in enumerate(zip(("jejak", "catatan", "barang"), clue_pts), start=1):
+        pos = SPOT_FIX.get(f"Petunjuk{k_}", pos)
         sc.node(f"Petunjuk{k_}", "Area2D", "Objects", script=f'ExtResource("{clue_script}")', position=v2(*pos),
                 flag=f'"ch5_petunjuk_{k_}"', dialog_id=f'"ch5_petunjuk_{k_}"', required_step='"ch5_awal:petunjuk"', clue_kind=f'"{ck}"')
         recorded.append(pos)
