@@ -1,42 +1,41 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene format=3 uid="uid://croar0letgykp"]
 
-[ext_resource type="Script" path="res://scripts/entities/Chest.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/props/Chest_Closed.png" id="2_closed"]
-[ext_resource type="Texture2D" path="res://assets/props/Chest_Open.png" id="3_open"]
-[ext_resource type="FontFile" path="res://assets/fonts/Square-Black.ttf" id="4_font"]
+[ext_resource type="Script" uid="uid://cm5f5rjh3i7b2" path="res://scripts/entities/Chest.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://dinv3rhmvcfsi" path="res://assets/props/Chest_Closed.png" id="2_closed"]
+[ext_resource type="Texture2D" uid="uid://bmijfuot2vc72" path="res://assets/props/Chest_Open.png" id="3_open"]
+[ext_resource type="FontFile" uid="uid://hvgtku3iygjw" path="res://assets/fonts/Square-Black.ttf" id="4_font"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
 size = Vector2(14, 8)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_range"]
-radius = 26.0
+radius = 14.142136
 
-[node name="Chest" type="StaticBody2D"]
-collision_layer = 1
+[node name="Chest" type="StaticBody2D" unique_id=1765398658]
 collision_mask = 0
 script = ExtResource("1_script")
 
-[node name="Closed" type="Sprite2D" parent="."]
+[node name="Closed" type="Sprite2D" parent="." unique_id=1038263802]
 position = Vector2(0, -7)
 texture = ExtResource("2_closed")
 
-[node name="Open" type="Sprite2D" parent="."]
+[node name="Open" type="Sprite2D" parent="." unique_id=1187371793]
 position = Vector2(0, -7)
 texture = ExtResource("3_open")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1036473572]
 position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_body")
 
-[node name="InteractArea" type="Area2D" parent="."]
+[node name="InteractArea" type="Area2D" parent="." unique_id=986686763]
 collision_layer = 0
 collision_mask = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractArea" unique_id=143362979]
 position = Vector2(0, -6)
 shape = SubResource("CircleShape2D_range")
 
-[node name="Hint" type="Label" parent="."]
+[node name="Hint" type="Label" parent="." unique_id=1858360458]
 offset_left = -12.0
 offset_top = -28.0
 offset_right = 12.0
