@@ -11,9 +11,9 @@ Proyek akhir mata kuliah GameProg (Workshop PPLG) — **Kelompok 10**.
 ## Anggota
 | Nama | Tugas |
 |---|---|
-| (isi nama anggota 1) | Combat, musuh, boss |
-| (isi nama anggota 2) | NPC, dialog, quest, shop |
-| (isi nama anggota 3) | Map, UI, audio, dokumen |
+| (ALFIAN IRVAN A) | Combat, musuh, boss |
+| (AHMAD FAIZ SUFYAN) | NPC, dialog, quest, shop |
+| (AHMAD FADILAH) | Map, UI, audio, dokumen |
 
 Dosen pengampu: (isi nama dosen)
 
