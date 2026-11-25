@@ -8,3 +8,6 @@ export/
 .vscode/
 Thumbs.db
 .DS_Store
+# Python (cache skrip generator di tools/)
+__pycache__/
+*.pyc
