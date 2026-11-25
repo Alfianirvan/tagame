@@ -1,22 +1,21 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene format=3 uid="uid://f0bwgqfhg81y"]
 
-[ext_resource type="Texture2D" path="res://assets/props/well_stone.png" id="1"]
+[ext_resource type="Texture2D" uid="uid://dyus8ws87wo7j" path="res://assets/props/well_stone.png" id="1"]
 
-[sub_resource type="RectangleShape2D" id="1"]
-size = Vector2(26, 12)
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_y71n8"]
+radius = 15.0
 
-[node name="Sumur" type="StaticBody2D"]
-collision_layer = 1
+[node name="Sumur" type="StaticBody2D" unique_id=145665446]
 collision_mask = 0
 
-[node name="Sombra" type="Polygon2D" parent="."]
+[node name="Sombra" type="Polygon2D" parent="." unique_id=921115812]
 color = Color(0, 0, 0, 0.26)
-polygon = PackedVector2Array(16.2, -4.4, 15.6, -3.2, 13.7, -2.0, 10.6, -1.1, 6.8, -0.4, 2.3, -0.0, -2.3, -0.0, -6.8, -0.4, -10.6, -1.1, -13.7, -2.0, -15.6, -3.2, -16.2, -4.4, -15.6, -5.6, -13.7, -6.8, -10.6, -7.7, -6.8, -8.4, -2.3, -8.8, 2.3, -8.8, 6.8, -8.4, 10.6, -7.7, 13.7, -6.8, 15.6, -5.6)
+polygon = PackedVector2Array(16.2, -4.4, 15.6, -3.2, 13.7, -2, 10.6, -1.1, 6.8, -0.4, 2.3, 0, -2.3, 0, -6.8, -0.4, -10.6, -1.1, -13.7, -2, -15.6, -3.2, -16.2, -4.4, -15.6, -5.6, -13.7, -6.8, -10.6, -7.7, -6.8, -8.4, -2.3, -8.8, 2.3, -8.8, 6.8, -8.4, 10.6, -7.7, 13.7, -6.8, 15.6, -5.6)
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1696635826]
 texture = ExtResource("1")
-offset = Vector2(0, -22.0)
+offset = Vector2(0, -22)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -6.0)
-shape = SubResource("1")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=685917760]
+position = Vector2(0, -13)
+shape = SubResource("CapsuleShape2D_y71n8")

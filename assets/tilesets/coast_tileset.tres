@@ -1,12 +1,11 @@
-[gd_resource type="TileSet" load_steps=7 format=3]
+[gd_resource type="TileSet" format=3 uid="uid://cccpar2agrpwg"]
 
-[ext_resource type="Texture2D" path="res://assets/tilesets/coast_floor.png" id="tex_0"]
-[ext_resource type="Texture2D" path="res://assets/tilesets/coast_relief.png" id="tex_1"]
-[ext_resource type="Texture2D" path="res://assets/tilesets_biome/TilesetWater.png" id="tex_2"]
+[ext_resource type="Texture2D" uid="uid://b8av0qe3oa1as" path="res://assets/tilesets/coast_floor.png" id="tex_0"]
+[ext_resource type="Texture2D" uid="uid://dr27es03vleb7" path="res://assets/tilesets/coast_relief.png" id="tex_1"]
+[ext_resource type="Texture2D" uid="uid://7xpcmkwqtxl4" path="res://assets/tilesets_biome/TilesetWater.png" id="tex_2"]
 
 [sub_resource type="TileSetAtlasSource" id="src_0"]
 texture = ExtResource("tex_0")
-texture_region_size = Vector2i(16, 16)
 0:0/0 = 0
 0:1/0 = 0
 0:2/0 = 0
@@ -76,7 +75,6 @@ texture_region_size = Vector2i(16, 16)
 
 [sub_resource type="TileSetAtlasSource" id="src_1"]
 texture = ExtResource("tex_1")
-texture_region_size = Vector2i(16, 16)
 1:5/0 = 0
 1:5/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 1:6/0 = 0
@@ -116,7 +114,6 @@ texture_region_size = Vector2i(16, 16)
 
 [sub_resource type="TileSetAtlasSource" id="src_2"]
 texture = ExtResource("tex_2")
-texture_region_size = Vector2i(16, 16)
 0:0/0 = 0
 0:1/0 = 0
 0:2/0 = 0
@@ -136,7 +133,6 @@ texture_region_size = Vector2i(16, 16)
 10:3/0 = 0
 
 [resource]
-tile_size = Vector2i(16, 16)
 physics_layer_0/collision_layer = 1
 physics_layer_0/collision_mask = 0
 sources/0 = SubResource("src_0")
