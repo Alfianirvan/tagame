@@ -1,11 +1,13 @@
 # Godot 4
 .godot/
 export/
+build/
 *.tmp
 .import/
 *.translation
 # Editor / OS
 .vscode/
+.playwright-mcp/
 Thumbs.db
 .DS_Store
 # Python (cache skrip generator di tools/)
